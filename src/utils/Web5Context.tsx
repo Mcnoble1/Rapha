@@ -32,108 +32,49 @@ const ContextProvider = ({ children }) => {
   }, []);
 
   const profileProtocolDefinition = {
-      protocol: "https://did-box.com",
+      protocol: "https://rapha.com",
       published: true,
       types: {
-        personalDetails: {
-          schema: "https://did-box.com/schemas/personalDetails",
+        patientProfile: {
+          schema: "https://rapha.com/patientProfile",
           dataFormats: ["application/json"],
         },
-        healthDetails: {
-          schema: "https://did-box.com/schemas/healthDetails",
+        doctorProfile: {
+          schema: "https://rapha.com/doctorProfiles",
           dataFormats: ["application/json"],
         },
-        educationDetails: {
-          schema: "https://did-box.com/schemas/educationDetails",
+        medicalRecords: {
+          schema: "https://rapha.com/medicalRecord",
           dataFormats: ["application/json"],
         },
-        professionDetails: {
-          schema: "https://did-box.com/schemas/workDetails",
+        bookAppointment: {
+          schema: "https://rapha.com/appointment",
           dataFormats: ["application/json"],
-        },
-        socialDetails: {
-          schema: "https://did-box.com/schemas/socialDetails",
-          dataFormats: ["application/json"],
-        },
-        letterDetails: {
-          schema: "https://did-box.com/schemas/letterDetails",
-          dataFormats: ["application/json"],
-        },
-        pictureDetails: {
-          schema: "https://did-box.com/schemas/pictureDetails",
-          dataFormats: ['image/jpg', 'image/png', 'image/jpeg', 'image/gif']
-        },
-        videoDetails: {
-          schema: "https://did-box.com/schemas/videoDetails",
-          dataFormats: ["video/mp4", "video/mpeg", "video/ogg", "video/quicktime", "video/webm", "video/x-ms-wmv"],
-        },
-        documentDetails: {
-          schema: "https://did-box.com/schemas/documentDetails",
-          dataFormats: ['application/octet-stream', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
         },
       },
       structure: {
-        personalDetails: {
+        medicalRecords: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "author", of: "personalDetails", can: "read" },
-            { who: "recipient", of: "personalDetails", can: "read" },
+            { who: "recipient", of: "medicalRecords", can: "read" },
           ],
         },
-        healthDetails: {
+        patientProfile: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "author", of: "healthDetails", can: "read" },
-            { who: "recipient", of: "healthDetails", can: "read" },
+            { who: "recipient", of: "patientProfile", can: "read" },
           ],
         },
-        educationDetails: {
+        doctorProfile: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "author", of: "educationDetails", can: "read" },
-            { who: "recipient", of: "educationDetails", can: "read" },
+            { who: "anyone", can: "read" },
           ],
         },
-        professionDetails: {
+        bookAppointment: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "author", of: "professionDetails", can: "read" },
-            { who: "recipient", of: "professionDetails", can: "read" },
-          ],
-        },
-        socialDetails: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "author", of: "socialDetails", can: "read" },
-            { who: "recipient", of: "socialDetails", can: "read" },
-          ],
-        },
-        letterDetails: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "author", of: "letterDetails", can: "read" },
-            { who: "recipient", of: "letterDetails", can: "read" },
-          ],
-        },
-        pictureDetails: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "author", of: "pictureDetails", can: "read" },
-            { who: "recipient", of: "pictureDetails", can: "read"}
-          ],
-        },
-        videoDetails: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "author", of: "videoDetails", can: "read" },
-            { who: "recipient", of: "videoDetails", can: "read" },
-          ],
-        },
-        documentDetails: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "author", of: "documentDetails", can: "read" },
-            { who: "recipient", of: "documentDetails", can: "read"}
+            { who: "recipient", of: "bookAppointment", can: "read" },
           ],
         },
       },
@@ -145,7 +86,7 @@ const ContextProvider = ({ children }) => {
         return await web5.dwn.protocols.query({
         message: {
             filter: {
-            protocol: "https://did-box.com",
+            protocol: "https://rapha.com",
             },
         },
         });
@@ -157,9 +98,9 @@ const ContextProvider = ({ children }) => {
         from: did,
         message: {
             filter: {
-            protocol: "https://did-box.com",
+            protocol: "https://rapha.com",
             },
-        },
+        }, 
         });
     };
 
