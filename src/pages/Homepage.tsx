@@ -17,9 +17,9 @@ const Homepage = () => {
         <div className="lg:pl-30 flex lg:w-1/2 flex-col items-center justify-center">
           <div className='text-center mb-7'>
           <p className="mb-5 text-5xl lg:text-6xl font-bold text-white dark:text-white">
-            Welcome to DID-Box
+            Welcome to Rapha
           </p>
-          <span className="text-3xl lg:text-4xl font-medium">Your Personal Secure Data Store, Manager and Aggregator</span>
+          <span className="text-3xl lg:text-4xl font-medium">All Encompassing Decentralized Healthcare Platform</span>
           </div>
           <div className="flex justify-center">
           <button 

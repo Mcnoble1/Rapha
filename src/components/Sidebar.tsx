@@ -182,19 +182,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Pictures
                             </NavLink>
                           </li>
-                          <li>
-                            <NavLink
-                              to="/files/videos"
-                              className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
-                                (pathname === '/files' ||
-                                  pathname.includes('videos')) &&
-                                'border-r-4 dark:bg-meta-4'
-                              }`}
-                            >
-                             <FontAwesomeIcon icon={faVideo} style={{color: "#ffffff",}} />
-                              Videos
-                            </NavLink>
-                          </li>
+                  
                           <li>
                             <NavLink
                               to="/files/documents"
@@ -217,18 +205,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
              
               <li>
                 <NavLink
-                  to="/education"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
-                    pathname.includes('education') && 'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faBook} style={{color: "#ffffff",}} />
-                 Education
-                </NavLink>
-              </li>
-             
-              <li>
-                <NavLink
                   to="/health"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
@@ -237,70 +213,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 >
                   <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
                   Health
-                </NavLink>
-              </li>
-
-              {/* <li>
-                <NavLink
-                  to="/entertainment"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('entertainment') &&
-                    'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faUserGroup} style={{color: "#fcfcfc",}} />
-                 Entertainment
-                </NavLink>
-              </li> */}
-
-              {/* <li>
-                <NavLink
-                  to="/financial"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('financial') &&
-                    'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faUserGroup} style={{color: "#fcfcfc",}} />
-                  Financial
-                </NavLink>
-              </li> */}
-
-              <li>
-                <NavLink
-                  to="/professional"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('professional') &&
-                    'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faPerson} style={{color: "#fcfcfc",}} />
-                  Professional
-                </NavLink>
-              </li>
-
-              <li>
-                <NavLink
-                  to="/social"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('social') &&
-                    'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faTwitter} style={{color: "#fcfcfc",}} />
-                 Social Media
-                </NavLink>
-              </li>
-
-              <li>
-                <NavLink
-                  to="/letters"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
-                    pathname.includes('letters') && 'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faNoteSticky} style={{color: "#ffffff",}} />
-                 Letters
                 </NavLink>
               </li>
             </ul>

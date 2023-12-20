@@ -1,9 +1,9 @@
 {
-  "name": "did-box",
+  "name": "rapha",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://did-box.netlify.app",
+  "homepage": "https://rapha.netlify.app",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,7 +12,7 @@
   "author": {
     "name": "Idowu Festus",
     "email": "idowufestustemiloluwa@gmail.com",
-    "url": "https://did-box.netlify.app"
+    "url": "https://rapha.netlify.app"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
