@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
-import HealthCard from '../components/HealthCard.tsx';
-import DidCard from '../components/DidCard.tsx';
-import HealthDetails from '../components/HealthDetails.tsx';
+import Sidebar from '../../components/Sidebar';
+import Header from '../../components/Header';
+import HealthCard from '../../components/HealthCard.tsx';
+import DidCard from '../../components/DidCard.tsx';
+import HealthDetails from '../../components/HealthDetails.tsx';
 
 const Health = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

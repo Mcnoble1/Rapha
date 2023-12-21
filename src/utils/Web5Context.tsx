@@ -40,7 +40,7 @@ const ContextProvider = ({ children }) => {
           dataFormats: ["application/json"],
         },
         doctorProfile: {
-          schema: "https://rapha.com/doctorProfiles",
+          schema: "https://rapha.com/doctorProfile",
           dataFormats: ["application/json"],
         },
         medicalRecords: {

@@ -2,21 +2,21 @@ import { lazy } from 'react';
 
 const Pictures = lazy(() => import('../pages/Files/Pictures'));
 const Documents = lazy(() => import('../pages/Files/Documents'));
-const Dashboard = lazy(() => import('../pages/Dashboard'));
-const Health = lazy(() => import('../pages/Health'));
+const Doctor = lazy(() => import('../pages/Doctor/Dashboard'));
+const Patient = lazy(() => import('../pages/Patient/Dashboard'));
 
 
 
 const coreRoutes = [
   {
-    path: '/dashboard', 
-    title: 'Dashboard',
-    component: Dashboard, 
+    path: '/doctor',
+    title: 'Doctor',
+    component: Doctor,
   },
   {
-    path: '/health', 
-    title: 'Health',
-    component: Health, 
+    path: '/patient',
+    title: 'Patient',
+    component: Patient,
   },
   {
     path: '/pictures',

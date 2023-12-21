@@ -111,13 +111,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
          
              <li>
                 <NavLink
-                  to="/dashboard"
+                  to="/doctor/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
                     pathname.includes('dashboard') && 'border-r-4 dark:bg-meta-4'
                   }`}
                 >
                    <FontAwesomeIcon icon={faCircleUser} style={{color: "#ffffff",}} />
-                  Personal
+                  Profile
                 </NavLink>
               </li>
 
@@ -205,7 +205,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
              
               <li>
                 <NavLink
-                  to="/health"
+                  to="/patient/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
                     'border-r-4 dark:bg-meta-4'
@@ -213,6 +213,45 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 >
                   <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
                   Health
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/health"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
+                    pathname.includes('health') &&
+                    'border-r-4 dark:bg-meta-4'
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
+                  Chat
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/health"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
+                    pathname.includes('health') &&
+                    'border-r-4 dark:bg-meta-4'
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
+                  Community
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/health"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
+                    pathname.includes('health') &&
+                    'border-r-4 dark:bg-meta-4'
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
+                  Research
                 </NavLink>
               </li>
             </ul>

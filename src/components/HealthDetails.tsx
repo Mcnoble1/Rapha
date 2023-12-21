@@ -18,30 +18,115 @@ const HealthDetails = () => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
   const [popupOpenMap, setPopupOpenMap] = useState<{ [key: number]: boolean }>({});
-  const [formData, setFormData] = useState<{ name: string; dateOfBirth: string; maritalStatus: string; identificationNumber: string; height: string; weight: string; bloodGroup: string; genotype: string;  allergies: string; treatments: string; medicalCare: string; diagnosis: string; medications: string; familyHistory: string; complaints: string; illnessHistory: string; signs: string; phyExamination: string; surgicalHistory: string; obstetricHistory: string; medicalAllergies: string; immunizationHistory: string; habits: string;}>({
+  const [personalData, setPersonalData] = useState<{ name: string; dateOfBirth: string; phone: string; maritalStatus: string; identificationNumber: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
     name: '',
     dateOfBirth: '',
     maritalStatus: '',
     identificationNumber: '',
+    gender: '',
+    homeAddress: '',
+    email: '',
+    city: '',
+    state: '',
+    country: '',
+    phone: '',
+  }); 
+
+  const [guardianData, setGuardianData] = useState<{ name: string; phone: string; relationship: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
+    name: '',
+    relationship: '',
+    gender: '',
+    homeAddress: '',
+    email: '',
+    city: '',
+    state: '',
+    country: '',
+    phone: '',
+  }); 
+
+  const [primaryDoctorData, setPrimaryDoctorData] = useState<{ name: string; hospital: string; phone: string; specialty: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
+    name: '',
+    hospital: '',
+    specialty: '',
+    gender: '',
+    homeAddress: '',
+    email: '',
+    city: '',
+    state: '',
+    country: '',
+    phone: '',
+  }); 
+
+
+  const [allergyData, setAllergyData] = useState<{ name: string; severity: string; reaction: string; treatment: string; }>({
+    name: '',
+    severity: '',
+    reaction: '',
+    treatment: '',
+  }); 
+
+  const [cardiologyData, setCardiologyData] = useState<{ heartCondition: string; testPerformed: string; testResult: string; treatment: string; }>({
+    heartCondition: '',
+    testPerformed: '',
+    testResult: '',
+    treatment: '',
+  }); 
+
+  const [diagnosisData, setDiagnosisData] = useState<{ diagnosis: string; treatment: string; prescibingDoctor: string; }>({
+    diagnosis: '',
+    treatment: '',
+    prescibingDoctor: '',
+  }); 
+
+  const [immunizationData, setImmunizationData] = useState<{ vaccineName: string; vaccineType: string; dateAdministered: string; lotNumber: string; nextScheduled: string }>({
+    vaccineName: '',
+    vaccineType: '',
+    dateAdministered: '',
+    lotNumber: '',
+    nextScheduled: '',
+  }); 
+
+  const [insuranceData, setInsuranceData] = useState<{ provider: string; policyNumber: string; contactInfo: string; }>({
+    provider: '',
+    policyNumber: '',
+    contactInfo: '',
+  }); 
+
+  const [labTestData, setLabTestData] = useState<{ name: string; dateConducted: string; result: string; referenceRange: string; }>({
+    name: '',
+    dateConducted: '',
+    result: '',
+    referenceRange: '',
+  }); 
+
+  const [medicalHistoryData, setMedicalHistoryData] = useState<{ medication: string; dosage: string; frequency: string; prescribingDoctor: string; }>({
+    medication: '',
+    dosage: '',
+    frequency: '',
+    prescribingDoctor: '',
+  }); 
+
+  const [surgeryData, setSurgeryData] = useState<{ surgeryType: string; date: string; surgeon: string; notes: string; }>({
+    surgeryType: '',
+    date: '',
+    surgeon: '',
+    notes: '',
+  }); 
+
+  const [vitaSignsData, setVitalSignsData] = useState<{ bloodPressure: string; heartRate: string; respiratoryRate: string; bodyTemperature: string; }>({
+    bloodPressure: '',
+    heartRate: '',
+    respiratoryRate: '',
+    bodyTemperature: '',
+  }); 
+
+  const [physicalData, setPhysicalData] = useState<{ height: string; weight: string; bmi: string; genotype: string; bloodGroup: string; rhesusFactor: string; }>({
     height: '',
     weight: '',
-    bloodGroup: '',
+    bmi: '',
     genotype: '',
-    allergies: '',
-    treatments: '',
-    medicalCare: '',
-    diagnosis: '',
-    medications: '',
-    familyHistory: '',
-    complaints: '',
-    illnessHistory: '',
-    signs: '',
-    phyExamination: '',
-    surgicalHistory: '',
-    obstetricHistory: '',
-    medicalAllergies: '',
-    immunizationHistory: '',
-    habits: '',
+    bloodGroup: '',
+    rhesusFactor: '',
   }); 
 
   const [showDetails, setShowDetails] = useState(false);
@@ -56,30 +141,11 @@ const HealthDetails = () => {
   const togglePopup = (userId: string) => {
     usersDetails.map((user) => { 
       if (user.recordId === userId) {
-        setFormData({
+        setPersonalData({
           name: user.name,
           dateOfBirth: user.dateOfBirth,
           maritalStatus: user.maritalStatus,
           identificationNumber: user.identificationNumber,
-          height: user.height,
-          weight: user.weight,
-          bloodGroup: user.bloodGroup,
-          genotype: user.genotype,
-          allergies: user.allergies,
-          treatments: user.treatments,
-          medicalCare: user.medicalCare,
-          diagnosis: user.diagnosis,
-          medications: user.medications,
-          familyHistory: user.familyHistory,
-          complaints: user.complaints,
-          illnessHistory: user.illnessHistory,
-          signs: user.signs,
-          phyExamination: user.phyExamination,
-          surgicalHistory: user.surgicalHistory,
-          obstetricHistory: user.obstetricHistory,
-          medicalAllergies: user.medicalAllergies,
-          immunizationHistory: user.immunizationHistory,
-          habits: user.habits,
         });
       }
     });
@@ -103,8 +169,8 @@ const fetchHealthDetails = async () => {
       from: myDid,
       message: {
         filter: {
-            protocol: 'https://did-box.com',
-            protocolPath: 'healthDetails',
+            protocol: 'https://rapha.com',
+            protocolPath: 'patientProfile',
             // schema: 'https://did-box.com/schemas/healthDetails',
         },
       },
@@ -199,7 +265,7 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>)
   //   }
   // }
 
-  setFormData((prevFormData) => ({
+  setPersonalData((prevFormData) => ({
     ...prevFormData,
     [name]: value,
   }));
@@ -377,141 +443,60 @@ const deleteHealthDetails = async (recordId) => {
           </h4>
         </div>
 
-        <div className='w-full mb-5 font-medium text-black text-xl'>Physical Details</div>
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Height</span>
+          <span className="text-xl">Email Address</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.height : '********'}
+            {showDetails ? user.email : '********'}
           </h4>
         </div>
 
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Weight</span>
+          <span className="text-xl">Phone Number</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.weight : '********'}
+            {showDetails ? user.phone : '********'}
           </h4>
         </div>
 
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Blood Group</span>
+          <span className="text-xl">Home Address</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.bloodGroup : '********'}
+            {showDetails ? user.homeAddress : '********'}
           </h4>
         </div>
 
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Genotype</span>
+          <span className="text-xl">City</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.genotype : '********'}
-          </h4>
-        </div>
-
-        <div className='w-full mb-5 font-medium text-black text-xl'>Medical History</div>
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Allergies</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.allergies : '********'}
+            {showDetails ? user.city : '********'}
           </h4>
         </div>
 
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Treatments</span>
+          <span className="text-xl">State</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.treatments : '********'}
+            {showDetails ? user.state : '********'}
           </h4>
         </div>
 
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Medical Care</span>
+          <span className="text-xl">Country</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.medicalCare : '********'}
+            {showDetails ? user.country : '********'}
+          </h4>
+        </div>
+
+        <div className='w-full mb-5 font-medium text-black text-xl'>Guardian Information</div>
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Name</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianName : '********'}
           </h4>
         </div>
 
         <div className='w-1/3 mb-5' >
-          <span className="text-xl">Diagnosis</span>
+          <span className="text-xl">Relationship</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.diagnosis : '********'}
-          </h4>
-        </div>
-
-        <div className='w-full mb-5 font-medium text-black text-xl'>Medication Information</div>
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Medications</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.medications : '********'}
-          </h4>
-        </div>
-
-        <div className='w-full mb-5 font-medium text-black text-xl'>Family History</div>
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Any Family History?</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.familyHistory : '********'}
-          </h4>
-        </div>
-
-        <div className='w-full mb-5 font-medium text-black text-xl'>Treatments History</div>
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Complaints</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.complaints : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Illness History</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.illnessHistory : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Signs</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.signs : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Physical Examination</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.phyExamination : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Surgical History</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.surgicalHistory : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Obstetric History</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.obstetricHistory : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Medical Allergies</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.medicalAllergies : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Immunization History</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.immunizationHistory : '********'}
-          </h4>
-        </div>
-
-        <div className='w-1/3 mb-5' >
-          <span className="text-xl">Habits</span>
-          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-            {showDetails ? user.habits : '********'}
+            {showDetails ? user.relationship : '********'}
           </h4>
         </div>
 
@@ -652,18 +637,18 @@ const deleteHealthDetails = async (recordId) => {
                           </div>
                           <form>
                           <div className= "rounded-sm px-6.5 bg-white dark:border-strokedark dark:bg-boxdark">
-                      <h3 className="mb-2.5 block font-semibold dark:text-white">Identification Information</h3>
+                      <h3 className="mb-2.5 block font-semibold dark:text-white">Personal Information</h3>
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
                           Name
                         </label>
-                        <div className={`relative ${formData.name ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${personalData.name ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
                           name="name"
                           required
-                          value={formData.name}
+                          value={personalData.name}
                           onChange={handleInputChange}
                           placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -674,12 +659,12 @@ const deleteHealthDetails = async (recordId) => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Date of Birth
                         </label>
-                        <div className={`relative ${formData.dateOfBirth ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${personalData.dateOfBirth ? 'bg-light-blue' : ''}`}>
                         <input
                            type="date" 
                           name="dateOfBirth"
                           required
-                          value={formData.dateOfBirth}
+                          value={personalData.dateOfBirth}
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
@@ -689,10 +674,10 @@ const deleteHealthDetails = async (recordId) => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Marital Status
                         </label>
-                        <div className={`relative ${formData.maritalStatus ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${personalData.maritalStatus ? 'bg-light-blue' : ''}`}>
                         <select
                               name="maritalStatus"
-                              value={formData.maritalStatus}
+                              value={personalData.maritalStatus}
                               onChange={handleInputChange}
                               required
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
@@ -706,235 +691,332 @@ const deleteHealthDetails = async (recordId) => {
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                                            
-                      <div className="w-full xl:w-2/5">
+                      <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
                           Idenetification Number
                         </label>
-                        <div className={`relative ${formData.identificationNumber ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${personalData.identificationNumber ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
                           name="identificationNumber"
-                          value={formData.identificationNumber}
+                          value={personalData.identificationNumber}
                           required
                           onChange={handleInputChange}
                           placeholder="SSN123456"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Gender
+                        </label>
+                        <div className={`relative ${personalData.gender ? 'bg-light-blue' : ''}`}>
+                        <select
+                              name="gender"
+                              value={personalData.gender}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                              <option value="">Select Gender</option>                        
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>                        
+                          </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Phone Number
+                        </label>
+                        <div className={`relative ${personalData.phone ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="phone"
+                          value={personalData.phone}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="+234 80123456"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
                     </div>
 
-                    <h3 className="mb-2.5 mt-10 block font-semibold dark:text-white">Physical Details</h3>
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                           
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Email Address
+                        </label>
+                        <div className={`relative ${personalData.email ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="email"
+                          value={personalData.email}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="xyz@gmail.com"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Home Address
+                        </label>
+                        <div className={`relative ${personalData.homeAddress ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="homeAddress"
+                          value={personalData.homeAddress}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          City
+                        </label>
+                        <div className={`relative ${personalData.city ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="city"
+                          value={personalData.city}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="Lagos"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                           
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          State
+                        </label>
+                        <div className={`relative ${personalData.state ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="state"
+                          value={personalData.state}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="US-CA"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Country
+                        </label>
+                        <div className={`relative ${personalData.country ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="country"
+                          value={personalData.country}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="USA"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+                    </div>            
+                          </div>
+                          <div className= "rounded-sm px-6.5 mt-10 bg-white dark:border-strokedark dark:bg-boxdark">
+                      <h3 className="mb-2.5 block font-semibold dark:text-white">Guardian Information</h3>
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Height (cm)
+                          Name
                         </label>
-                        <div className={`relative ${formData.height ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${guardianData.name ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="height"
+                          name="name"
                           required
-                          value={formData.height}
+                          value={guardianData.name}
                           onChange={handleInputChange}
-                          placeholder="165"
+                          placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Weight (kg)
+                          Gender
                         </label>
-                        <div className={`relative ${formData.weight ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${guardianData.gender ? 'bg-light-blue' : ''}`}>
+                        <select
+                              name="gender"
+                              value={guardianData.gender}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                              <option value="">Select Gender</option>                        
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>                        
+                          </div>
+                      </div>   
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Relationship to Patient
+                        </label>
+                        <div className={`relative ${guardianData.relationship ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="weight"
+                          name="relationship"
+                          value={guardianData.relationship}
                           required
-                          value={formData.weight}
                           onChange={handleInputChange}
-                          placeholder="75"
+                          placeholder="Partner"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>                
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                      
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Phone Number
+                        </label>
+                        <div className={`relative ${guardianData.phone ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="phone"
+                          value={guardianData.phone}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="+234 80123456"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Blood Group
+                          Email Address
                         </label>
-                        <div className={`relative ${formData.bloodGroup ? 'bg-light-blue' : ''}`}>
-                        <select
-                              name="bloodGroup"
-                              value={formData.bloodGroup}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
-                              <option value="">Select Group</option>                        
-                              <option value="A">A</option>
-                              <option value="B">B</option>
-                              <option value="O+">O+</option>
-                            </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-2/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Genotype
-                        </label>
-                        <div className={`relative ${formData.genotype ? 'bg-light-blue' : ''}`}>
-                        <select
-                              name="genotype"
-                              value={formData.genotype}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
-                              <option value="">Select Genotype</option>                        
-                              <option value="AA">AA</option>
-                              <option value="AS">AS</option>
-                              <option value="SS">SS</option>
-                              <option value="AC">AC</option>
-                            </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h3 className="mb-2.5 block mt-10 font-semibold dark:text-white">Medical History</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Allergies
-                        </label>
-                        <div className={`relative ${formData.allergies ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${guardianData.email ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="allergies"
+                          name="email"
+                          value={guardianData.email}
                           required
-                          value={formData.allergies}
                           onChange={handleInputChange}
-                          placeholder="Heat Rash"
+                          placeholder="xyz@gmail.com"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
 
-                      <div className="w-full xl:w-1/2">
+                      <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Treatments
+                          Home Address
                         </label>
-                        <div className={`relative ${formData.treatments ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${guardianData.homeAddress ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="treatments"
+                          name="homeAddress"
+                          value={guardianData.homeAddress}
                           required
-                          value={formData.treatments}
                           onChange={handleInputChange}
-                          placeholder="Enter treatments undergone"
+                          placeholder="Phoenix Court, 1st Avenue"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
                     </div>
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
+
+                      <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Medical Care
+                          City
                         </label>
-                        <div className={`relative ${formData.medicalCare ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${guardianData.city ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="medicalCare"
+                          name="city"
+                          value={guardianData.city}
                           required
-                          value={formData.medicalCare}
                           onChange={handleInputChange}
-                          placeholder="Previous Medical Care"
+                          placeholder="Lagos"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
 
-                    <div className="w-full xl:w-1/2">
+                      <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Diagnosis
+                          State
                         </label>
-                        <div className={`relative ${formData.diagnosis ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${guardianData.state ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="state"
+                          value={guardianData.state}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="US-CA"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Country
+                        </label>
+                        <div className={`relative ${guardianData.country ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="country"
+                          value={guardianData.country}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="USA"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div className= "rounded-sm px-6.5 mt-10 bg-white dark:border-strokedark dark:bg-boxdark">
+                      <h3 className="mb-2.5 block font-semibold dark:text-white">Primary Medical Provider</h3>
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Name
+                        </label>
+                        <div className={`relative ${primaryDoctorData.name ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          value={primaryDoctorData.name}
+                          onChange={handleInputChange}
+                          placeholder="John Doe"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Hospital
+                        </label>
+                        <div className={`relative ${primaryDoctorData.hospital ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text" 
-                          name="diagnosis"
+                          name="hospital"
                           required
-                          placeholder='Enter Diagnosis'
-                          value={formData.diagnosis}
-                          onChange={handleInputChange}
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div> 
-                    </div>
-
-                    <h3 className="mb-2.5 block mt-10 font-semibold dark:text-white">Medication Information</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Medicines Taken
-                        </label>
-                        <div className={`relative ${formData.medications ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="medications"
-                          required
-                          value={formData.medications}
-                          onChange={handleInputChange}
-                          placeholder="Antibiotics Celecoxib"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>     
-                    </div>
-
-                    <h3 className="mb-2.5 block mt-10 font-semibold dark:text-white">Family History</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Any Family Health History?
-                        </label>
-                        <div className={`relative ${formData.familyHistory ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="familyHistory"
-                          required
-                          value={formData.familyHistory}
-                          onChange={handleInputChange}
-                          placeholder="Engineering Journal"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h3 className="mb-2.5 block mt-10 font-semibold dark:text-white">Treatment History</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Chief Complaints
-                        </label>
-                        <div className={`relative ${formData.complaints ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="complaints"
-                          required
-                          value={formData.complaints}
-                          onChange={handleInputChange}
-                          placeholder="Cough"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-1/2">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          History of Illness
-                        </label>
-                        <div className={`relative ${formData.illnessHistory ? 'bg-light-blue' : ''}`}>
-                        <input
-                           type="text" 
-                          name="illnessHistory"
-                          required
-                          placeholder='Enter Illness History'
-                          value={formData.illnessHistory}
+                          placeholder='John Hopkins Hospital'
+                          value={primaryDoctorData.hospital}
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
@@ -942,177 +1024,150 @@ const deleteHealthDetails = async (recordId) => {
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Vital Signs
+                         Specialty
                         </label>
-                        <div className={`relative ${formData.signs ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${primaryDoctorData.specialty ? 'bg-light-blue' : ''}`}>
                         <input
-                            type='text'
-                            name="signs"
-                            value={formData.signs}
-                            onChange={handleInputChange}
-                            required
-                            placeholder='Enter Vital Signs'
-                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                           </div>
+                          type="text"
+                          name="specialty"
+                          value={primaryDoctorData.specialty}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="Family Medicine"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
                       </div>
                     </div>
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Physical Examination
+                          Email Address
                         </label>
-                        <div className={`relative ${formData.phyExamination ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${primaryDoctorData.email ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="phyExamination"
+                          name="email"
+                          value={primaryDoctorData.email}
                           required
-                          value={formData.phyExamination}
                           onChange={handleInputChange}
-                          placeholder="Enter Physical Examination Details"
+                          placeholder="xyz@gmail.com"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
-                
-                      <div className="w-full xl:w-1/2">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Surgical History
-                        </label>
-                        <div className={`relative ${formData.surgicalHistory ? 'bg-light-blue' : ''}`}>
-                        <input
-                           type="text" 
-                          name="surgicalHistory"
-                          required
-                          placeholder='Enter Surgical History'
-                          value={formData.surgicalHistory}
-                          onChange={handleInputChange}
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div> 
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Obstetric History
+                          Gender
                         </label>
-                        <div className={`relative ${formData.obstetricHistory ? 'bg-light-blue' : ''}`}>
-                        <input
-                              name="obstetricHistory"
-                              value={formData.obstetricHistory}
+                        <div className={`relative ${primaryDoctorData.gender ? 'bg-light-blue' : ''}`}>
+                        <select
+                              name="gender"
+                              value={primaryDoctorData.gender}
                               onChange={handleInputChange}
                               required
-                              placeholder='Enter Obstetric History'
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>                      
+                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                              <option value="">Select Gender</option>                        
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>                        
                           </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Phone Number
+                        </label>
+                        <div className={`relative ${primaryDoctorData.phone ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="phone"
+                          value={primaryDoctorData.phone}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="+234 80123456"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
                       </div>
                     </div>
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-3/5">
+                                          
+                      <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Medical Allergies
+                          Home Address
                         </label>
-                        <div className={`relative ${formData.medicalAllergies ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${primaryDoctorData.homeAddress ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="medicalAllergies"
+                          name="homeAddress"
+                          value={primaryDoctorData.homeAddress}
                           required
-                          value={formData.medicalAllergies}
                           onChange={handleInputChange}
-                          placeholder="Heat Rash"
+                          placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
-
-                      <div className="w-full xl:w-1/2">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Immunization History
-                        </label>
-                        <div className={`relative ${formData.immunizationHistory ? 'bg-light-blue' : ''}`}>
-                        <input
-                           type="text" 
-                          name="immunizationHistory"
-                          required
-                          placeholder='Polio'
-                          value={formData.immunizationHistory}
-                          onChange={handleInputChange}
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div> 
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Habits
+                          City
                         </label>
-                        <div className={`relative ${formData.habits ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${primaryDoctorData.city ? 'bg-light-blue' : ''}`}>
                         <input
-                          name="habits"
-                          value={formData.habits}
-                          onChange={handleInputChange}
+                          type="text"
+                          name="city"
+                          value={primaryDoctorData.city}
                           required
-                          placeholder='Smoking'
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>                         
-                          </div>
-                      </div>
-                    </div>
-       
-                    <h3 className="mb-2.5 block mt-10 font-semibold dark:text-white">Lab Results</h3>
-                    {/* <div className="mb-4.5 flex flex-col gap-3">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                      Image
-                      </label>
-                      <div
-                        id="FileUpload"
-                        className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
-                      >
-                        <input
-                          type="file"
-                          accept="image/*"
-                          ref={fileInputRef}
                           onChange={handleInputChange}
-                          className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                        />
-                        <div className="flex flex-col items-center justify-center space-y-3">
-                          <span className="flex h-5 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M1.99967 9.33337C2.36786 9.33337 2.66634 9.63185 2.66634 10V12.6667C2.66634 12.8435 2.73658 13.0131 2.8616 13.1381C2.98663 13.2631 3.1562 13.3334 3.33301 13.3334H12.6663C12.8431 13.3334 13.0127 13.2631 13.1377 13.1381C13.2628 13.0131 13.333 12.8435 13.333 12.6667V10C13.333 9.63185 13.6315 9.33337 13.9997 9.33337C14.3679 9.33337 14.6663 9.63185 14.6663 10V12.6667C14.6663 13.1971 14.4556 13.7058 14.0806 14.0809C13.7055 14.456 13.1968 14.6667 12.6663 14.6667H3.33301C2.80257 14.6667 2.29387 14.456 1.91879 14.0809C1.54372 13.7058 1.33301 13.1971 1.33301 12.6667V10C1.33301 9.63185 1.63148 9.33337 1.99967 9.33337Z"
-                                fill="#3C50E0"
-                              />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M7.5286 1.52864C7.78894 1.26829 8.21106 1.26829 8.4714 1.52864L11.8047 4.86197C12.0651 5.12232 12.0651 5.54443 11.8047 5.80478C11.5444 6.06513 11.1223 6.06513 10.8619 5.80478L8 2.94285L5.13807 5.80478C4.87772 6.06513 4.45561 6.06513 4.19526 5.80478C3.93491 5.54443 3.93491 5.12232 4.19526 4.86197L7.5286 1.52864Z"
-                                fill="#3C50E0"
-                              />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M7.99967 1.33337C8.36786 1.33337 8.66634 1.63185 8.66634 2.00004V10C8.66634 10.3682 8.36786 10.6667 7.99967 10.6667C7.63148 10.6667 7.33301 10.3682 7.33301 10V2.00004C7.33301 1.63185 7.63148 1.33337 7.99967 1.33337Z"
-                                fill="#3C50E0"
-                              />
-                            </svg>
-                          </span>
-                          <p>
-                            <span className="text-primary">
-                            {selectedFileName ? selectedFileName : 'Click to add Image'}                            
-                              </span> 
-                          </p>
+                          placeholder="Lagos"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
-                    </div>           */}
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          State
+                        </label>
+                        <div className={`relative ${primaryDoctorData.state ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="state"
+                          value={primaryDoctorData.state}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="US-CA"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                           
+                     
+                      <div className="w-ful l xl:w-2/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Country
+                        </label>
+                        <div className={`relative ${primaryDoctorData.country ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="text"
+                          name="country"
+                          value={primaryDoctorData.country}
+                          required
+                          onChange={handleInputChange}
+                          placeholder="USA"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        </div>
+                      </div>
+                    </div>      
                   </div>
                           </form>
                         <button
                           type="button"
-                          onClick={() => updateHealthDetails(user.recordId, formData)}
+                          onClick={() => updateHealthDetails(user.recordId, personalData)}
                           disabled={updateLoading}
                           className={`mr-5 mb-5 inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 ${updateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
