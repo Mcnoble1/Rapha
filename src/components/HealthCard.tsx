@@ -29,29 +29,29 @@ const HealthCard = () => {
     phone: '',
   }); 
 
-  const [guardianData, setGuardianData] = useState<{ guardianName: string; guardianPhone: string; relationship: string; guardianGender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
+  const [guardianData, setGuardianData] = useState<{ guardianName: string; guardianPhone: string; relationship: string; guardianGender: string; guardianHomeAddress: string; guardianEmail: string; guardianCity: string; guardianState: string; guardianCountry: string; }>({
     guardianName: '',
     relationship: '',
     guardianGender: '',
-    homeAddress: '',
-    email: '',
-    city: '',
-    state: '',
-    country: '',
+    guardianHomeAddress: '',
+    guardianEmail: '',
+    guardianCity: '',
+    guardianState: '',
+    guardianCountry: '',
     guardianPhone: '',
   }); 
 
-  const [primaryDoctorData, setPrimaryDoctorData] = useState<{ name: string; hospital: string; phone: string; specialty: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
-    name: '',
+  const [primaryDoctorData, setPrimaryDoctorData] = useState<{ doctorName: string; hospital: string; doctorPhone: string; specialty: string; doctorGender: string; doctorHomeAddress: string; doctorEmail: string; doctorCity: string; doctorState: string; doctorCountry: string; }>({
+    doctorName: '',
     hospital: '',
     specialty: '',
-    gender: '',
-    homeAddress: '',
-    email: '',
-    city: '',
-    state: '',
-    country: '',
-    phone: '',
+    doctorGender: '',
+    doctorHomeAddress: '',
+    doctorEmail: '',
+    doctorCity: '',
+    doctorState: '',
+    doctorCountry: '',
+    doctorPhone: '',
   }); 
 
 
@@ -744,7 +744,7 @@ const HealthCard = () => {
                           type="text"
                           name="doctorName"
                           required
-                          value={primaryDoctorData.doctorNname}
+                          value={primaryDoctorData.doctorName}
                           onChange={handlePrimaryDoctorInputChange}
                           placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>

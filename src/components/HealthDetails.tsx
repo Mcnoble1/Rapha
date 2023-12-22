@@ -2,6 +2,17 @@ import { useState, useRef, ChangeEvent, FormEvent, useContext } from 'react';
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context";
+import AllergyDetails from './AllergyDetails.tsx';
+import CardiologyDetails from './CardiologyDetails.tsx';
+import DiagnosisDetails from './DiagnosisDetails.tsx';
+import ImmunizationDetails from './ImmunizationDetails.tsx';
+import InsuranceDetails from './InsuranceDetails.tsx';
+import LabTestDetails from './LabTestDetails.tsx';
+import MedicalHistoryDetails from './MedicalHistoryDetails.tsx';
+import SurgeryDetails from './SurgeryDetails.tsx';
+import VitalSignsDetails from './VitalSignsDetails.tsx';
+import PhysicalDetails from './PhysicalDetails.tsx';
+
 
 const HealthDetails = () => {
 
@@ -55,14 +66,6 @@ const HealthDetails = () => {
     state: '',
     country: '',
     phone: '',
-  }); 
-
-
-  const [allergyData, setAllergyData] = useState<{ name: string; severity: string; reaction: string; treatment: string; }>({
-    name: '',
-    severity: '',
-    reaction: '',
-    treatment: '',
   }); 
 
   const [cardiologyData, setCardiologyData] = useState<{ heartCondition: string; testPerformed: string; testResult: string; treatment: string; }>({
@@ -413,7 +416,8 @@ const deleteHealthDetails = async (recordId) => {
     {usersDetails.length > 0 ? (
       <div className="flex flex-row flex-wrap justify-evenly gap-2">
       {usersDetails.map((user, index) => (
-      <div className="flex flex-wrap w-full" key={index}>
+      <div className="" key={index}>
+        <div className='flex mb-10 p-5 flex-wrap w-full shadow-2xl rounded-lg'>
         <div className='w-full mb-5 font-medium text-black text-xl'>Identification Information</div>
         <div className='w-1/3 mb-5' >
           <span className="text-xl">Name</span>
@@ -484,7 +488,9 @@ const deleteHealthDetails = async (recordId) => {
             {showDetails ? user.country : '********'}
           </h4>
         </div>
+      </div>
 
+      <div className='flex mb-10 p-5 flex-wrap w-full shadow-2xl rounded-lg'>
         <div className='w-full mb-5 font-medium text-black text-xl'>Guardian Information</div>
         <div className='w-1/3 mb-5' >
           <span className="text-xl">Name</span>
@@ -499,6 +505,150 @@ const deleteHealthDetails = async (recordId) => {
             {showDetails ? user.relationship : '********'}
           </h4>
         </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Email Address</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianEmail : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Phone Number</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianPhone : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Home Address</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianHomeAddress : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">City</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianCity : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">State</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianState : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Country</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianCountry : '********'}
+          </h4>
+        </div>
+      </div>
+
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <div className='w-full mb-5 font-medium text-black text-xl'>Primary Doctor Information</div>
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Name</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorName : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">Hospital</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.hospital : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">Specialty</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.specialty : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">Email Address</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorEmail : '********'}
+          </h4> 
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">Phone Number</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorPhone : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">Home Address</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorHomeAddress : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">City</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorCity : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">State</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorState : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+        <span className="text-xl">Country</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorCountry : '********'}
+          </h4>
+        </div>
+      </div>
+
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <AllergyDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <CardiologyDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <DiagnosisDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <ImmunizationDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <InsuranceDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <LabTestDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <MedicalHistoryDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <SurgeryDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <VitalSignsDetails user={user} showDetails={showDetails} />
+      </div>
+      <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
+        <PhysicalDetails user={user} showDetails={showDetails} />
+      </div>
+      
+      
+      
+
 
         <div className='w-full flex flex-row justify-evenly mb-5'>
           <div className="relative">
