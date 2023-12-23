@@ -152,7 +152,7 @@ const fetchHealthDetails = async () => {
       from: myDid,
       message: {
         filter: {
-            protocol: 'https://rapha.com',
+            protocol: 'https://rapha.com/protocol',
             protocolPath: 'patientProfile',
             // schema: 'https://did-box.com/schemas/healthDetails',
         },
