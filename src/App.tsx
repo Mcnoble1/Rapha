@@ -1,10 +1,8 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import Health from './pages/Health';
-import Dashboard from './pages/Dashboard';
-import Pictures from './pages/Files/Pictures';
-import Documents from './pages/Files/Documents';
+import Doctor from './pages/Patient/Dashboard';
+import Patient from './pages/Doctor/Dashboard';
 import Homepage from './pages/Homepage';
 import Loader from './common/Loader';
 import routes from './routes';
@@ -27,12 +25,10 @@ function App() {
       <Routes>
         <Route path="/" index element={<Homepage />} />
         <Route path="/homepage" index element={<Homepage />} />
-        <Route path="/health" element={<Health />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/files/pictures" element={<Pictures />} />
-        <Route path="/files/documents" element={<Documents />} />
+        <Route path="/doctor/dashboard" element={<Doctor />} />
+        <Route path="/patient/dashboard" element={<Patient />} />
         <Route element={<DefaultLayout />}>
-          <Route element={<Dashboard />} />
+          {/* <Route element={<Dashboard />} /> */}
           {routes.map(({ path, component: Component }) => (
             <Route
               path={path}

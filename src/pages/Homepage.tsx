@@ -23,7 +23,7 @@ const Homepage = () => {
           </div>
           <div className="flex justify-center">
           <button 
-          onClick={() => navigate('/dashboard')}             
+          onClick={() => navigate('/doctor/dashboard')}             
           className=" cursor-pointer rounded-lg text-2xl border border-primary bg-success p-4 text-white transition hover:bg-opacity-90"
             >
             Get Started

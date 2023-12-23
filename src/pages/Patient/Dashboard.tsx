@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import Sidebar from '../../components/Sidebar.tsx';
 import Header from '../../components/Header.tsx';
-import PictureCard from '../../components/PictureCard.tsx';
+import HealthCard from '../../components/HealthCard.tsx';
 import DidCard from '../../components/DidCard.tsx';
-import PictureDetails from '../../components/PictureDetails.tsx';
+import HealthDetails from '../../components/HealthDetails.tsx';
 
-const Pictures = () => {
+const Health = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -17,12 +17,12 @@ const Pictures = () => {
           <main>
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               <div className="flex flex-row flex-wrap justify-evenly gap-5 md:gap-0">
-                <PictureCard />
+                <HealthCard />
                 <DidCard />
               </div>
 
               <div className="mt-4">
-                <PictureDetails />
+                <HealthDetails />
               </div>
             </div>
           </main>
@@ -32,7 +32,4 @@ const Pictures = () => {
   );
 };
 
-export default Pictures;
-
-
-
+export default Health;
