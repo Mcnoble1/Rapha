@@ -80,47 +80,47 @@ const ContextProvider = ({ children }) => {
             { who: "author", of: "allergyRecord", can: "update"}
           ]
         },
+        surgeryRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        diagnosisRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        immunizationRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        medicalHistoryRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        vitalSignsRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        }
       },
-      surgeryRecord: {
-        $actions: [
-          { who: "anyone", can: "write" },
-          { who: "recipient", of: "healthRecord", can: "read" },
-          { who: "author", of: "healthRecord", can: "read"},
-          { who: "author", of: "healthRecord", can: "update"}
-        ]
-      },
-      diagnosisRecord: {
-        $actions: [
-          { who: "anyone", can: "write" },
-          { who: "recipient", of: "healthRecord", can: "read" },
-          { who: "author", of: "healthRecord", can: "read"},
-          { who: "author", of: "healthRecord", can: "update"}
-        ]
-      },
-      immunizationRecord: {
-        $actions: [
-          { who: "anyone", can: "write" },
-          { who: "recipient", of: "healthRecord", can: "read" },
-          { who: "author", of: "healthRecord", can: "read"},
-          { who: "author", of: "healthRecord", can: "update"}
-        ]
-      },
-      medicalHistoryRecord: {
-        $actions: [
-          { who: "anyone", can: "write" },
-          { who: "recipient", of: "healthRecord", can: "read" },
-          { who: "author", of: "healthRecord", can: "read"},
-          { who: "author", of: "healthRecord", can: "update"}
-        ]
-      },
-      vitalSignsRecord: {
-        $actions: [
-          { who: "anyone", can: "write" },
-          { who: "recipient", of: "healthRecord", can: "read" },
-          { who: "author", of: "healthRecord", can: "read"},
-          { who: "author", of: "healthRecord", can: "update"}
-        ]
-      }
     }
   }
 
