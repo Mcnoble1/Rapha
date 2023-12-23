@@ -250,6 +250,7 @@ const HealthCard = () => {
       });
 
       if (status === 200) {
+        
         return { ...profileData, recordId: record.id}
       } 
       console.log('Successfully wrote health details to DWN:', record);

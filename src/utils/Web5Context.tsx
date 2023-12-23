@@ -32,53 +32,97 @@ const ContextProvider = ({ children }) => {
   }, []);
 
   const profileProtocolDefinition = {
-      protocol: "https://rapha.com",
-      published: true,
-      types: {
-        patientProfile: {
-          schema: "https://rapha.com/patientProfile",
-          dataFormats: ["application/json"],
-        },
-        doctorProfile: {
-          schema: "https://rapha.com/doctorProfile",
-          dataFormats: ["application/json"],
-        },
-        medicalRecords: {
-          schema: "https://rapha.com/medicalRecord",
-          dataFormats: ["application/json"],
-        },
-        bookAppointment: {
-          schema: "https://rapha.com/appointment",
-          dataFormats: ["application/json"],
-        },
+    protocol: "https://rapha.com/protocol",
+    published: true,
+    types: {
+      patientProfile: {
+        schema: "https://rapha.com/schemas/patientProfile",
+        dataFormats: ["application/json"]
       },
-      structure: {
-        medicalRecords: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "recipient", of: "medicalRecords", can: "read" },
-          ],
-        },
-        patientProfile: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "recipient", of: "patientProfile", can: "read" },
-          ],
-        },
-        doctorProfile: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "anyone", can: "read" },
-          ],
-        },
-        bookAppointment: {
-          $actions: [
-            { who: "anyone", can: "write" },
-            { who: "recipient", of: "bookAppointment", can: "read" },
-          ],
-        },
+      allergyRecord: {
+        schema: "https://rapha.com/schemas/allergyRecord",
+        dataFormats: ["application/json"]
       },
-  };
+      surgeryRecord: {
+        schema: "https://rapha.com/schemas/surgeryRecord",
+        dataFormats: ["application/json"]
+      },
+      diagnosisRecord: {
+        schema: "https://rapha.com/schemas/diagnosisRecord",
+        dataFormats: ["application/json"]
+      },
+      immunizationRecord: {
+        schema: "https://rapha.com/schemas/immunizationRecord",
+        dataFormats: ["application/json"]
+      },
+      medicalHistoryRecord: {
+        schema: "https://rapha.com/schemas/medical-historyRecord",
+        dataFormats: ["application/json"]
+      },
+      vitalSignsRecord: {
+        schema: "https://rapha.com/schemas/vital-signsRecord",
+        dataFormats: ["application/json"]
+      }
+    },
+    structure: {
+      patientProfile: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "patientProfile", can: "read" },
+          { who: "author", of: "patientProfile", can: "read"},
+          { who: "author", of: "patientProfile", can: "update"}
+        ],
+      },
+      allergyRecord: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "allergyRecord", can: "read" },
+          { who: "author", of: "allergyRecord", can: "read"},
+          { who: "author", of: "allergyRecord", can: "update"}
+        ]
+      },
+      surgeryRecord: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "healthRecord", can: "read" },
+          { who: "author", of: "healthRecord", can: "read"},
+          { who: "author", of: "healthRecord", can: "update"}
+        ]
+      },
+      diagnosisRecord: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "healthRecord", can: "read" },
+          { who: "author", of: "healthRecord", can: "read"},
+          { who: "author", of: "healthRecord", can: "update"}
+        ]
+      },
+      immunizationRecord: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "healthRecord", can: "read" },
+          { who: "author", of: "healthRecord", can: "read"},
+          { who: "author", of: "healthRecord", can: "update"}
+        ]
+      },
+      medicalHistoryRecord: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "healthRecord", can: "read" },
+          { who: "author", of: "healthRecord", can: "read"},
+          { who: "author", of: "healthRecord", can: "update"}
+        ]
+      },
+      vitalSignsRecord: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "healthRecord", can: "read" },
+          { who: "author", of: "healthRecord", can: "read"},
+          { who: "author", of: "healthRecord", can: "update"}
+        ]
+      }
+    }
+  }
 
 
   useEffect(() => {
@@ -134,12 +178,11 @@ const ContextProvider = ({ children }) => {
             autoClose: 3000, 
         });
         } else {
-        toast.success('Protocol already installed locally', {
+        toast.success('Protocol al"read"y installed locally', {
             position: toast.POSITION.TOP_RIGHT,
             autoClose: 3000, 
         });
         }
-
         const { protocols: remoteProtocols, status: remoteProtocolStatus } = await queryRemoteProtocol(web5, did, protocolUrl);
         if (remoteProtocolStatus.code !== 200 || remoteProtocols.length === 0) {
         const result = await installRemoteProtocol(web5, did, protocolDefinition);

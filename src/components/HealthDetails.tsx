@@ -110,7 +110,25 @@ const HealthDetails = () => {
           state: user.state,
           country: user.country,
           phone: user.phone,
-          
+          guardianName: user.guardianName,
+          relationship: user.relationship,
+          guardianGender: user.guardianGender,
+          guardianHomeAddress: user.guardianHomeAddress,
+          guardianEmail: user.guardianEmail,
+          guardianCity: user.guardianCity,
+          guardianState: user.guardianState,
+          guardianCountry: user.guardianCountry,
+          guardianPhone: user.guardianPhone,
+          doctorName: user.doctorName,
+          hospital: user.hospital,
+          specialty: user.specialty,
+          doctorGender: user.doctorGender,
+          doctorHomeAddress: user.doctorHomeAdress,
+          doctorEmail: user.doctorEmail,
+          doctorCity: user.doctorCity,
+          doctorState: user.doctorState,
+          doctorCountry: user.doctorCountry,
+          doctorPhone: user.doctorPhone,
         });
       }
     });
@@ -147,6 +165,8 @@ const fetchHealthDetails = async () => {
         response.records.map(async (record) => {
           const data = await record.data.json();
           console.log(data);
+        localStorage.setItem('recordId', JSON.stringify(record.id));
+        localStorage.setItem('contextId', JSON.stringify(record.contextId));
           return {
             ...data,
             recordId: record.id,
