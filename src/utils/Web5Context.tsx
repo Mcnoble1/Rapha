@@ -72,14 +72,14 @@ const ContextProvider = ({ children }) => {
           { who: "author", of: "patientProfile", can: "read"},
           { who: "author", of: "patientProfile", can: "update"}
         ],
-      },
-      allergyRecord: {
-        $actions: [
-          { who: "anyone", can: "write" },
-          { who: "recipient", of: "allergyRecord", can: "read" },
-          { who: "author", of: "allergyRecord", can: "read"},
-          { who: "author", of: "allergyRecord", can: "update"}
-        ]
+        allergyRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "allergyRecord", can: "read" },
+            { who: "author", of: "allergyRecord", can: "read"},
+            { who: "author", of: "allergyRecord", can: "update"}
+          ]
+        },
       },
       surgeryRecord: {
         $actions: [
