@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useContext, ChangeEvent, FormEvent, useEffect } from 'react';
 import { toast } from 'react-toastify'; 
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -14,6 +14,7 @@ const AllergyDetails = () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
+  const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
@@ -34,6 +35,10 @@ const AllergyDetails = () => {
 
   // console.log(parentId);
   // console.log(contextId);
+
+  useEffect(() => {
+    fetchAllergyDetails();
+  }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -126,7 +131,7 @@ const AllergyDetails = () => {
       });
   
       setLoading(false);
-  
+      fetchAllergyDetails();
     } catch (err) {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
@@ -137,14 +142,17 @@ const AllergyDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (allergyDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (allergyDetails) => {
+    console.log(parentId);
+    console.log(contextId);
     try {
       const healthProtocol = profileProtocolDefinition;
+      console.log(allergyDetails);
       const { record, status } = await web5.dwn.records.write({
         data: allergyDetails,
         message: {
           protocol: healthProtocol.protocol,
-          protocolPath: 'allergyRecord',
+          protocolPath: 'patientProfile/allergyRecord',
           schema: healthProtocol.types.allergyRecord.schema,
           recipient: myDid,
           parentId: parentId,
@@ -169,6 +177,57 @@ const AllergyDetails = () => {
       });
     }
    }; 
+
+   const fetchAllergyDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/allergyRecord',
+              // schema: 'https://did-box.com/schemas/healthDetails',
+          },
+        },
+      });
+      console.log('Allergy Details:', response);
+  
+      if (response.status.code === 200) {
+        const allergyDetails = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            console.log(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );
+        setUserDetails(allergyDetails);
+        console.log(allergyDetails);
+        toast.success('Successfully fetched allergy details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setFetchDetailsLoading(false);
+      } else {
+        console.error('No allergy details found');
+        toast.error('Failed to fetch allergy details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchAllergyDetails:', err);
+      toast.error('Error in fetchAllergyDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
 
    const shareHealthDetails = async (recordId: string) => {
     setShareLoading(true);
@@ -259,12 +318,12 @@ const AllergyDetails = () => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Name
                         </label>
-                        <div className={`relative ${userDetails?.name ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${allergyData.name ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
                           name="name"
                           required
-                          value={userDetails?.name}
+                          value={allergyData.name}
                           onChange={handleInputChange}
                           placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -275,12 +334,12 @@ const AllergyDetails = () => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Severity
                         </label>
-                        <div className={`relative ${userDetails?.severity ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${allergyData.severity ? 'bg-light-blue' : ''}`}>
                         <input
                            type="text" 
                           name="severity"
                           required
-                          value={userDetails?.severity}
+                          value={allergyData.severity}
                           placeholder='Severity'
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -291,11 +350,11 @@ const AllergyDetails = () => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Reaction
                         </label>
-                        <div className={`relative ${userDetails?.reaction ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${allergyData.reaction ? 'bg-light-blue' : ''}`}>
                         <input
                             type='text'
                               name="reaction"
-                              value={userDetails?.reaction}
+                              value={allergyData.reaction}
                               onChange={handleInputChange}
                               required
                               placeholder='Reaction'
@@ -310,12 +369,12 @@ const AllergyDetails = () => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Treatment
                         </label>
-                        <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${allergyData.treatment ? 'bg-light-blue' : ''}`}>
                         <textarea
                           type="text"
                           name="treatment"
                           row={3}
-                          value={userDetails?.treatment}
+                          value={allergyData.treatment}
                           required
                           onChange={handleInputChange}
                           placeholder="Notes"
@@ -462,21 +521,21 @@ const AllergyDetails = () => {
           <div className='w-1/3 mb-5'>
             <span className="text-xl">Severity</span>
             <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
+              {user.severity}
             </h4>
           </div>
 
           <div className='w-1/3 mb-5'>
             <span className="text-xl">Reaction</span>
             <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
+              {user.reaction}
             </h4>
           </div>
 
           <div className='w-1/3 mb-5'>
             <span className="text-xl">Treatment</span>
             <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
+              {user.treatment}
             </h4>
           </div>
           </>
