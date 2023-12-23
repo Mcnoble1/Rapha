@@ -22,11 +22,11 @@ const SurgeryDetails = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
 
-  const [allergyData, setSurgeryData] = useState<{ name: string; severity: string; reaction: string; treatment: string; }>({
-    name: '',
-    severity: '',
-    reaction: '',
-    treatment: '',
+  const [surgeryData, setSurgeryData] = useState<{ surgeryType: string; date: string; surgeon: string; notes: string; }>({
+    surgeryType: '',
+    date: '',
+    surgeon: '',
+    notes: '',
   }); 
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -81,18 +81,18 @@ const SurgeryDetails = () => {
     //   return; 
     // }
 
-    const allergydata = new FormData();
-    allergydata.append("name", allergyData.name);
-    allergydata.append("severity", allergyData.severity);
-    allergydata.append("reaction", allergyData.reaction);
-    allergydata.append("treatment", allergyData.treatment);
+    const surgerydata = new FormData();
+    surgerydata.append('surgeryType', surgeryData.surgeryType);
+    surgerydata.append('date', surgeryData.date);
+    surgerydata.append('surgeon', surgeryData.surgeon);
+    surgerydata.append('notes', surgeryData.notes);
 
     setLoading(false);
   
     try {
       let record;
-      console.log(allergyData);
-      record = await writeProfileToDwn({...allergyData});
+      console.log(surgeryData);
+      record = await writeProfileToDwn({...surgeryData});
   
       if (record) {
         const { status } = await record.send(myDid);
@@ -107,10 +107,10 @@ const SurgeryDetails = () => {
       }
   
       setSurgeryData({
-        name: '',
-        severity: '',
-        reaction: '',
-        treatment: '',
+        surgeryType: '',
+        date: '',
+        surgeon: '',
+        notes: '',
       })
   
       setPopupOpen(false);
@@ -131,11 +131,11 @@ const SurgeryDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (allergyDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (surgeryDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
     try {
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: allergyDetails,
+        data: surgeryDetails,
         message: {
           protocol: healthProtocol.protocol,
           protocolPath: 'patientProfile',
@@ -145,7 +145,7 @@ const SurgeryDetails = () => {
       });
 
       if (status === 200) {
-        return { ...allergyDetails, recordId: record.id}
+        return { ...surgeryDetails, recordId: record.id}
       } 
       console.log('Successfully wrote health details to DWN:', record);
       toast.success('Health Details written to DWN', {
@@ -249,14 +249,14 @@ const SurgeryDetails = () => {
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Name
+                          Surgery Type
                         </label>
-                        <div className={`relative ${userDetails?.name ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.surgeryType ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="name"
+                          name="surgeryType"
                           required
-                          value={userDetails?.name}
+                          value={userDetails?.surgeryType}
                           onChange={handleInputChange}
                           placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -265,14 +265,14 @@ const SurgeryDetails = () => {
 
                       <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Severity
+                          Date
                         </label>
-                        <div className={`relative ${userDetails?.severity ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.date ? 'bg-light-blue' : ''}`}>
                         <input
-                           type="text" 
-                          name="severity"
+                           type="date" 
+                          name="date"
                           required
-                          value={userDetails?.severity}
+                          value={userDetails?.date}
                           placeholder='Severity'
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -281,16 +281,16 @@ const SurgeryDetails = () => {
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Reaction
+                          Surgeon
                         </label>
-                        <div className={`relative ${userDetails?.reaction ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.surgeon ? 'bg-light-blue' : ''}`}>
                         <input
                             type='text'
-                              name="reaction"
-                              value={userDetails?.reaction}
+                              name="surgeon"
+                              value={userDetails?.surgeon}
                               onChange={handleInputChange}
                               required
-                              placeholder='Reaction'
+                              placeholder='Surgeon'
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                           </div>
                       </div>
@@ -300,14 +300,13 @@ const SurgeryDetails = () => {
                                            
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Treatment
+                          Notes
                         </label>
-                        <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.notes ? 'bg-light-blue' : ''}`}>
                         <textarea
-                          type="text"
-                          name="treatment"
+                          name="notes"
                           row={3}
-                          value={userDetails?.treatment}
+                          value={userDetails?.notes}
                           required
                           onChange={handleInputChange}
                           placeholder="Notes"

@@ -249,7 +249,7 @@ const CardiologyDetails = () => {
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Name
+                          Heart Condition
                         </label>
                         <div className={`relative ${userDetails?.heartCondition ? 'bg-light-blue' : ''}`}>
                         <input
@@ -258,14 +258,14 @@ const CardiologyDetails = () => {
                           required
                           value={userDetails?.heartCondition}
                           onChange={handleInputChange}
-                          placeholder="John Doe"
+                          placeholder="Heart Condition"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
 
                       <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Severity
+                          Test Performed
                         </label>
                         <div className={`relative ${userDetails?.testPerformed ? 'bg-light-blue' : ''}`}>
                         <input
@@ -273,7 +273,7 @@ const CardiologyDetails = () => {
                           name="testPerformed"
                           required
                           value={userDetails?.testPerformed}
-                          placeholder='Severity'
+                          placeholder='Test Performed'
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
@@ -281,7 +281,7 @@ const CardiologyDetails = () => {
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Reaction
+                          Test Result
                         </label>
                         <div className={`relative ${userDetails?.testResult ? 'bg-light-blue' : ''}`}>
                         <input
@@ -290,7 +290,7 @@ const CardiologyDetails = () => {
                               value={userDetails?.testResult}
                               onChange={handleInputChange}
                               required
-                              placeholder='Reaction'
+                              placeholder='Test Result'
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                           </div>
                       </div>
@@ -304,13 +304,12 @@ const CardiologyDetails = () => {
                         </label>
                         <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
                         <textarea
-                          type="text"
                           name="treatment"
                           row={3}
                           value={userDetails?.treatment}
                           required
                           onChange={handleInputChange}
-                          placeholder="Notes"
+                          placeholder="Treatment"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>

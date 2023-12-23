@@ -22,11 +22,11 @@ const VitalSignsDetails = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
 
-  const [allergyData, setVitalSignsData] = useState<{ name: string; severity: string; reaction: string; treatment: string; }>({
-    name: '',
-    severity: '',
-    reaction: '',
-    treatment: '',
+  const [vitaSignsData, setVitalSignsData] = useState<{ bloodPressure: string; heartRate: string; respiratoryRate: string; bodyTemperature: string; }>({
+    bloodPressure: '',
+    heartRate: '',
+    respiratoryRate: '',
+    bodyTemperature: '',
   }); 
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -81,18 +81,18 @@ const VitalSignsDetails = () => {
     //   return; 
     // }
 
-    const allergydata = new FormData();
-    allergydata.append("name", allergyData.name);
-    allergydata.append("severity", allergyData.severity);
-    allergydata.append("reaction", allergyData.reaction);
-    allergydata.append("treatment", allergyData.treatment);
+    const vitalSignsdata = new FormData();
+    vitalSignsdata.append('bloodPressure', vitaSignsData.bloodPressure);
+    vitalSignsdata.append('heartRate', vitaSignsData.heartRate);
+    vitalSignsdata.append('respiratoryRate', vitaSignsData.respiratoryRate);
+    vitalSignsdata.append('bodyTemperature', vitaSignsData.bodyTemperature);
 
     setLoading(false);
   
     try {
       let record;
-      console.log(allergyData);
-      record = await writeProfileToDwn({...allergyData});
+      console.log(vitalSignsData);
+      record = await writeProfileToDwn({...vitalSignsData});
   
       if (record) {
         const { status } = await record.send(myDid);
@@ -107,10 +107,10 @@ const VitalSignsDetails = () => {
       }
   
       setVitalSignsData({
-        name: '',
-        severity: '',
-        reaction: '',
-        treatment: '',
+        bloodPressure: '',
+        heartRate: '',
+        respiratoryRate: '',
+        bodyTemperature: '',
       })
   
       setPopupOpen(false);
@@ -131,11 +131,11 @@ const VitalSignsDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (allergyDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (vitalSignsDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
     try {
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: allergyDetails,
+        data: vitalSignsDetails,
         message: {
           protocol: healthProtocol.protocol,
           protocolPath: 'patientProfile',
@@ -145,7 +145,7 @@ const VitalSignsDetails = () => {
       });
 
       if (status === 200) {
-        return { ...allergyDetails, recordId: record.id}
+        return { ...vitalSignsDetails, recordId: record.id}
       } 
       console.log('Successfully wrote health details to DWN:', record);
       toast.success('Health Details written to DWN', {
@@ -249,14 +249,14 @@ const VitalSignsDetails = () => {
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Name
+                          Blood Pressure
                         </label>
-                        <div className={`relative ${userDetails?.name ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.bloodPressure ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="name"
+                          name="bloodPressure"
                           required
-                          value={userDetails?.name}
+                          value={userDetails?.bloodPressure}
                           onChange={handleInputChange}
                           placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -265,14 +265,14 @@ const VitalSignsDetails = () => {
 
                       <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Severity
+                          Heart Rate
                         </label>
-                        <div className={`relative ${userDetails?.severity ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.heartRate ? 'bg-light-blue' : ''}`}>
                         <input
                            type="text" 
-                          name="severity"
+                          name="heartRate"
                           required
-                          value={userDetails?.severity}
+                          value={userDetails?.heartRate}
                           placeholder='Severity'
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -281,13 +281,13 @@ const VitalSignsDetails = () => {
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Reaction
+                          Respiratory Rate
                         </label>
-                        <div className={`relative ${userDetails?.reaction ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.respiratoryRate ? 'bg-light-blue' : ''}`}>
                         <input
                             type='text'
-                              name="reaction"
-                              value={userDetails?.reaction}
+                              name="respiratoryRate"
+                              value={userDetails?.respiratoryRate}
                               onChange={handleInputChange}
                               required
                               placeholder='Reaction'
@@ -298,16 +298,15 @@ const VitalSignsDetails = () => {
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                                            
-                      <div className="w-full xl:w-3/5">
+                      <div className="w-full xl:w-2/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Treatment
+                          Body Temperature
                         </label>
-                        <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
-                        <textarea
+                        <div className={`relative ${userDetails?.bodyTemperature ? 'bg-light-blue' : ''}`}>
+                        <input
                           type="text"
-                          name="treatment"
-                          row={3}
-                          value={userDetails?.treatment}
+                          name="bodyTemperature"
+                          value={userDetails?.bodyTemperature}
                           required
                           onChange={handleInputChange}
                           placeholder="Notes"

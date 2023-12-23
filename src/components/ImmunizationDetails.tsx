@@ -83,10 +83,11 @@ const ImmunizationDetails = () => {
     // }
 
     const immunizationdata = new FormData();
-    immunizationdata.append("name", immunizationData.name);
-    immunizationdata.append("severity", immunizationData.severity);
-    immunizationdata.append("reaction", immunizationData.reaction);
-    immunizationdata.append("treatment", immunizationData.treatment);
+    immunizationdata.append('vaccineName', immunizationData.vaccineName);
+    immunizationdata.append('vaccineType', immunizationData.vaccineType);
+    immunizationdata.append('dateAdministered', immunizationData.dateAdministered);
+    immunizationdata.append('lotNumber', immunizationData.lotNumber);
+    immunizationdata.append('nextScheduled', immunizationData.nextScheduled);
 
     setLoading(false);
   
@@ -251,14 +252,14 @@ const ImmunizationDetails = () => {
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Name
+                          Vaccine Name
                         </label>
-                        <div className={`relative ${userDetails?.name ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.vaccineName ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="name"
+                          name="vaccineName"
                           required
-                          value={userDetails?.name}
+                          value={userDetails?.vaccineName}
                           onChange={handleInputChange}
                           placeholder="John Doe"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -267,14 +268,14 @@ const ImmunizationDetails = () => {
 
                       <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Severity
+                          Vaccine Type
                         </label>
-                        <div className={`relative ${userDetails?.severity ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.vaccineType ? 'bg-light-blue' : ''}`}>
                         <input
                            type="text" 
-                          name="severity"
+                          name="vaccineType"
                           required
-                          value={userDetails?.severity}
+                          value={userDetails?.vaccineType}
                           placeholder='Severity'
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -283,13 +284,13 @@ const ImmunizationDetails = () => {
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Reaction
+                          Date Administered
                         </label>
-                        <div className={`relative ${userDetails?.reaction ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.dateAdministered ? 'bg-light-blue' : ''}`}>
                         <input
-                            type='text'
-                              name="reaction"
-                              value={userDetails?.reaction}
+                            type='date'
+                              name="dateAdministered"
+                              value={userDetails?.dateAdministered}
                               onChange={handleInputChange}
                               required
                               placeholder='Reaction'
@@ -302,19 +303,34 @@ const ImmunizationDetails = () => {
                                            
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Treatment
+                          Lot Number
                         </label>
-                        <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
-                        <textarea
-                          type="text"
-                          name="treatment"
-                          row={3}
-                          value={userDetails?.treatment}
+                        <div className={`relative ${userDetails?.lotNumber ? 'bg-light-blue' : ''}`}>
+                        <input
+                          type="number"
+                          name="lotNumber"
+                          value={userDetails?.lotNumber}
                           required
                           onChange={handleInputChange}
-                          placeholder="Notes"
+                          placeholder="5"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
+                      </div>
+
+                      <div className="w-full xl:w-3/5">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Next Scheduled
+                        </label>
+                        <div className={`relative ${userDetails?.nextScheduled ? 'bg-light-blue' : ''}`}>
+                        <input
+                            type='date'
+                              name="nextScheduled"
+                              value={userDetails?.nextScheduled}
+                              onChange={handleInputChange}
+                              required
+                              placeholder='Reaction'
+                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
                       </div>
                     </div>                     
                     </div>

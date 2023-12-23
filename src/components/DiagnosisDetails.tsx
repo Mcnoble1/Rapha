@@ -22,10 +22,10 @@ const DiagnosisDetails = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
 
-  const [diagnosisData, setDiagnosisData] = useState<{ diagnosis: string; treatment: string; prescibingDoctor: string; }>({
+  const [diagnosisData, setDiagnosisData] = useState<{ diagnosis: string; treatment: string; prescribingDoctor: string; }>({
     diagnosis: '',
     treatment: '',
-    prescibingDoctor: '',
+    prescribingDoctor: '',
   }); 
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -81,10 +81,9 @@ const DiagnosisDetails = () => {
     // }
 
     const diagnosisdata = new FormData();
-    diagnosisdata.append("name", diagnosisData.name);
-    diagnosisdata.append("severity", diagnosisData.severity);
-    diagnosisdata.append("reaction", diagnosisData.reaction);
-    diagnosisdata.append("treatment", diagnosisData.treatment);
+    diagnosisdata.append('diagnosis', diagnosisData.diagnosis);
+    diagnosisdata.append('treatment', diagnosisData.treatment);
+    diagnosisdata.append('prescribingDoctor', diagnosisData.prescribingDoctor);
 
     setLoading(false);
   
@@ -106,10 +105,9 @@ const DiagnosisDetails = () => {
       }
   
       setDiagnosisData({
-        name: '',
-        severity: '',
-        reaction: '',
+        diagnosis: '',
         treatment: '',
+        prescribingDoctor: '',
       })
   
       setPopupOpen(false);
@@ -248,31 +246,31 @@ const DiagnosisDetails = () => {
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Name
+                          Diagnosis
                         </label>
-                        <div className={`relative ${userDetails?.name ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.diagnosis ? 'bg-light-blue' : ''}`}>
                         <input
                           type="text"
-                          name="name"
+                          name="diagnosis"
                           required
-                          value={userDetails?.name}
+                          value={userDetails?.diagnosis}
                           onChange={handleInputChange}
-                          placeholder="John Doe"
+                          placeholder="Heat Rash"
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
                       </div>
 
                       <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Severity
+                          Treatment
                         </label>
-                        <div className={`relative ${userDetails?.severity ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
                         <input
                            type="text" 
-                          name="severity"
+                          name="treatment"
                           required
-                          value={userDetails?.severity}
-                          placeholder='Severity'
+                          value={userDetails?.treatment}
+                          placeholder='Amoxicilin'
                           onChange={handleInputChange}
                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
@@ -280,40 +278,20 @@ const DiagnosisDetails = () => {
 
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Reaction
+                          Prescibing Doctor
                         </label>
-                        <div className={`relative ${userDetails?.reaction ? 'bg-light-blue' : ''}`}>
+                        <div className={`relative ${userDetails?.prescribingDoctor ? 'bg-light-blue' : ''}`}>
                         <input
                             type='text'
-                              name="reaction"
-                              value={userDetails?.reaction}
+                              name="prescribingDoctor"
+                              value={userDetails?.prescribingDoctor}
                               onChange={handleInputChange}
                               required
-                              placeholder='Reaction'
+                              placeholder='Dr. John Doe'
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                           </div>
                       </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                           
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Treatment
-                        </label>
-                        <div className={`relative ${userDetails?.treatment ? 'bg-light-blue' : ''}`}>
-                        <textarea
-                          type="text"
-                          name="treatment"
-                          row={3}
-                          value={userDetails?.treatment}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Notes"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>                     
+                    </div>                 
                     </div>
 
                     </form>

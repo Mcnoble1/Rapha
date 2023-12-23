@@ -31,7 +31,7 @@ const PhysicalDetails = () => {
     rhesusFactor: '',
   }); 
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
   
     const file = e.target.files?.[0];
@@ -304,20 +304,26 @@ const PhysicalDetails = () => {
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                                            
-                      <div className="w-full xl:w-3/5">
+                      <div className="w-full xl:w-2/5">
                         <label className="mb-2.5 block text-black dark:text-white">
                           Genotype
                         </label>
                         <div className={`relative ${userDetails?.genotype ? 'bg-light-blue' : ''}`}>
-                        <textarea
+                        <select
                           type="text"
                           name="genotype"
-                          row={3}
                           value={userDetails?.genotype}
                           required
                           onChange={handleInputChange}
                           placeholder="Notes"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                          <option value="">Select Genotype</option>
+                          <option value="AA">AA</option>
+                          <option value="AS">AS</option>
+                          <option value="SS">SS</option>
+                          <option value="SC">SC</option>
+                          <option value="AC">AC</option>
+                        </select>
                         </div>
                       </div>
                     </div>                     

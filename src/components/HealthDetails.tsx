@@ -68,46 +68,16 @@ const HealthDetails = () => {
     phone: '',
   }); 
 
-  const [cardiologyData, setCardiologyData] = useState<{ heartCondition: string; testPerformed: string; testResult: string; treatment: string; }>({
-    heartCondition: '',
-    testPerformed: '',
-    testResult: '',
-    treatment: '',
-  }); 
+  
+  
 
-  const [diagnosisData, setDiagnosisData] = useState<{ diagnosis: string; treatment: string; prescibingDoctor: string; }>({
-    diagnosis: '',
-    treatment: '',
-    prescibingDoctor: '',
-  }); 
+  
 
-  const [immunizationData, setImmunizationData] = useState<{ vaccineName: string; vaccineType: string; dateAdministered: string; lotNumber: string; nextScheduled: string }>({
-    vaccineName: '',
-    vaccineType: '',
-    dateAdministered: '',
-    lotNumber: '',
-    nextScheduled: '',
-  }); 
 
-  const [insuranceData, setInsuranceData] = useState<{ provider: string; policyNumber: string; contactInfo: string; }>({
-    provider: '',
-    policyNumber: '',
-    contactInfo: '',
-  }); 
 
-  const [labTestData, setLabTestData] = useState<{ name: string; dateConducted: string; result: string; referenceRange: string; }>({
-    name: '',
-    dateConducted: '',
-    result: '',
-    referenceRange: '',
-  }); 
+  
 
-  const [medicalHistoryData, setMedicalHistoryData] = useState<{ medication: string; dosage: string; frequency: string; prescribingDoctor: string; }>({
-    medication: '',
-    dosage: '',
-    frequency: '',
-    prescribingDoctor: '',
-  }); 
+  
 
   const [surgeryData, setSurgeryData] = useState<{ surgeryType: string; date: string; surgeon: string; notes: string; }>({
     surgeryType: '',
@@ -123,14 +93,7 @@ const HealthDetails = () => {
     bodyTemperature: '',
   }); 
 
-  const [physicalData, setPhysicalData] = useState<{ height: string; weight: string; bmi: string; genotype: string; bloodGroup: string; rhesusFactor: string; }>({
-    height: '',
-    weight: '',
-    bmi: '',
-    genotype: '',
-    bloodGroup: '',
-    rhesusFactor: '',
-  }); 
+  
 
   const [showDetails, setShowDetails] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
@@ -616,34 +579,34 @@ const deleteHealthDetails = async (recordId) => {
       </div>
 
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <AllergyDetails user={user} showDetails={showDetails} />
+        <AllergyDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <CardiologyDetails user={user} showDetails={showDetails} />
+        <CardiologyDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <DiagnosisDetails user={user} showDetails={showDetails} />
+        <DiagnosisDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <ImmunizationDetails user={user} showDetails={showDetails} />
+        <ImmunizationDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <InsuranceDetails user={user} showDetails={showDetails} />
+        <InsuranceDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <LabTestDetails user={user} showDetails={showDetails} />
+        <LabTestDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <MedicalHistoryDetails user={user} showDetails={showDetails} />
+        <MedicalHistoryDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <SurgeryDetails user={user} showDetails={showDetails} />
+        <SurgeryDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <VitalSignsDetails user={user} showDetails={showDetails} />
+        <VitalSignsDetails showDetails={showDetails} />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <PhysicalDetails user={user} showDetails={showDetails} />
+        <PhysicalDetails showDetails={showDetails} />
       </div>
       
       
