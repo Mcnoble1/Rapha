@@ -54,78 +54,6 @@ const HealthCard = () => {
     doctorPhone: '',
   }); 
 
-
-  const [allergyData, setAllergyData] = useState<{ name: string; severity: string; reaction: string; treatment: string; }>({
-    name: '',
-    severity: '',
-    reaction: '',
-    treatment: '',
-  }); 
-
-  const [cardiologyData, setCardiologyData] = useState<{ heartCondition: string; testPerformed: string; testResult: string; treatment: string; }>({
-    heartCondition: '',
-    testPerformed: '',
-    testResult: '',
-    treatment: '',
-  }); 
-
-  const [diagnosisData, setDiagnosisData] = useState<{ diagnosis: string; treatment: string; prescibingDoctor: string; }>({
-    diagnosis: '',
-    treatment: '',
-    prescibingDoctor: '',
-  }); 
-
-  const [immunizationData, setImmunizationData] = useState<{ vaccineName: string; vaccineType: string; dateAdministered: string; lotNumber: string; nextScheduled: string }>({
-    vaccineName: '',
-    vaccineType: '',
-    dateAdministered: '',
-    lotNumber: '',
-    nextScheduled: '',
-  }); 
-
-  const [insuranceData, setInsuranceData] = useState<{ provider: string; policyNumber: string; contactInfo: string; }>({
-    provider: '',
-    policyNumber: '',
-    contactInfo: '',
-  }); 
-
-  const [labTestData, setLabTestData] = useState<{ name: string; dateConducted: string; result: string; referenceRange: string; }>({
-    name: '',
-    dateConducted: '',
-    result: '',
-    referenceRange: '',
-  }); 
-
-  const [medicalHistoryData, setMedicalHistoryData] = useState<{ medication: string; dosage: string; frequency: string; prescribingDoctor: string; }>({
-    medication: '',
-    dosage: '',
-    frequency: '',
-    prescribingDoctor: '',
-  }); 
-
-  const [surgeryData, setSurgeryData] = useState<{ surgeryType: string; date: string; surgeon: string; notes: string; }>({
-    surgeryType: '',
-    date: '',
-    surgeon: '',
-    notes: '',
-  }); 
-
-  const [vitaSignsData, setVitalSignsData] = useState<{ bloodPressure: string; heartRate: string; respiratoryRate: string; bodyTemperature: string; }>({
-    bloodPressure: '',
-    heartRate: '',
-    respiratoryRate: '',
-    bodyTemperature: '',
-  }); 
-
-  const [physicalData, setPhysicalData] = useState<{ height: string; weight: string; bmi: string; genotype: string; bloodGroup: string; rhesusFactor: string; }>({
-    height: '',
-    weight: '',
-    bmi: '',
-    genotype: '',
-    bloodGroup: '',
-    rhesusFactor: '',
-  }); 
-
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
   
@@ -210,27 +138,27 @@ const HealthCard = () => {
     personaldata.append("phone", personalData.phone);
 
     const guardiandata = new FormData();
-    guardiandata.append("name", guardianData.name);
-    guardiandata.append("phone", guardianData.phone);
+    guardiandata.append("guardianName", guardianData.guardianName);
     guardiandata.append("relationship", guardianData.relationship);
-    guardiandata.append("gender", guardianData.gender);
-    guardiandata.append("homeAddress", guardianData.homeAddress);
-    guardiandata.append("email", guardianData.email);
-    guardiandata.append("city", guardianData.city);
-    guardiandata.append("state", guardianData.state);
-    guardiandata.append("country", guardianData.country);
+    guardiandata.append("guardianGender", guardianData.guardianGender);
+    guardiandata.append("guardianHomeAddress", guardianData.guardianHomeAddress);
+    guardiandata.append("guardianEmail", guardianData.guardianEmail);
+    guardiandata.append("guardianCity", guardianData.guardianCity);
+    guardiandata.append("guardianState", guardianData.guardianState);
+    guardiandata.append("guardianCountry", guardianData.guardianCountry);
+    guardiandata.append("guardianPhone", guardianData.guardianPhone);
 
     const primaryDoctordata = new FormData();
-    primaryDoctordata.append("name", primaryDoctorData.name);
+    primaryDoctordata.append("doctorName", primaryDoctorData.doctorName);
     primaryDoctordata.append("hospital", primaryDoctorData.hospital);
-    primaryDoctordata.append("phone", primaryDoctorData.phone);
     primaryDoctordata.append("specialty", primaryDoctorData.specialty);
-    primaryDoctordata.append("gender", primaryDoctorData.gender);
-    primaryDoctordata.append("homeAddress", primaryDoctorData.homeAddress);
-    primaryDoctordata.append("email", primaryDoctorData.email);
-    primaryDoctordata.append("city", primaryDoctorData.city);
-    primaryDoctordata.append("state", primaryDoctorData.state);
-    primaryDoctordata.append("country", primaryDoctorData.country);
+    primaryDoctordata.append("doctorGender", primaryDoctorData.doctorGender);
+    primaryDoctordata.append("doctorHomeAddress", primaryDoctorData.doctorHomeAddress);
+    primaryDoctordata.append("doctorEmail", primaryDoctorData.doctorEmail);
+    primaryDoctordata.append("doctorCity", primaryDoctorData.doctorCity);
+    primaryDoctordata.append("doctorState", primaryDoctorData.doctorState);
+    primaryDoctordata.append("doctorCountry", primaryDoctorData.doctorCountry);
+    primaryDoctordata.append("doctorPhone", primaryDoctorData.doctorPhone);
 
     setLoading(false);
   
@@ -266,28 +194,28 @@ const HealthCard = () => {
       })
 
       setGuardianData({
-        name: '',
+        guardianName: '',
         relationship: '',
-        gender: '',
-        homeAddress: '',
-        email: '',
-        city: '',
-        state: '',
-        country: '',
-        phone: '',
+        guardianGender: '',
+        guardianHomeAddress: '',
+        guardianEmail: '',
+        guardianCity: '',
+        guardianState: '',
+        guardianCountry: '',
+        guardianPhone: '',
       })
 
       setPrimaryDoctorData({
-        name: '',
+        doctorName: '',
         hospital: '',
         specialty: '',
-        gender: '',
-        homeAddress: '',
-        email: '',
-        city: '',
-        state: '',
-        country: '',
-        phone: '', 
+        doctorGender: '',
+        doctorHomeAddress: '',
+        doctorEmail: '',
+        doctorCity: '',
+        doctorState: '',
+        doctorCountry: '',
+        doctorPhone: '',
       })
   
       setPopupOpen(false);
@@ -322,6 +250,7 @@ const HealthCard = () => {
       });
 
       if (status === 200) {
+        
         return { ...profileData, recordId: record.id}
       } 
       console.log('Successfully wrote health details to DWN:', record);
@@ -437,7 +366,7 @@ const HealthCard = () => {
                                            
                       <div className="w-full xl:w-3/5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          Idenetification Number
+                          Identification Number
                         </label>
                         <div className={`relative ${personalData.identificationNumber ? 'bg-light-blue' : ''}`}>
                         <input

@@ -43,62 +43,53 @@ const HealthDetails = () => {
     phone: '',
   }); 
 
-  const [guardianData, setGuardianData] = useState<{ name: string; phone: string; relationship: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
-    name: '',
+  const [guardianData, setGuardianData] = useState<{ guardianName: string; guardianPhone: string; relationship: string; guardianGender: string; guardianHomeAddress: string; guardianEmail: string; guardianCity: string; guardianState: string; guardianCountry: string; }>({
+    guardianName: '',
     relationship: '',
-    gender: '',
-    homeAddress: '',
-    email: '',
-    city: '',
-    state: '',
-    country: '',
-    phone: '',
+    guardianGender: '',
+    guardianHomeAddress: '',
+    guardianEmail: '',
+    guardianCity: '',
+    guardianState: '',
+    guardianCountry: '',
+    guardianPhone: '',
   }); 
 
-  const [primaryDoctorData, setPrimaryDoctorData] = useState<{ name: string; hospital: string; phone: string; specialty: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
-    name: '',
+  const [primaryDoctorData, setPrimaryDoctorData] = useState<{ doctorName: string; hospital: string; doctorPhone: string; specialty: string; doctorGender: string; doctorHomeAddress: string; doctorEmail: string; doctorCity: string; doctorState: string; doctorCountry: string; }>({
+    doctorName: '',
     hospital: '',
     specialty: '',
-    gender: '',
-    homeAddress: '',
-    email: '',
-    city: '',
-    state: '',
-    country: '',
-    phone: '',
+    doctorGender: '',
+    doctorHomeAddress: '',
+    doctorEmail: '',
+    doctorCity: '',
+    doctorState: '',
+    doctorCountry: '',
+    doctorPhone: '',
   }); 
-
-  
-  
-
-  
-
-
-
-  
-
-  
-
-  const [surgeryData, setSurgeryData] = useState<{ surgeryType: string; date: string; surgeon: string; notes: string; }>({
-    surgeryType: '',
-    date: '',
-    surgeon: '',
-    notes: '',
-  }); 
-
-  const [vitaSignsData, setVitalSignsData] = useState<{ bloodPressure: string; heartRate: string; respiratoryRate: string; bodyTemperature: string; }>({
-    bloodPressure: '',
-    heartRate: '',
-    respiratoryRate: '',
-    bodyTemperature: '',
-  }); 
-
-  
 
   const [showDetails, setShowDetails] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null); 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleGuardianInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+  
+    setGuardianData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handlePrimaryDoctorInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+  
+    setPrimaryDoctorData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const toggleDetails = () => {
     setShowDetails((prevShowDetails) => !prevShowDetails);
@@ -111,7 +102,33 @@ const HealthDetails = () => {
           name: user.name,
           dateOfBirth: user.dateOfBirth,
           maritalStatus: user.maritalStatus,
+          gender: user.gender,
           identificationNumber: user.identificationNumber,
+          homeAddress: user.homeAddress,
+          email: user.email,
+          city: user.city,
+          state: user.state,
+          country: user.country,
+          phone: user.phone,
+          guardianName: user.guardianName,
+          relationship: user.relationship,
+          guardianGender: user.guardianGender,
+          guardianHomeAddress: user.guardianHomeAddress,
+          guardianEmail: user.guardianEmail,
+          guardianCity: user.guardianCity,
+          guardianState: user.guardianState,
+          guardianCountry: user.guardianCountry,
+          guardianPhone: user.guardianPhone,
+          doctorName: user.doctorName,
+          hospital: user.hospital,
+          specialty: user.specialty,
+          doctorGender: user.doctorGender,
+          doctorHomeAddress: user.doctorHomeAdress,
+          doctorEmail: user.doctorEmail,
+          doctorCity: user.doctorCity,
+          doctorState: user.doctorState,
+          doctorCountry: user.doctorCountry,
+          doctorPhone: user.doctorPhone,
         });
       }
     });
@@ -148,6 +165,8 @@ const fetchHealthDetails = async () => {
         response.records.map(async (record) => {
           const data = await record.data.json();
           console.log(data);
+        localStorage.setItem('recordId', JSON.stringify(record.id));
+        localStorage.setItem('contextId', JSON.stringify(record.contextId));
           return {
             ...data,
             recordId: record.id,
@@ -608,10 +627,6 @@ const deleteHealthDetails = async (recordId) => {
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
         <PhysicalDetails showDetails={showDetails} />
       </div>
-      
-      
-      
-
 
         <div className='w-full flex flex-row justify-evenly mb-5'>
           <div className="relative">
@@ -749,534 +764,535 @@ const deleteHealthDetails = async (recordId) => {
                             </div>
                           </div>
                           <form>
-                          <div className= "rounded-sm px-6.5 bg-white dark:border-strokedark dark:bg-boxdark">
-                      <h3 className="mb-2.5 block font-semibold dark:text-white">Personal Information</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Name
-                        </label>
-                        <div className={`relative ${personalData.name ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="name"
-                          required
-                          value={personalData.name}
-                          onChange={handleInputChange}
-                          placeholder="John Doe"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-1/2">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Date of Birth
-                        </label>
-                        <div className={`relative ${personalData.dateOfBirth ? 'bg-light-blue' : ''}`}>
-                        <input
-                           type="date" 
-                          name="dateOfBirth"
-                          required
-                          value={personalData.dateOfBirth}
-                          onChange={handleInputChange}
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div> 
-
+                            <div className= "rounded-sm px-6.5 bg-white dark:border-strokedark dark:bg-boxdark">
+                        <h3 className="mb-2.5 block font-semibold dark:text-white">Personal Information</h3>
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Marital Status
-                        </label>
-                        <div className={`relative ${personalData.maritalStatus ? 'bg-light-blue' : ''}`}>
-                        <select
-                              name="maritalStatus"
-                              value={personalData.maritalStatus}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
-                              <option value="">Select Status</option>                        
-                              <option value="Married">Married</option>
-                              <option value="Single">Single</option>
-                            </select>                        
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Name
+                          </label>
+                          <div className={`relative ${personalData.name ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="name"
+                            required
+                            value={personalData.name}
+                            onChange={handleInputChange}
+                            placeholder="John Doe"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                           </div>
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                           
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Idenetification Number
-                        </label>
-                        <div className={`relative ${personalData.identificationNumber ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="identificationNumber"
-                          value={personalData.identificationNumber}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="SSN123456"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                         </div>
-                      </div>
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Gender
-                        </label>
-                        <div className={`relative ${personalData.gender ? 'bg-light-blue' : ''}`}>
-                        <select
-                              name="gender"
-                              value={personalData.gender}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
-                              <option value="">Select Gender</option>                        
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                            </select>                        
+                        <div className="w-full xl:w-1/2">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Date of Birth
+                          </label>
+                          <div className={`relative ${personalData.dateOfBirth ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="date" 
+                            name="dateOfBirth"
+                            required
+                            value={personalData.dateOfBirth}
+                            onChange={handleInputChange}
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                           </div>
-                      </div>
+                        </div> 
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Phone Number
-                        </label>
-                        <div className={`relative ${personalData.phone ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="phone"
-                          value={personalData.phone}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="+234 80123456"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                           
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Email Address
-                        </label>
-                        <div className={`relative ${personalData.email ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="email"
-                          value={personalData.email}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="xyz@gmail.com"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Marital Status
+                          </label>
+                          <div className={`relative ${personalData.maritalStatus ? 'bg-light-blue' : ''}`}>
+                          <select
+                                name="maritalStatus"
+                                value={personalData.maritalStatus}
+                                onChange={handleInputChange}
+                                required
+                                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                <option value="">Select Status</option>                        
+                                <option value="Married">Married</option>
+                                <option value="Single">Single</option>
+                              </select>                        
+                            </div>
                         </div>
                       </div>
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Home Address
-                        </label>
-                        <div className={`relative ${personalData.homeAddress ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="homeAddress"
-                          value={personalData.homeAddress}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          City
-                        </label>
-                        <div className={`relative ${personalData.city ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="city"
-                          value={personalData.city}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Lagos"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                           
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          State
-                        </label>
-                        <div className={`relative ${personalData.state ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="state"
-                          value={personalData.state}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="US-CA"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Country
-                        </label>
-                        <div className={`relative ${personalData.country ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="country"
-                          value={personalData.country}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="USA"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>            
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                            
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Identification Number
+                          </label>
+                          <div className={`relative ${personalData.identificationNumber ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="identificationNumber"
+                            value={personalData.identificationNumber}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="SSN123456"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                           </div>
+                        </div>
+
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Gender
+                          </label>
+                          <div className={`relative ${personalData.gender ? 'bg-light-blue' : ''}`}>
+                          <select
+                                name="gender"
+                                value={personalData.gender}
+                                onChange={handleInputChange}
+                                required
+                                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                <option value="">Select Gender</option>                        
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                              </select>                        
+                            </div>
+                        </div>
+
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Phone Number
+                          </label>
+                          <div className={`relative ${personalData.phone ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="phone"
+                            value={personalData.phone}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="+234 80123456"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                            
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Email Address
+                          </label>
+                          <div className={`relative ${personalData.email ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="email"
+                            value={personalData.email}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="xyz@gmail.com"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
+                        </div>
+
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Home Address
+                          </label>
+                          <div className={`relative ${personalData.homeAddress ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="homeAddress"
+                            value={personalData.homeAddress}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
+                        </div>
+
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            City
+                          </label>
+                          <div className={`relative ${personalData.city ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="city"
+                            value={personalData.city}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="Lagos"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                            
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            State
+                          </label>
+                          <div className={`relative ${personalData.state ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="state"
+                            value={personalData.state}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="US-CA"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
+                        </div>
+
+                        <div className="w-full xl:w-3/5">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Country
+                          </label>
+                          <div className={`relative ${personalData.country ? 'bg-light-blue' : ''}`}>
+                          <input
+                            type="text"
+                            name="country"
+                            value={personalData.country}
+                            required
+                            onChange={handleInputChange}
+                            placeholder="USA"
+                            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                          </div>
+                        </div>
+                      </div>            
+                            </div>
+
                           <div className= "rounded-sm px-6.5 mt-10 bg-white dark:border-strokedark dark:bg-boxdark">
-                      <h3 className="mb-2.5 block font-semibold dark:text-white">Guardian Information</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Name
-                        </label>
-                        <div className={`relative ${guardianData.name ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="name"
-                          required
-                          value={guardianData.name}
-                          onChange={handleInputChange}
-                          placeholder="John Doe"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
+                              <h3 className="mb-2.5 block font-semibold dark:text-white">Guardian Information</h3>
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                            <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Name
+                                </label>
+                                <div className={`relative ${guardianData.guardianName ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianName"
+                                  required
+                                  value={guardianData.guardianName}
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="John Doe"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Gender
-                        </label>
-                        <div className={`relative ${guardianData.gender ? 'bg-light-blue' : ''}`}>
-                        <select
-                              name="gender"
-                              value={guardianData.gender}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
-                              <option value="">Select Gender</option>                        
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                            </select>                        
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Gender
+                                </label>
+                                <div className={`relative ${guardianData.guardianGender ? 'bg-light-blue' : ''}`}>
+                                <select
+                                      name="guardianGender"
+                                      value={guardianData.guardianGender}
+                                      onChange={handleGuardianInputChange}
+                                      required
+                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                      <option value="">Select Gender</option>                        
+                                      <option value="Male">Male</option>
+                                      <option value="Female">Female</option>
+                                    </select>                        
+                                  </div>
+                              </div>   
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Relationship to Patient
+                                </label>
+                                <div className={`relative ${guardianData.relationship ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="relationship"
+                                  value={guardianData.relationship}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="Partner"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>                
+                            </div>
+
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                              
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Phone Number
+                                </label>
+                                <div className={`relative ${guardianData.guardianPhone ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianPhone"
+                                  value={guardianData.guardianPhone}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="+234 80123456"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Email Address
+                                </label>
+                                <div className={`relative ${guardianData.guardianEmail ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianEmail"
+                                  value={guardianData.guardianEmail}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="xyz@gmail.com"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Home Address
+                                </label>
+                                <div className={`relative ${guardianData.guardianHomeAddress ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianHomeAddress"
+                                  value={guardianData.guardianHomeAddress}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="Phoenix Court, 1st Avenue"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  City
+                                </label>
+                                <div className={`relative ${guardianData.guardianCity ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianCity"
+                                  value={guardianData.guardianCity}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="Lagos"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  State
+                                </label>
+                                <div className={`relative ${guardianData.guardianState ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianState"
+                                  value={guardianData.guardianState}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="US-CA"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Country
+                                </label>
+                                <div className={`relative ${guardianData.guardianCountry ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="guardianCountry"
+                                  value={guardianData.guardianCountry}
+                                  required
+                                  onChange={handleGuardianInputChange}
+                                  placeholder="USA"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                      </div>   
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Relationship to Patient
-                        </label>
-                        <div className={`relative ${guardianData.relationship ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="relationship"
-                          value={guardianData.relationship}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Partner"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>                
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                      
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Phone Number
-                        </label>
-                        <div className={`relative ${guardianData.phone ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="phone"
-                          value={guardianData.phone}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="+234 80123456"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Email Address
-                        </label>
-                        <div className={`relative ${guardianData.email ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="email"
-                          value={guardianData.email}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="xyz@gmail.com"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Home Address
-                        </label>
-                        <div className={`relative ${guardianData.homeAddress ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="homeAddress"
-                          value={guardianData.homeAddress}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Phoenix Court, 1st Avenue"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          City
-                        </label>
-                        <div className={`relative ${guardianData.city ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="city"
-                          value={guardianData.city}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Lagos"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          State
-                        </label>
-                        <div className={`relative ${guardianData.state ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="state"
-                          value={guardianData.state}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="US-CA"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Country
-                        </label>
-                        <div className={`relative ${guardianData.country ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="country"
-                          value={guardianData.country}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="USA"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
 
-                  <div className= "rounded-sm px-6.5 mt-10 bg-white dark:border-strokedark dark:bg-boxdark">
-                      <h3 className="mb-2.5 block font-semibold dark:text-white">Primary Medical Provider</h3>
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Name
-                        </label>
-                        <div className={`relative ${primaryDoctorData.name ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="name"
-                          required
-                          value={primaryDoctorData.name}
-                          onChange={handleInputChange}
-                          placeholder="John Doe"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
+                          <div className= "rounded-sm px-6.5 mt-10 bg-white dark:border-strokedark dark:bg-boxdark">
+                              <h3 className="mb-2.5 block font-semibold dark:text-white">Primary Medical Provider</h3>
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                            <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Name
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorName ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorName"
+                                  required
+                                  value={primaryDoctorData.doctorName}
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="John Doe"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Hospital
-                        </label>
-                        <div className={`relative ${primaryDoctorData.hospital ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text" 
-                          name="hospital"
-                          required
-                          placeholder='John Hopkins Hospital'
-                          value={primaryDoctorData.hospital}
-                          onChange={handleInputChange}
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div> 
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Hospital
+                                </label>
+                                <div className={`relative ${primaryDoctorData.hospital ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text" 
+                                  name="hospital"
+                                  required
+                                  placeholder='John Hopkins Hospital'
+                                  value={primaryDoctorData.hospital}
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div> 
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                         Specialty
-                        </label>
-                        <div className={`relative ${primaryDoctorData.specialty ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="specialty"
-                          value={primaryDoctorData.specialty}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Family Medicine"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                Specialty
+                                </label>
+                                <div className={`relative ${primaryDoctorData.specialty ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="specialty"
+                                  value={primaryDoctorData.specialty}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="Family Medicine"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+                            </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
 
-                    <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Email Address
-                        </label>
-                        <div className={`relative ${primaryDoctorData.email ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="email"
-                          value={primaryDoctorData.email}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="xyz@gmail.com"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
+                            <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Email Address
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorEmail ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorEmail"
+                                  value={primaryDoctorData.doctorEmail}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="xyz@gmail.com"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
 
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Gender
-                        </label>
-                        <div className={`relative ${primaryDoctorData.gender ? 'bg-light-blue' : ''}`}>
-                        <select
-                              name="gender"
-                              value={primaryDoctorData.gender}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
-                              <option value="">Select Gender</option>                        
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                            </select>                        
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Gender
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorGender ? 'bg-light-blue' : ''}`}>
+                                <select
+                                      name="doctorGender"
+                                      value={primaryDoctorData.doctorGender}
+                                      onChange={handlePrimaryDoctorInputChange}
+                                      required
+                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                      <option value="">Select Gender</option>                        
+                                      <option value="Male">Male</option>
+                                      <option value="Female">Female</option>
+                                    </select>                        
+                                  </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Phone Number
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorPhone ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorPhone"
+                                  value={primaryDoctorData.doctorPhone}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="+234 80123456"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                                  
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Home Address
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorHomeAddress ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorHomeAddress"
+                                  value={primaryDoctorData.doctorHomeAddress}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  City
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorCity ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorCity"
+                                  value={primaryDoctorData.doctorCity}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="Lagos"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                              <div className="w-full xl:w-3/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  State
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorState ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorState"
+                                  value={primaryDoctorData.doctorState}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="US-CA"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                                  
+                            
+                              <div className="w-ful l xl:w-2/5">
+                                <label className="mb-2.5 block text-black dark:text-white">
+                                  Country
+                                </label>
+                                <div className={`relative ${primaryDoctorData.doctorCountry ? 'bg-light-blue' : ''}`}>
+                                <input
+                                  type="text"
+                                  name="doctorCountry"
+                                  value={primaryDoctorData.doctorCountry}
+                                  required
+                                  onChange={handlePrimaryDoctorInputChange}
+                                  placeholder="USA"
+                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                </div>
+                              </div>
+                            </div>      
                           </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Phone Number
-                        </label>
-                        <div className={`relative ${primaryDoctorData.phone ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="phone"
-                          value={primaryDoctorData.phone}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="+234 80123456"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                          
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Home Address
-                        </label>
-                        <div className={`relative ${primaryDoctorData.homeAddress ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="homeAddress"
-                          value={primaryDoctorData.homeAddress}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          City
-                        </label>
-                        <div className={`relative ${primaryDoctorData.city ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="city"
-                          value={primaryDoctorData.city}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="Lagos"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                      <div className="w-full xl:w-3/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          State
-                        </label>
-                        <div className={`relative ${primaryDoctorData.state ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="state"
-                          value={primaryDoctorData.state}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="US-CA"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                           
-                     
-                      <div className="w-ful l xl:w-2/5">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Country
-                        </label>
-                        <div className={`relative ${primaryDoctorData.country ? 'bg-light-blue' : ''}`}>
-                        <input
-                          type="text"
-                          name="country"
-                          value={primaryDoctorData.country}
-                          required
-                          onChange={handleInputChange}
-                          placeholder="USA"
-                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                        </div>
-                      </div>
-                    </div>      
-                  </div>
                           </form>
                         <button
                           type="button"

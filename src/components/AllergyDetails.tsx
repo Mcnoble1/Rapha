@@ -29,6 +29,12 @@ const AllergyDetails = () => {
     treatment: '',
   }); 
 
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  // console.log(parentId);
+  // console.log(contextId);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
   
@@ -92,8 +98,8 @@ const AllergyDetails = () => {
     try {
       let record;
       console.log(allergyData);
-      record = await writeProfileToDwn({...allergyData});
-  
+      record = await writeProfileToDwn(allergyData);
+      console.log(record);
       if (record) {
         const { status } = await record.send(myDid);
         console.log("Send record status in handleAddProfile", status);
@@ -138,9 +144,11 @@ const AllergyDetails = () => {
         data: allergyDetails,
         message: {
           protocol: healthProtocol.protocol,
-          protocolPath: 'patientProfile',
-          schema: healthProtocol.types.patientProfile.schema,
+          protocolPath: 'allergyRecord',
+          schema: healthProtocol.types.allergyRecord.schema,
           recipient: myDid,
+          parentId: parentId,
+          contextId: contextId,
         },
       });
 
@@ -440,12 +448,14 @@ const AllergyDetails = () => {
 
       {isCardOpen && (
         <>
-            {userDetails && userDetails.patientProfile ? (
+            {userDetails?.length > 0 ? (
             <>
-          <div className='w-1/3 mb-5'>
+            {userDetails?.map((user, index) => (
+              <>
+          <div className='w-1/3 mb-5' key={index}>
             <span className="text-xl">Name</span>
             <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
+              {user.name}
             </h4>
           </div>
 
@@ -469,6 +479,8 @@ const AllergyDetails = () => {
               {/* Add content here */}
             </h4>
           </div>
+          </>
+           ))}
             </>
           ) : (
             <div className="flex flex-row justify-center items-center w-full h-full">
