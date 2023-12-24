@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import { Web5 } from "@web5/api/browser";
 import { createContext, useEffect, useState } from "react";
+import { adminDid } from "./Constants"
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 
@@ -10,6 +11,9 @@ export const Web5Context = createContext();
 const ContextProvider = ({ children }) => {
   const [web5, setWeb5] = useState(null);
   const [myDid, setMyDid] = useState(null);
+  const [userType, setUserType] = useState(null);
+  const [doctorList, setDoctorList] = useState([]);
+  const [loadingDoctor, setLoadingDoctor] = useState(true);
 
   useEffect(() => {
     const connectWeb5 = async () => {
@@ -28,6 +32,12 @@ const ContextProvider = ({ children }) => {
         console.error("Error Connecting to web5 : ", error);
       }
     };
+
+    const storedUserType = localStorage.getItem("userType");
+    if (storedUserType) {
+      setUserType(storedUserType);
+    }
+
     connectWeb5();
   }, []);
 
@@ -37,6 +47,10 @@ const ContextProvider = ({ children }) => {
     types: {
       patientProfile: {
         schema: "https://rapha.com/schemas/patientProfile",
+        dataFormats: ["application/json"]
+      },
+      doctorProfile: {
+        schema: "https://rapha.com/schemas/doctorProfile",
         dataFormats: ["application/json"]
       },
       allergyRecord: {
@@ -74,10 +88,10 @@ const ContextProvider = ({ children }) => {
         ],
         allergyRecord: {
           $actions: [
-            { who: "anyone", can: "write" },
-            { who: "recipient", of: "allergyRecord", can: "read" },
+            { who: "recipient", of: "patientProfile", can: "write" },
+            { who: "author", of: "patientProfile", can: "read" },
             { who: "author", of: "allergyRecord", can: "read"},
-            { who: "author", of: "allergyRecord", can: "update"}
+            // { who: "author", of: "allergyRecord", can: "update"}
           ]
         },
         surgeryRecord: {
@@ -121,6 +135,14 @@ const ContextProvider = ({ children }) => {
           ]
         }
       },
+      doctorProfile: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "doctorProfile", can: "read" },
+          { who: "author", of: "doctorProfile", can: "read"},
+          { who: "author", of: "doctorProfile", can: "update"}
+        ],
+      }
     }
   }
 
@@ -178,7 +200,7 @@ const ContextProvider = ({ children }) => {
             autoClose: 3000, 
         });
         } else {
-        toast.success('Protocol al"read"y installed locally', {
+        toast.success('Protocol already installed locally', {
             position: toast.POSITION.TOP_RIGHT,
             autoClose: 3000, 
         });
@@ -198,9 +220,44 @@ const ContextProvider = ({ children }) => {
         });
         }
     };
+
+    const fetchDoctors = async () => {
+      try {
+        const response = await web5.dwn.records.query({
+          from: adminDid,
+          message: {
+            filter: {
+              protocol: profileProtocolDefinition.protocol,
+              schema: profileProtocolDefinition.types.doctorProfile.schema,
+            },
+          },
+        });
+
+        if (response.status.code === 200) {
+          const doctorProfile = await Promise.all(
+            response.records.map(async (record) => {
+              const data = await record.data.json();
+              return {
+                ...data,
+                recordId: record.id,
+              };
+            })
+          );
+          setDoctorList(doctorProfile);
+          setLoadingDoctor(false);
+          return doctorProfile;
+        } else {
+          console.error("error fetching this profile", response.status);
+          return [];
+        }
+      } catch (error) {
+        console.error("error fetching doctor profile :", error);
+      }
+    };
     
     if (web5 && myDid) {
-        configureProtocol(web5, myDid);;
+        configureProtocol(web5, myDid);
+        fetchDoctors();
     }
   }, [web5, myDid]);
 
@@ -208,6 +265,9 @@ const ContextProvider = ({ children }) => {
     web5,
     myDid,
     profileProtocolDefinition,
+    userType,
+    doctorList,
+    loadingDoctor
   };
 
   return (

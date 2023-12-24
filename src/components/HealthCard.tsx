@@ -238,6 +238,7 @@ const HealthCard = () => {
 
   const writeProfileToDwn = async (profileData) => {
     try {
+      console.log(profileData)
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
         data: profileData,
@@ -248,7 +249,7 @@ const HealthCard = () => {
           recipient: myDid,
         },
       });
-
+      console.log(record);
       if (status === 200) {
         
         return { ...profileData, recordId: record.id}
@@ -272,7 +273,7 @@ const HealthCard = () => {
     <div className="w-full md:w-3/5 flex justify-between rounded-lg border border-stroke bg-white py-7.5 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
        <div className="">
           <h4 className="text-2xl font-bold text-black dark:text-white">
-            Health Details
+            Patient Dashboard
           </h4>
           <button
             ref={trigger}

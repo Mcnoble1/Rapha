@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useContext, ChangeEvent, useEffect, FormEvent } from 'react';
 import { toast } from 'react-toastify'; 
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -8,13 +8,16 @@ import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const MedicalHistoryDetails = () => {
   
-  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
   const [isCardOpen, setCardOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
+  const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -28,6 +31,23 @@ const MedicalHistoryDetails = () => {
     frequency: '',
     prescribingDoctor: '',
   }); 
+
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  useEffect(() => {
+    fetchMedicalHistoryDetails();
+  }, []);
+
+  const showDeleteConfirmation = (userId: string) => {
+    setUserToDeleteId(userId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setUserToDeleteId(null);
+    setDeleteConfirmationVisible(false);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -93,18 +113,17 @@ const MedicalHistoryDetails = () => {
     try {
       let record;
       console.log(medicalHistoryData);
-      record = await writeProfileToDwn({...medicalHistoryData});
-  
+      record = await writeProfileToDwn(medicalHistoryData);
       if (record) {
         const { status } = await record.send(myDid);
         console.log("Send record status in handleAddProfile", status);
       } else {
-        toast.error('Failed to create health record', {
+        toast.error('Failed to create medicalHistory record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
           });
           setLoading(false);
-        throw new Error('Failed to create health record');       
+        throw new Error('Failed to create medicalHistory record');       
       }
   
       setMedicalHistoryData({
@@ -115,13 +134,14 @@ const MedicalHistoryDetails = () => {
       })
   
       setPopupOpen(false);
-      toast.success('Successfully created health record', {
+      toast.success('Successfully created medicalHistory record', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
   
       setLoading(false);
-  
+      fetchMedicalHistoryDetails();
+
     } catch (err) {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
@@ -132,38 +152,95 @@ const MedicalHistoryDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (medicalHistoryDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (medicalHistoryDetails: any) => {
+    
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+    const timestamp = `${currentDate} ${currentTime}`;
+
     try {
-      const healthProtocol = profileProtocolDefinition;
+      const medicalHistoryProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: medicalHistoryDetails,
+        data: {...medicalHistoryDetails, timestamp: timestamp},
         message: {
-          protocol: healthProtocol.protocol,
-          protocolPath: 'patientProfile',
-          schema: healthProtocol.types.patientProfile.schema,
+          protocol: medicalHistoryProtocol.protocol,
+          protocolPath: 'patientProfile/medicalHistoryRecord',
+          schema: medicalHistoryProtocol.types.medicalHistoryRecord.schema,
           recipient: myDid,
+          parentId: parentId,
+          contextId: contextId,
         },
       });
 
       if (status === 200) {
         return { ...medicalHistoryDetails, recordId: record.id}
       } 
-      console.log('Successfully wrote health details to DWN:', record);
-      toast.success('Health Details written to DWN', {
+      console.log('Successfully wrote medicalHistory details to DWN:', record);
+      toast.success('MedicalHistory Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
       return record;
     } catch (err) {
-      console.error('Failed to write health details to DWN:', err);
-      toast.error('Failed to write health details to DWN. Please try again later.', {
+      console.error('Failed to write medicalHistory details to DWN:', err);
+      toast.error('Failed to write medicalHistory details to DWN. Please try again later.', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       });
     }
    }; 
 
-   const shareHealthDetails = async (recordId: string) => {
+   const fetchMedicalHistoryDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/medicalHistoryRecord',
+          },
+        },
+      });
+      console.log('MedicalHistory Details:', response);
+  
+      if (response.status.code === 200) {
+        const medicalHistoryDetails = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            console.log(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );
+        setUserDetails(medicalHistoryDetails);
+        console.log(medicalHistoryDetails);
+        toast.success('Successfully fetched medicalHistory details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setFetchDetailsLoading(false);
+      } else {
+        console.error('No medicalHistory details found');
+        toast.error('Failed to fetch medicalHistory details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchMedicalHistoryDetails:', err);
+      toast.error('Error in fetchMedicalHistoryDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
+
+   const shareMedicalHistoryDetails = async (recordId: string) => {
     setShareLoading(true);
     try {
       const response = await web5.dwn.records.query({
@@ -178,7 +255,7 @@ const MedicalHistoryDetails = () => {
         const record = response.records[0];
         const { status } = await record.send(recipientDid);
         console.log('Send record status in shareProfile', status);
-        toast.success('Successfully shared health record', {
+        toast.success('Successfully shared medicalHistory record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -186,7 +263,7 @@ const MedicalHistoryDetails = () => {
         setSharePopupOpen(false);
       } else {
         console.error('No record found with the specified ID');
-        toast.error('Failed to share health record', {
+        toast.error('Failed to share medicalHistory record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -202,6 +279,55 @@ const MedicalHistoryDetails = () => {
     }
   };
 
+  const deleteMedicalHistoryDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('MedicalHistory Details deleted successfully');
+          toast.success('MedicalHistory Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setUserDetails(prevMedicalHistoryDetails => prevMedicalHistoryDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deleteMedicalHistoryDetails:', error);
+    }
+  };
+
    return (
     <>
       <div className="flex flex-row gap-10 w-full bg-white dark:border-strokedark dark:bg-boxdark">
@@ -209,6 +335,8 @@ const MedicalHistoryDetails = () => {
           MedicalHistory Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
+        q{userType === 'doctor' && (
+            <> 
           <button
             ref={trigger}
             onClick={() => setPopupOpen(!popupOpen)}
@@ -336,6 +464,8 @@ const MedicalHistoryDetails = () => {
                   </div>
                 </div>
               )}
+          </>
+          )}
 
           <button
            ref={trigger}
@@ -358,7 +488,7 @@ const MedicalHistoryDetails = () => {
                       data-wow-delay=".15s
                       ">        
                         <div className="flex flex-row justify-between ">
-                          <h2 className="text-xl font-semibold mb-4">Share Health Details</h2>
+                          <h2 className="text-xl font-semibold mb-4">Share MedicalHistory Details</h2>
                           <div className="flex justify-end">
                             <button
                               onClick={() => setSharePopupOpen(false)}
@@ -409,7 +539,7 @@ const MedicalHistoryDetails = () => {
                       <div className="w-full px-4">
                         <button 
                           type="button"
-                          onClick={() => shareHealthDetails(userDetails.recordId)}
+                          onClick={() => shareMedicalHistoryDetails(userDetails.recordId)}
                           disabled={shareLoading}
                           className="rounded-lg bg-primary py-4 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
                           {shareLoading ? (
@@ -440,35 +570,82 @@ const MedicalHistoryDetails = () => {
 
       {isCardOpen && (
         <>
-            {userDetails && userDetails.patientProfile ? (
+            {userDetails?.length > 0 ? (
             <>
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Name</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            {userDetails?.map((user, index) => (
+          <div className="flex w-full" key={index}>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Medication</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.medication}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Severity</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Dosage</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.dosage}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Reaction</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Frequency</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.frequency}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Treatment</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Prescribing Doctor</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.prescribingDoctor}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Timestamp</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.timestamp}
+              </h4>
+            </div>
+
+            {userType === 'doctor' && (
+            <>
+            <button
+                onClick={() => showDeleteConfirmation(user.recordId)}
+                className="rounded-lg bg-danger py-0 px-3 h-10 text-center font-medium text-white hover-bg-opacity-90"
+              >
+                Delete
+              </button>
+              {isDeleteConfirmationVisible && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                  <div className="bg-white p-5 rounded-lg shadow-md">
+                    <p>Are you sure you want to delete your record?</p>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={hideDeleteConfirmation}
+                        className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          hideDeleteConfirmation();
+                          deleteMedicalHistoryDetails(user.recordId);
+                        }}
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+               </>
+            )}
+
           </div>
+           ))}
             </>
           ) : (
             <div className="flex flex-row justify-center items-center w-full h-full">

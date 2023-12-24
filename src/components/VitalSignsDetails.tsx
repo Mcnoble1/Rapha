@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useContext, ChangeEvent, useEffect, FormEvent } from 'react';
 import { toast } from 'react-toastify'; 
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -8,13 +8,16 @@ import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const VitalSignsDetails = () => {
   
-  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
   const [isCardOpen, setCardOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
+  const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
   const [shareLoading, setShareLoading] = useState(false);
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -22,12 +25,29 @@ const VitalSignsDetails = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
 
-  const [vitaSignsData, setVitalSignsData] = useState<{ bloodPressure: string; heartRate: string; respiratoryRate: string; bodyTemperature: string; }>({
+  const [vitalSignsData, setVitalSignsData] = useState<{ bloodPressure: string; heartRate: string; respiratoryRate: string; bodyTemperature: string; }>({
     bloodPressure: '',
     heartRate: '',
     respiratoryRate: '',
     bodyTemperature: '',
   }); 
+
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  useEffect(() => {
+    fetchVitalSignsDetails();
+  }, []);
+
+  const showDeleteConfirmation = (userId: string) => {
+    setUserToDeleteId(userId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setUserToDeleteId(null);
+    setDeleteConfirmationVisible(false);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -82,21 +102,21 @@ const VitalSignsDetails = () => {
     // }
 
     const vitalSignsdata = new FormData();
-    vitalSignsdata.append('bloodPressure', vitaSignsData.bloodPressure);
-    vitalSignsdata.append('heartRate', vitaSignsData.heartRate);
-    vitalSignsdata.append('respiratoryRate', vitaSignsData.respiratoryRate);
-    vitalSignsdata.append('bodyTemperature', vitaSignsData.bodyTemperature);
+    vitalSignsdata.append('bloodPressure', vitalSignsData.bloodPressure);
+    vitalSignsdata.append('heartRate', vitalSignsData.heartRate);
+    vitalSignsdata.append('respiratoryRate', vitalSignsData.respiratoryRate);
+    vitalSignsdata.append('bodyTemperature', vitalSignsData.bodyTemperature);
 
     setLoading(false);
   
     try {
       let record;
       console.log(vitalSignsData);
-      record = await writeProfileToDwn({...vitalSignsData});
+      record = await writeProfileToDwn(vitalSignsData);
   
       if (record) {
         const { status } = await record.send(myDid);
-        console.log("Send record status in handleAddProfile", status);
+        console.log("Send record status in handleAddVitalSigns", status);
       } else {
         toast.error('Failed to create health record', {
           position: toast.POSITION.TOP_RIGHT,
@@ -120,7 +140,7 @@ const VitalSignsDetails = () => {
       });
   
       setLoading(false);
-  
+      fetchVitalSignsDetails();
     } catch (err) {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
@@ -131,16 +151,23 @@ const VitalSignsDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (vitalSignsDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (vitalSignsDetails : any) => {
+
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+    const timestamp = `${currentDate} ${currentTime}`;
+
     try {
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: vitalSignsDetails,
+        data: {...vitalSignsData, timestamp: timestamp},
         message: {
           protocol: healthProtocol.protocol,
-          protocolPath: 'patientProfile',
-          schema: healthProtocol.types.patientProfile.schema,
+          protocolPath: 'patientProfile/vitalSignsRecord',
+          schema: healthProtocol.types.vitalSignsRecord.schema,
           recipient: myDid,
+          parentId: parentId,
+          contextId: contextId,
         },
       });
 
@@ -148,7 +175,7 @@ const VitalSignsDetails = () => {
         return { ...vitalSignsDetails, recordId: record.id}
       } 
       console.log('Successfully wrote health details to DWN:', record);
-      toast.success('Health Details written to DWN', {
+      toast.success('VitalSigns Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
@@ -162,7 +189,57 @@ const VitalSignsDetails = () => {
     }
    }; 
 
-   const shareHealthDetails = async (recordId: string) => {
+   const fetchVitalSignsDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/vitalSignsRecord',
+          },
+        },
+      });
+      console.log('VitalSigns Details:', response);
+  
+      if (response.status.code === 200) {
+        const vitalSignsDetails = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            console.log(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );
+        setUserDetails(vitalSignsDetails);
+        console.log(vitalSignsDetails);
+        toast.success('Successfully fetched vitalSigns details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setFetchDetailsLoading(false);
+      } else {
+        console.error('No vitalSigns details found');
+        toast.error('Failed to fetch vitalSigns details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchVitalSignsDetails:', err);
+      toast.error('Error in fetchVitalSignsDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
+
+   const shareVitalSignsDetails = async (recordId: string) => {
     setShareLoading(true);
     try {
       const response = await web5.dwn.records.query({
@@ -201,6 +278,55 @@ const VitalSignsDetails = () => {
     }
   };
 
+  const deleteVitalSignsDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('VitalSigns Details deleted successfully');
+          toast.success('VitalSigns Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setUserDetails(prevVitalSignsDetails => prevVitalSignsDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deleteVitalSignsDetails:', error);
+    }
+  };
+
    return (
     <>
       <div className="flex flex-row gap-10 w-full bg-white dark:border-strokedark dark:bg-boxdark">
@@ -208,14 +334,16 @@ const VitalSignsDetails = () => {
           VitalSigns Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
-          <button
+          {userType === 'doctor' && (
+            <>
+            <button
             ref={trigger}
             onClick={() => setPopupOpen(!popupOpen)}
             className=""
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
-          {popupOpen && (
+            {popupOpen && (
                 <div
                   ref={popup}
                   className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
@@ -334,7 +462,9 @@ const VitalSignsDetails = () => {
                       </button>
                   </div>
                 </div>
-              )}
+                )}
+            </>
+          )}
 
           <button
            ref={trigger}
@@ -357,7 +487,7 @@ const VitalSignsDetails = () => {
                       data-wow-delay=".15s
                       ">        
                         <div className="flex flex-row justify-between ">
-                          <h2 className="text-xl font-semibold mb-4">Share Health Details</h2>
+                          <h2 className="text-xl font-semibold mb-4">Share VitalSigns Details</h2>
                           <div className="flex justify-end">
                             <button
                               onClick={() => setSharePopupOpen(false)}
@@ -408,7 +538,7 @@ const VitalSignsDetails = () => {
                       <div className="w-full px-4">
                         <button 
                           type="button"
-                          onClick={() => shareHealthDetails(userDetails.recordId)}
+                          onClick={() => shareVitalSignsDetails(userDetails.recordId)}
                           disabled={shareLoading}
                           className="rounded-lg bg-primary py-4 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
                           {shareLoading ? (
@@ -439,35 +569,81 @@ const VitalSignsDetails = () => {
 
       {isCardOpen && (
         <>
-            {userDetails && userDetails.patientProfile ? (
+            {userDetails?.length > 0 ? (
             <>
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Name</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            {userDetails?.map((user, index) => (
+          <div className="flex w-full" key={index}>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Blood Pressure</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.bloodPressure}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Severity</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Heart Rate</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.heartRate}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Reaction</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Respiratory Rate</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.respiratoryRate}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Treatment</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Body Temperature</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.bodyTemperature}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Timestamp</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.timestamp}
+              </h4>
+            </div>
+
+            {userType === 'doctor' && (
+            <>
+            <button
+                onClick={() => showDeleteConfirmation(user.recordId)}
+                className="rounded-lg bg-danger py-0 px-3 h-10 text-center font-medium text-white hover-bg-opacity-90"
+              >
+                Delete
+              </button>
+              {isDeleteConfirmationVisible && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                  <div className="bg-white p-5 rounded-lg shadow-md">
+                    <p>Are you sure you want to delete your record?</p>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={hideDeleteConfirmation}
+                        className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          hideDeleteConfirmation();
+                          deleteVitalSignsDetails(user.recordId);
+                        }}
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+               </>
+              )}
           </div>
+           ))}
             </>
           ) : (
             <div className="flex flex-row justify-center items-center w-full h-full">
