@@ -8,6 +8,15 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 const Homepage = () => {
   
   const navigate = useNavigate();
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
+
+  const showDeleteConfirmation = () => {
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setDeleteConfirmationVisible(false);
+  };
 
 
   return (
@@ -23,11 +32,38 @@ const Homepage = () => {
           </div>
           <div className="flex justify-center">
           <button 
-          onClick={() => navigate('/doctor/dashboard')}             
-          className=" cursor-pointer rounded-lg text-2xl border border-primary bg-success p-4 text-white transition hover:bg-opacity-90"
+            onClick={() => showDeleteConfirmation()}
+            className=" cursor-pointer rounded-lg text-2xl border border-primary bg-success p-4 text-white transition hover:bg-opacity-90"
             >
             Get Started
           </button>
+          {isDeleteConfirmationVisible && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                <div className="bg-white p-5 rounded-lg shadow-md">
+                  <p>Choose your Role in the Rapha Ecosystem</p>
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={() => {
+                        hideDeleteConfirmation();
+                        navigate('/patient/dashboard');
+                      }}
+                      className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                    >
+                      Patient
+                    </button>
+                    <button
+                      onClick={() => {
+                        hideDeleteConfirmation();
+                        navigate('/doctor/dashboard');
+                      }}
+                      className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                    >
+                      Doctor
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>  
         </div>
         <div className="flex lg:w-1/2 items-center justify-center">

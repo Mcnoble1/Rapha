@@ -416,6 +416,13 @@ const deleteHealthDetails = async (recordId) => {
         </div>
 
         <div className='w-1/3 mb-5' >
+          <span className="text-xl">Gender</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.gender : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
           <span className="text-xl">Marital Status</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
             {showDetails ? user.maritalStatus : '********'}
@@ -489,6 +496,13 @@ const deleteHealthDetails = async (recordId) => {
         </div>
 
         <div className='w-1/3 mb-5' >
+          <span className="text-xl">Gender</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.guardianGender : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
           <span className="text-xl">Email Address</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
             {showDetails ? user.guardianEmail : '********'}
@@ -537,6 +551,13 @@ const deleteHealthDetails = async (recordId) => {
           <span className="text-xl">Name</span>
           <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
             {showDetails ? user.doctorName : '********'}
+          </h4>
+        </div>
+
+        <div className='w-1/3 mb-5' >
+          <span className="text-xl">Gender</span>
+          <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+            {showDetails ? user.doctorGender : '********'}
           </h4>
         </div>
 
@@ -598,34 +619,34 @@ const deleteHealthDetails = async (recordId) => {
       </div>
 
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <AllergyDetails showDetails={showDetails} />
+        <AllergyDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <CardiologyDetails showDetails={showDetails} />
+        <CardiologyDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <DiagnosisDetails showDetails={showDetails} />
+        <DiagnosisDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <ImmunizationDetails showDetails={showDetails} />
+        <ImmunizationDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <InsuranceDetails showDetails={showDetails} />
+        <InsuranceDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <LabTestDetails showDetails={showDetails} />
+        <LabTestDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <MedicalHistoryDetails showDetails={showDetails} />
+        <MedicalHistoryDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <SurgeryDetails showDetails={showDetails} />
+        <SurgeryDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <VitalSignsDetails showDetails={showDetails} />
+        <VitalSignsDetails />
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <PhysicalDetails showDetails={showDetails} />
+        <PhysicalDetails />
       </div>
 
         <div className='w-full flex flex-row justify-evenly mb-5'>

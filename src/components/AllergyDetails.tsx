@@ -8,13 +8,15 @@ import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const AllergyDetails = () => {
   
-  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
   const [isCardOpen, setCardOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
@@ -33,12 +35,19 @@ const AllergyDetails = () => {
   const parentId = JSON.parse(localStorage.getItem('recordId'));
   const contextId = JSON.parse(localStorage.getItem('contextId'));
 
-  // console.log(parentId);
-  // console.log(contextId);
-
   useEffect(() => {
     fetchAllergyDetails();
   }, []);
+
+  const showDeleteConfirmation = (userId: string) => {
+    setUserToDeleteId(userId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setUserToDeleteId(null);
+    setDeleteConfirmationVisible(false);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -98,23 +107,21 @@ const AllergyDetails = () => {
     allergydata.append("reaction", allergyData.reaction);
     allergydata.append("treatment", allergyData.treatment);
 
-    setLoading(false);
   
     try {
       let record;
       console.log(allergyData);
       record = await writeProfileToDwn(allergyData);
-      console.log(record);
       if (record) {
         const { status } = await record.send(myDid);
         console.log("Send record status in handleAddProfile", status);
       } else {
-        toast.error('Failed to create health record', {
+        toast.error('Failed to create allergy record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
           });
           setLoading(false);
-        throw new Error('Failed to create health record');       
+        throw new Error('Failed to create allergy record');       
       }
   
       setAllergyData({
@@ -125,7 +132,7 @@ const AllergyDetails = () => {
       })
   
       setPopupOpen(false);
-      toast.success('Successfully created health record', {
+      toast.success('Successfully created allergy record', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
@@ -136,24 +143,26 @@ const AllergyDetails = () => {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 5000, // Adjust the duration as needed
+          autoClose: 3000, 
         });
         setLoading(false);
       } 
   };
 
-  const writeProfileToDwn = async (allergyDetails) => {
-    console.log(parentId);
-    console.log(contextId);
+  const writeProfileToDwn = async (allergyDetails : any) => {
+  
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+    const timestamp = `${currentDate} ${currentTime}`;
+
     try {
-      const healthProtocol = profileProtocolDefinition;
-      console.log(allergyDetails);
+      const allergyProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: allergyDetails,
+        data: {...allergyDetails, timestamp: timestamp},
         message: {
-          protocol: healthProtocol.protocol,
+          protocol: allergyProtocol.protocol,
           protocolPath: 'patientProfile/allergyRecord',
-          schema: healthProtocol.types.allergyRecord.schema,
+          schema: allergyProtocol.types.allergyRecord.schema,
           recipient: myDid,
           parentId: parentId,
           contextId: contextId,
@@ -163,15 +172,15 @@ const AllergyDetails = () => {
       if (status === 200) {
         return { ...allergyDetails, recordId: record.id}
       } 
-      console.log('Successfully wrote health details to DWN:', record);
-      toast.success('Health Details written to DWN', {
+      console.log('Successfully wrote allergy details to DWN:', record);
+      toast.success('Allergy Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
       return record;
     } catch (err) {
-      console.error('Failed to write health details to DWN:', err);
-      toast.error('Failed to write health details to DWN. Please try again later.', {
+      console.error('Failed to write allergy details to DWN:', err);
+      toast.error('Failed to write allergy details to DWN. Please try again later.', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       });
@@ -187,7 +196,6 @@ const AllergyDetails = () => {
           filter: {
               protocol: 'https://rapha.com/protocol',
               protocolPath: 'patientProfile/allergyRecord',
-              // schema: 'https://did-box.com/schemas/healthDetails',
           },
         },
       });
@@ -229,7 +237,7 @@ const AllergyDetails = () => {
     };
   };
 
-   const shareHealthDetails = async (recordId: string) => {
+   const shareAllergyDetails = async (recordId: string) => {
     setShareLoading(true);
     try {
       const response = await web5.dwn.records.query({
@@ -244,7 +252,7 @@ const AllergyDetails = () => {
         const record = response.records[0];
         const { status } = await record.send(recipientDid);
         console.log('Send record status in shareProfile', status);
-        toast.success('Successfully shared health record', {
+        toast.success('Successfully shared allergy record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -252,7 +260,7 @@ const AllergyDetails = () => {
         setSharePopupOpen(false);
       } else {
         console.error('No record found with the specified ID');
-        toast.error('Failed to share health record', {
+        toast.error('Failed to share allergy record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -268,6 +276,55 @@ const AllergyDetails = () => {
     }
   };
 
+  const deleteAllergyDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('Allergy Details deleted successfully');
+          toast.success('Allergy Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setUserDetails(prevAllergyDetails => prevAllergyDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deleteAllergyDetails:', error);
+    }
+  };
+
    return (
     <>
       <div className="flex flex-row gap-10 w-full bg-white dark:border-strokedark dark:bg-boxdark">
@@ -275,6 +332,8 @@ const AllergyDetails = () => {
           Allergy Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
+        {userType === 'doctor' && (
+            <>
           <button
             ref={trigger}
             onClick={() => setPopupOpen(!popupOpen)}
@@ -371,7 +430,6 @@ const AllergyDetails = () => {
                         </label>
                         <div className={`relative ${allergyData.treatment ? 'bg-light-blue' : ''}`}>
                         <textarea
-                          type="text"
                           name="treatment"
                           row={3}
                           value={allergyData.treatment}
@@ -403,6 +461,8 @@ const AllergyDetails = () => {
                   </div>
                 </div>
               )}
+          </>
+          )}
 
           <button
            ref={trigger}
@@ -425,7 +485,7 @@ const AllergyDetails = () => {
                       data-wow-delay=".15s
                       ">        
                         <div className="flex flex-row justify-between ">
-                          <h2 className="text-xl font-semibold mb-4">Share Health Details</h2>
+                          <h2 className="text-xl font-semibold mb-4">Share Allergy Details</h2>
                           <div className="flex justify-end">
                             <button
                               onClick={() => setSharePopupOpen(false)}
@@ -476,7 +536,7 @@ const AllergyDetails = () => {
                       <div className="w-full px-4">
                         <button 
                           type="button"
-                          onClick={() => shareHealthDetails(userDetails.recordId)}
+                          onClick={() => shareAllergyDetails(userDetails.recordId)}
                           disabled={shareLoading}
                           className="rounded-lg bg-primary py-4 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
                           {shareLoading ? (
@@ -510,35 +570,78 @@ const AllergyDetails = () => {
             {userDetails?.length > 0 ? (
             <>
             {userDetails?.map((user, index) => (
-              <>
-          <div className='w-1/3 mb-5' key={index}>
-            <span className="text-xl">Name</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {user.name}
-            </h4>
-          </div>
+          <div className="flex w-full" key={index}>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Name</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.name}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Severity</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {user.severity}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Severity</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.severity}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Reaction</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {user.reaction}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Reaction</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.reaction}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Treatment</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {user.treatment}
-            </h4>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Treatment</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.treatment}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Timestamp</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.timestamp}
+              </h4>
+            </div>
+
+            {userType === 'doctor' && (
+            <>
+            <button
+                onClick={() => showDeleteConfirmation(user.recordId)}
+                className="rounded-lg bg-danger py-0 px-3 h-10 text-center font-medium text-white hover-bg-opacity-90"
+              >
+                Delete
+              </button>
+              {isDeleteConfirmationVisible && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                  <div className="bg-white p-5 rounded-lg shadow-md">
+                    <p>Are you sure you want to delete your record?</p>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={hideDeleteConfirmation}
+                        className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          hideDeleteConfirmation();
+                          deleteAllergyDetails(user.recordId);
+                        }}
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+               </>
+            )}
+
           </div>
-          </>
            ))}
             </>
           ) : (

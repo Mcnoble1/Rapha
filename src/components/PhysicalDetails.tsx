@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useContext, ChangeEvent, useEffect, FormEvent } from 'react';
 import { toast } from 'react-toastify'; 
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -8,12 +8,15 @@ import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const PhysicalDetails = () => {
   
-  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
   const [isCardOpen, setCardOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
+  const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
@@ -30,6 +33,23 @@ const PhysicalDetails = () => {
     bloodGroup: '',
     rhesusFactor: '',
   }); 
+
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  useEffect(() => {
+    fetchPhysicalDetails();
+  }, []);
+
+  const showDeleteConfirmation = (userId: string) => {
+    setUserToDeleteId(userId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setUserToDeleteId(null);
+    setDeleteConfirmationVisible(false);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -91,23 +111,21 @@ const PhysicalDetails = () => {
     physicaldata.append('bloodGroup', physicalData.bloodGroup);
     physicaldata.append('rhesusFactor', physicalData.rhesusFactor);
 
-    setLoading(false);
   
     try {
       let record;
       console.log(physicalData);
-      record = await writeProfileToDwn({...physicalData});
-  
+      record = await writeProfileToDwn(physicalData);
       if (record) {
         const { status } = await record.send(myDid);
         console.log("Send record status in handleAddProfile", status);
       } else {
-        toast.error('Failed to create health record', {
+        toast.error('Failed to create physical record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
           });
           setLoading(false);
-        throw new Error('Failed to create health record');       
+        throw new Error('Failed to create physical record');       
       }
   
       setPhysicalData({
@@ -120,55 +138,112 @@ const PhysicalDetails = () => {
       })
   
       setPopupOpen(false);
-      toast.success('Successfully created health record', {
+      toast.success('Successfully created physical record', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
   
       setLoading(false);
-  
+      fetchPhysicalDetails();
     } catch (err) {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
           position: toast.POSITION.TOP_RIGHT,
-          autoClose: 5000, // Adjust the duration as needed
+          autoClose: 3000,
         });
         setLoading(false);
       } 
   };
 
-  const writeProfileToDwn = async (physicalDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (physicalDetails: any) => {
+    
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+    const timestamp = `${currentDate} ${currentTime}`;
+
     try {
-      const healthProtocol = profileProtocolDefinition;
+      const physicalProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: physicalDetails,
+        data: {...physicalDetails, timestamp: timestamp},
         message: {
-          protocol: healthProtocol.protocol,
-          protocolPath: 'patientProfile',
-          schema: healthProtocol.types.patientProfile.schema,
+          protocol: physicalProtocol.protocol,
+          protocolPath: 'patientProfile/physicalRecord',
+          schema: physicalProtocol.types.physicalRecord.schema,
           recipient: myDid,
+          parentId: parentId,
+          contextId: contextId,
         },
       });
 
       if (status === 200) {
         return { ...physicalDetails, recordId: record.id}
       } 
-      console.log('Successfully wrote health details to DWN:', record);
-      toast.success('Health Details written to DWN', {
+      console.log('Successfully wrote physical details to DWN:', record);
+      toast.success('Physical Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
       return record;
     } catch (err) {
-      console.error('Failed to write health details to DWN:', err);
-      toast.error('Failed to write health details to DWN. Please try again later.', {
+      console.error('Failed to write physical details to DWN:', err);
+      toast.error('Failed to write physical details to DWN. Please try again later.', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       });
     }
    }; 
 
-   const shareHealthDetails = async (recordId: string) => {
+   const fetchPhysicalDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/physicalRecord',
+          },
+        },
+      });
+      console.log('Physical Details:', response);
+  
+      if (response.status.code === 200) {
+        const physicalDetails = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            console.log(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );
+        setUserDetails(physicalDetails);
+        console.log(physicalDetails);
+        toast.success('Successfully fetched physical details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setFetchDetailsLoading(false);
+      } else {
+        console.error('No physical details found');
+        toast.error('Failed to fetch physical details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchPhysicalDetails:', err);
+      toast.error('Error in fetchPhysicalDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
+
+   const sharePhysicalDetails = async (recordId: string) => {
     setShareLoading(true);
     try {
       const response = await web5.dwn.records.query({
@@ -183,7 +258,7 @@ const PhysicalDetails = () => {
         const record = response.records[0];
         const { status } = await record.send(recipientDid);
         console.log('Send record status in shareProfile', status);
-        toast.success('Successfully shared health record', {
+        toast.success('Successfully shared physical record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -191,7 +266,7 @@ const PhysicalDetails = () => {
         setSharePopupOpen(false);
       } else {
         console.error('No record found with the specified ID');
-        toast.error('Failed to share health record', {
+        toast.error('Failed to share physical record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -207,6 +282,55 @@ const PhysicalDetails = () => {
     }
   };
 
+  const deletePhysicalDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('Physical Details deleted successfully');
+          toast.success('Physical Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setUserDetails(prevPhysicalDetails => prevPhysicalDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deletePhysicalDetails:', error);
+    }
+  };
+
    return (
     <>
       <div className="flex flex-row gap-10 w-full bg-white dark:border-strokedark dark:bg-boxdark">
@@ -214,6 +338,8 @@ const PhysicalDetails = () => {
           Physical Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
+        {userType === 'doctor' && (
+            <>
           <button
             ref={trigger}
             onClick={() => setPopupOpen(!popupOpen)}
@@ -348,6 +474,8 @@ const PhysicalDetails = () => {
                   </div>
                 </div>
               )}
+          </>
+          )}
 
           <button
            ref={trigger}
@@ -370,7 +498,7 @@ const PhysicalDetails = () => {
                       data-wow-delay=".15s
                       ">        
                         <div className="flex flex-row justify-between ">
-                          <h2 className="text-xl font-semibold mb-4">Share Health Details</h2>
+                          <h2 className="text-xl font-semibold mb-4">Share Physical Details</h2>
                           <div className="flex justify-end">
                             <button
                               onClick={() => setSharePopupOpen(false)}
@@ -421,7 +549,7 @@ const PhysicalDetails = () => {
                       <div className="w-full px-4">
                         <button 
                           type="button"
-                          onClick={() => shareHealthDetails(userDetails.recordId)}
+                          onClick={() => sharePhysicalDetails(userDetails.recordId)}
                           disabled={shareLoading}
                           className="rounded-lg bg-primary py-4 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
                           {shareLoading ? (
@@ -452,35 +580,96 @@ const PhysicalDetails = () => {
 
       {isCardOpen && (
         <>
-            {userDetails && userDetails.patientProfile ? (
+            {userDetails?.length > 0 ? (
             <>
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Name</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            {userDetails?.map((user, index) => (
+          <div className="flex w-full" key={index}>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Height</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.height}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Severity</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Weight</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.weight}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Reaction</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">BMI</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.bmi}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Treatment</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Genotype</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.genotype}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Blood Group</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.bloodGroup}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Rhesus Factor</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.rhesusFactor}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Timestamp</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.timestamp}
+              </h4>
+            </div>
+
+            {userType === 'doctor' && (
+            <>
+            <button
+                onClick={() => showDeleteConfirmation(user.recordId)}
+                className="rounded-lg bg-danger py-0 px-3 h-10 text-center font-medium text-white hover-bg-opacity-90"
+              >
+                Delete
+              </button>
+              {isDeleteConfirmationVisible && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                  <div className="bg-white p-5 rounded-lg shadow-md">
+                    <p>Are you sure you want to delete your record?</p>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={hideDeleteConfirmation}
+                        className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          hideDeleteConfirmation();
+                          deletePhysicalDetails(user.recordId);
+                        }}
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+               </>
+            )}
+
           </div>
+           ))}
             </>
           ) : (
             <div className="flex flex-row justify-center items-center w-full h-full">
