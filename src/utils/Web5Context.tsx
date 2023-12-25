@@ -41,6 +41,16 @@ const ContextProvider = ({ children }) => {
     connectWeb5();
   }, []);
 
+  const setUserTypeAndRedirect = (type) => {
+    localStorage.setItem("userType", type);
+    setUserType(type);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("userType");
+    setUserType("");
+  };
+
   const profileProtocolDefinition = {
     protocol: "https://rapha.com/protocol",
     published: true,
@@ -299,7 +309,9 @@ const ContextProvider = ({ children }) => {
     profileProtocolDefinition,
     userType,
     doctorList,
-    loadingDoctor
+    loadingDoctor,
+    setUserTypeAndRedirect,
+    logout,
   };
 
   return (
