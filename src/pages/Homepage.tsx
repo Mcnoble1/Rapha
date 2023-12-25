@@ -1,13 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Web5Context } from "../utils/Web5Context";
 import heroImage from '../images/favicon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 const Homepage = () => {
-  
+
+  const { setUserTypeAndRedirect } = useContext(Web5Context);
+
   const navigate = useNavigate();
+
+  // const [selectedType, setSelectedType] = useState(null);
+
+  // const setDoctor = () => {
+  //   setSelectedType("doctor");
+  // };
+
+  // const setPatient = () => {
+  //   setSelectedType("patient");
+  // };
+  
   const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
 
   const showDeleteConfirmation = () => {
@@ -45,6 +59,7 @@ const Homepage = () => {
                     <button
                       onClick={() => {
                         hideDeleteConfirmation();
+                        setUserTypeAndRedirect("patient");
                         navigate('/patient/dashboard');
                       }}
                       className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
@@ -54,6 +69,7 @@ const Homepage = () => {
                     <button
                       onClick={() => {
                         hideDeleteConfirmation();
+                        setUserTypeAndRedirect("doctor");
                         navigate('/doctor/dashboard');
                       }}
                       className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
