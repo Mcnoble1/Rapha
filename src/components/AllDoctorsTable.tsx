@@ -450,7 +450,7 @@ const deleteHealthDetails = async (recordId) => {
           <tbody>
             {/* Table body */}
             {doctorsDetails.map((doctor, index) => (
-              <tr key={doctor._id} className={`border-b border-stroke dark:border-strokedark ${index === 0 ? 'rounded-t-sm' : ''}`}>
+              <tr key={doctor.recordId} className={`border-b border-stroke dark:border-strokedark ${index === 0 ? 'rounded-t-sm' : ''}`}>
                 <td className="p-2.5 xl:p-5">
                   <div className="flex gap-3">
                     <div className="flex-shrink-0 ">
@@ -463,7 +463,7 @@ const deleteHealthDetails = async (recordId) => {
                   </div>
                 </td>                
                 <td className="p-2.5 xl:p-5 ">{doctor.name}</td>                
-                <td className="p-2.5 xl:p-5 ">{formatDatetime(doctor.createdAt)}</td>
+                <td className="p-2.5 xl:p-5 ">{doctor.createdAt}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.specialty}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.gender}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.status}</td>
