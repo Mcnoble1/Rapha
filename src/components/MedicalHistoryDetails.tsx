@@ -335,7 +335,7 @@ const MedicalHistoryDetails = () => {
           MedicalHistory Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
-        q{userType === 'doctor' && (
+        {userType === 'doctor' && (
             <> 
           <button
             ref={trigger}
