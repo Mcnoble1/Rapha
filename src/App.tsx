@@ -6,7 +6,9 @@ import Patients from './pages/Doctor/Patients';
 import Record from './pages/Doctor/Patient';
 import Doctor from './pages/Doctor/Dashboard';
 import Calendar from './pages/Doctor/Calendar';
-// import Doctors from './pages/Patient/Doctors';
+import Doctors from './pages/Patient/Doctors';
+import Admin from './pages/Admin/Dashboard';
+import Docs from './pages/Admin/Doctors';
 import Homepage from './pages/Homepage';
 import Loader from './common/Loader';
 import routes from './routes';
@@ -34,7 +36,9 @@ function App() {
         <Route path="/doctor/patients" element={<Patients />} />
         <Route path="/doctor/calendar" element={<Calendar />} />
         <Route path="/doctor/patient/:id" element={<Record />} />
-        {/* <Route path="/patient/doctors" element={<Doctors />} /> */}
+        <Route path="/patient/doctors" element={<Doctors />} />
+        <Route path="/admin/dashboard" element={<Admin />} />
+        <Route path="/admin/doctors" element={<Docs />} />
         <Route element={<DefaultLayout />}>
           {/* <Route element={<Dashboard />} /> */}
           {routes.map(({ path, component: Component }) => (
