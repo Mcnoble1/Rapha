@@ -76,7 +76,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <img src={Logo} alt="Logo" height={50} width={50} className='mr-5' />
 
          <div className='text-white text-2xl font-bold flex items-center mr-3'>
-            DID-Box
+            Rapha
           </div> 
         </NavLink>
 
@@ -111,7 +111,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
          
              <li>
                 <NavLink
-                  to="/doctor/dashboard"
+                  to="/patient/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
                     pathname.includes('dashboard') && 'border-r-4 dark:bg-meta-4'
                   }`}
@@ -123,7 +123,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
              
               <li>
                 <NavLink
-                  to="/patient/dashboard"
+                  to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
                     'border-r-4 dark:bg-meta-4'
@@ -136,7 +136,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <li>
                 <NavLink
-                  to="/health"
+                  to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
                     'border-r-4 dark:bg-meta-4'
@@ -149,7 +149,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <li>
                 <NavLink
-                  to="/health"
+                  to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
                     'border-r-4 dark:bg-meta-4'
@@ -162,7 +162,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <li>
                 <NavLink
-                  to="/health"
+                  to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
                     'border-r-4 dark:bg-meta-4'
