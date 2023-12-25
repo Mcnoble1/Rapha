@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useContext, ChangeEvent, useEffect, FormEvent } from 'react';
 import { toast } from 'react-toastify'; 
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -8,13 +8,16 @@ import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const ImmunizationDetails = () => {
   
-  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
   const [isCardOpen, setCardOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
+  const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -29,6 +32,23 @@ const ImmunizationDetails = () => {
     lotNumber: '',
     nextScheduled: '',
   }); 
+
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  useEffect(() => {
+    fetchImmunizationDetails();
+  }, []);
+
+  const showDeleteConfirmation = (userId: string) => {
+    setUserToDeleteId(userId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setUserToDeleteId(null);
+    setDeleteConfirmationVisible(false);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -88,24 +108,21 @@ const ImmunizationDetails = () => {
     immunizationdata.append('dateAdministered', immunizationData.dateAdministered);
     immunizationdata.append('lotNumber', immunizationData.lotNumber);
     immunizationdata.append('nextScheduled', immunizationData.nextScheduled);
-
-    setLoading(false);
   
     try {
       let record;
       console.log(immunizationData);
-      record = await writeProfileToDwn({...immunizationData});
-  
+      record = await writeProfileToDwn(immunizationData);
       if (record) {
         const { status } = await record.send(myDid);
         console.log("Send record status in handleAddProfile", status);
       } else {
-        toast.error('Failed to create health record', {
+        toast.error('Failed to create immunization record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
           });
           setLoading(false);
-        throw new Error('Failed to create health record');       
+        throw new Error('Failed to create immunization record');       
       }
   
       setImmunizationData({
@@ -117,13 +134,14 @@ const ImmunizationDetails = () => {
       })
   
       setPopupOpen(false);
-      toast.success('Successfully created health record', {
+      toast.success('Successfully created immunization record', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
   
       setLoading(false);
-  
+      fetchImmunizationDetails();
+
     } catch (err) {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
@@ -134,38 +152,95 @@ const ImmunizationDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (immunizationDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (immunizationDetails: any) => {
+    
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+    const timestamp = `${currentDate} ${currentTime}`;
+    
     try {
-      const healthProtocol = profileProtocolDefinition;
+      const immunizationProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: immunizationDetails,
+        data: {...immunizationDetails, timestamp: timestamp},
         message: {
-          protocol: healthProtocol.protocol,
-          protocolPath: 'patientProfile',
-          schema: healthProtocol.types.patientProfile.schema,
+          protocol: immunizationProtocol.protocol,
+          protocolPath: 'patientProfile/immunizationRecord',
+          schema: immunizationProtocol.types.immunizationRecord.schema,
           recipient: myDid,
+          parentId: parentId,
+          contextId: contextId,
         },
       });
 
       if (status === 200) {
         return { ...immunizationDetails, recordId: record.id}
       } 
-      console.log('Successfully wrote health details to DWN:', record);
-      toast.success('Health Details written to DWN', {
+      console.log('Successfully wrote immunization details to DWN:', record);
+      toast.success('Immunization Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
       return record;
     } catch (err) {
-      console.error('Failed to write health details to DWN:', err);
-      toast.error('Failed to write health details to DWN. Please try again later.', {
+      console.error('Failed to write immunization details to DWN:', err);
+      toast.error('Failed to write immunization details to DWN. Please try again later.', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       });
     }
    }; 
 
-   const shareHealthDetails = async (recordId: string) => {
+   const fetchImmunizationDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/immunizationRecord',
+          },
+        },
+      });
+      console.log('Immunization Details:', response);
+  
+      if (response.status.code === 200) {
+        const immunizationDetails = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            console.log(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );
+        setUserDetails(immunizationDetails);
+        console.log(immunizationDetails);
+        toast.success('Successfully fetched immunization details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setFetchDetailsLoading(false);
+      } else {
+        console.error('No immunization details found');
+        toast.error('Failed to fetch immunization details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchImmunizationDetails:', err);
+      toast.error('Error in fetchImmunizationDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
+
+   const shareImmunizationDetails = async (recordId: string) => {
     setShareLoading(true);
     try {
       const response = await web5.dwn.records.query({
@@ -180,7 +255,7 @@ const ImmunizationDetails = () => {
         const record = response.records[0];
         const { status } = await record.send(recipientDid);
         console.log('Send record status in shareProfile', status);
-        toast.success('Successfully shared health record', {
+        toast.success('Successfully shared immunization record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -188,7 +263,7 @@ const ImmunizationDetails = () => {
         setSharePopupOpen(false);
       } else {
         console.error('No record found with the specified ID');
-        toast.error('Failed to share health record', {
+        toast.error('Failed to share immunization record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -204,6 +279,55 @@ const ImmunizationDetails = () => {
     }
   };
 
+  const deleteImmunizationDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('Immunization Details deleted successfully');
+          toast.success('Immunization Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setUserDetails(prevImmunizationDetails => prevImmunizationDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deleteImmunizationDetails:', error);
+    }
+  };
+
    return (
     <>
       <div className="flex flex-row gap-10 w-full bg-white dark:border-strokedark dark:bg-boxdark">
@@ -211,6 +335,8 @@ const ImmunizationDetails = () => {
           Immunization Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
+        {userType === 'doctor' && (
+            <>
           <button
             ref={trigger}
             onClick={() => setPopupOpen(!popupOpen)}
@@ -354,6 +480,8 @@ const ImmunizationDetails = () => {
                   </div>
                 </div>
               )}
+          </>
+          )}
 
           <button
            ref={trigger}
@@ -376,7 +504,7 @@ const ImmunizationDetails = () => {
                       data-wow-delay=".15s
                       ">        
                         <div className="flex flex-row justify-between ">
-                          <h2 className="text-xl font-semibold mb-4">Share Health Details</h2>
+                          <h2 className="text-xl font-semibold mb-4">Share Immunization Details</h2>
                           <div className="flex justify-end">
                             <button
                               onClick={() => setSharePopupOpen(false)}
@@ -427,7 +555,7 @@ const ImmunizationDetails = () => {
                       <div className="w-full px-4">
                         <button 
                           type="button"
-                          onClick={() => shareHealthDetails(userDetails.recordId)}
+                          onClick={() => shareImmunizationDetails(userDetails.recordId)}
                           disabled={shareLoading}
                           className="rounded-lg bg-primary py-4 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
                           {shareLoading ? (
@@ -458,35 +586,89 @@ const ImmunizationDetails = () => {
 
       {isCardOpen && (
         <>
-            {userDetails && userDetails.patientProfile ? (
+            {userDetails?.length > 0 ? (
             <>
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Name</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            {userDetails?.map((user, index) => (
+          <div className="flex w-full" key={index}>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Vaccine Name</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.vaccineName}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Severity</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Vaccine Type</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.vaccineType}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Reaction</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Date Administered</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.dateAdministered}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Treatment</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Lot Number</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.lotNumber}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Next Scheduled</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.nextScheduled}
+              </h4>
+            </div>
+
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Timestamp</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.timestamp}
+              </h4>
+            </div>
+
+            {userType === 'doctor' && (
+            <>
+            <button
+                onClick={() => showDeleteConfirmation(user.recordId)}
+                className="rounded-lg bg-danger py-0 px-3 h-10 text-center font-medium text-white hover-bg-opacity-90"
+              >
+                Delete
+              </button>
+              {isDeleteConfirmationVisible && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                  <div className="bg-white p-5 rounded-lg shadow-md">
+                    <p>Are you sure you want to delete your record?</p>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={hideDeleteConfirmation}
+                        className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          hideDeleteConfirmation();
+                          deleteImmunizationDetails(user.recordId);
+                        }}
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+               </>
+            )}
+
           </div>
+           ))}
             </>
           ) : (
             <div className="flex flex-row justify-center items-center w-full h-full">

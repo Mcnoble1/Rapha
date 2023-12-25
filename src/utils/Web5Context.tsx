@@ -133,6 +133,38 @@ const ContextProvider = ({ children }) => {
             { who: "author", of: "healthRecord", can: "read"},
             { who: "author", of: "healthRecord", can: "update"}
           ]
+        },
+        insuranceRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        cardiologyRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        physicalRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
+        },
+        labTestRecord: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "healthRecord", can: "read" },
+            { who: "author", of: "healthRecord", can: "read"},
+            { who: "author", of: "healthRecord", can: "update"}
+          ]
         }
       },
       doctorProfile: {
