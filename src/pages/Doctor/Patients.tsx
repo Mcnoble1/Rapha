@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, ChangeEvent, FormEvent } from 'reac
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import Header from '../../components/Header';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../components/DoctorSidebar';
 import Breadcrumb from '../../components/Breadcrumb';
 import AllPatientsTable from '../../components/AllPatientsTable';
 import { toast } from 'react-toastify';
