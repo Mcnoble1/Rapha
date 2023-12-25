@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import Sidebar from '../../components/DoctorSidebar.tsx';
+import Sidebar from '../../components/AdminSidebar.tsx';
 import Header from '../../components/Header.tsx';
-import Breadcrumb from '../../components/Breadcrumb';
-import HealthDetails from '../../components/HealthDetails.tsx';
+import DoctorCard from '../../components/DoctorCard.tsx';
+import DidCard from '../../components/DidCard.tsx';
+import DoctorDetails from '../../components/DoctorDetails.tsx';
+import CardFour from '../../components/CardFour.tsx';
+import CardOne from '../../components/CardOne.tsx';
+import CardTwo from '../../components/CardTwo.tsx';
 
 const Health = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,12 +20,17 @@ const Health = () => {
           <main>
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               <div className="flex flex-row flex-wrap justify-evenly gap-5 md:gap-0">
-                
-              <Breadcrumb pageName="Patient Medical Record" />
+                <DoctorCard />
+                <DidCard />
               </div>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
+              <CardOne />
+              <CardTwo />
+              <CardFour />
+            </div>
 
               <div className="mt-4">
-                <HealthDetails />
+                <DoctorDetails />
               </div>
             </div>
           </main>

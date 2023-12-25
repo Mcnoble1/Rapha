@@ -111,7 +111,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
          
              <li>
                 <NavLink
-                  to="/patient/profile"
+                  to="/admin/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
                     pathname.includes('dashboard') && 'border-r-4 dark:bg-meta-4'
                   }`}
@@ -123,22 +123,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
              
               <li>
                 <NavLink
-                  to="/patient/dashboard"
+                  to="/admin/doctors"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('health') &&
-                    'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
-                  Medical Record
-                </NavLink>
-              </li>
-
-              <li>
-                <NavLink
-                  to="/patient/doctors"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('health') &&
+                    pathname.includes('patients') &&
                     'border-r-4 dark:bg-meta-4'
                   }`}
                 >
@@ -149,31 +136,35 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <li>
                 <NavLink
-                  to="#"
+                  to="/admin/hospitals"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('health') &&
+                    pathname.includes('patients') &&
                     'border-r-4 dark:bg-meta-4'
                   }`}
                 >
                   <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
-                  Chat
+                  Hospitals
                 </NavLink>
               </li>
 
               <li>
                 <NavLink
-                  to="#"
+                  to="/admin/partners"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('health') &&
+                    pathname.includes('patients') &&
                     'border-r-4 dark:bg-meta-4'
                   }`}
                 >
                   <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
-                  Community
+                  Partners
                 </NavLink>
               </li>
 
-             
+              
+
+              
+
+        
             </ul>
           </div>
 
