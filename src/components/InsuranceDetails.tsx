@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useContext, ChangeEvent, useEffect, FormEvent } from 'react';
 import { toast } from 'react-toastify'; 
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -8,13 +8,16 @@ import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const InsuranceDetails = () => {
   
-  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
   const [isCardOpen, setCardOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
+  const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
+  const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
+  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,6 +30,23 @@ const InsuranceDetails = () => {
     policyNumber: '',
     contactInfo: '',
   }); 
+
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  useEffect(() => {
+    fetchInsuranceDetails();
+  }, []);
+
+  const showDeleteConfirmation = (userId: string) => {
+    setUserToDeleteId(userId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const hideDeleteConfirmation = () => {
+    setUserToDeleteId(null);
+    setDeleteConfirmationVisible(false);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -90,18 +110,17 @@ const InsuranceDetails = () => {
     try {
       let record;
       console.log(insuranceData);
-      record = await writeProfileToDwn({...insuranceData});
-  
+      record = await writeProfileToDwn(insuranceData);
       if (record) {
         const { status } = await record.send(myDid);
         console.log("Send record status in handleAddProfile", status);
       } else {
-        toast.error('Failed to create health record', {
+        toast.error('Failed to create insurance record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
           });
           setLoading(false);
-        throw new Error('Failed to create health record');       
+        throw new Error('Failed to create insurance record');       
       }
   
       setInsuranceData({
@@ -111,13 +130,13 @@ const InsuranceDetails = () => {
       })
   
       setPopupOpen(false);
-      toast.success('Successfully created health record', {
+      toast.success('Successfully created insurance record', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
   
       setLoading(false);
-  
+      fetchInsuranceDetails();
     } catch (err) {
         console.error('Error in handleCreateCause:', err);
         toast.error('Error in handleAddProfile. Please try again later.', {
@@ -128,38 +147,92 @@ const InsuranceDetails = () => {
       } 
   };
 
-  const writeProfileToDwn = async (insuranceDetails: { name: string; severity: string; reaction: string; treatment: string; }) => {
+  const writeProfileToDwn = async (insuranceDetails: any) => {
+
     try {
-      const healthProtocol = profileProtocolDefinition;
+      const insuranceProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
         data: insuranceDetails,
         message: {
-          protocol: healthProtocol.protocol,
-          protocolPath: 'patientProfile',
-          schema: healthProtocol.types.patientProfile.schema,
+          protocol: insuranceProtocol.protocol,
+          protocolPath: 'patientProfile/insuranceRecord',
+          schema: insuranceProtocol.types.insuranceRecord.schema,
           recipient: myDid,
+          parentId: parentId,
+          contextId: contextId,
         },
       });
 
       if (status === 200) {
         return { ...insuranceDetails, recordId: record.id}
       } 
-      console.log('Successfully wrote health details to DWN:', record);
-      toast.success('Health Details written to DWN', {
+      console.log('Successfully wrote insurance details to DWN:', record);
+      toast.success('Insurance Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
       });
       return record;
     } catch (err) {
-      console.error('Failed to write health details to DWN:', err);
-      toast.error('Failed to write health details to DWN. Please try again later.', {
+      console.error('Failed to write insurance details to DWN:', err);
+      toast.error('Failed to write insurance details to DWN. Please try again later.', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
       });
     }
    }; 
 
-   const shareHealthDetails = async (recordId: string) => {
+
+   const fetchInsuranceDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/insuranceRecord',
+          },
+        },
+      });
+      console.log('Insurance Details:', response);
+  
+      if (response.status.code === 200) {
+        const insuranceDetails = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            console.log(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );
+        setUserDetails(insuranceDetails);
+        console.log(insuranceDetails);
+        toast.success('Successfully fetched insurance details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setFetchDetailsLoading(false);
+      } else {
+        console.error('No insurance details found');
+        toast.error('Failed to fetch insurance details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchInsuranceDetails:', err);
+      toast.error('Error in fetchInsuranceDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
+
+   const shareInsuranceDetails = async (recordId: string) => {
     setShareLoading(true);
     try {
       const response = await web5.dwn.records.query({
@@ -174,7 +247,7 @@ const InsuranceDetails = () => {
         const record = response.records[0];
         const { status } = await record.send(recipientDid);
         console.log('Send record status in shareProfile', status);
-        toast.success('Successfully shared health record', {
+        toast.success('Successfully shared insurance record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -182,7 +255,7 @@ const InsuranceDetails = () => {
         setSharePopupOpen(false);
       } else {
         console.error('No record found with the specified ID');
-        toast.error('Failed to share health record', {
+        toast.error('Failed to share insurance record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
         });
@@ -198,6 +271,55 @@ const InsuranceDetails = () => {
     }
   };
 
+  const deleteInsuranceDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('Insurance Details deleted successfully');
+          toast.success('Insurance Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setUserDetails(prevInsuranceDetails => prevInsuranceDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deleteInsuranceDetails:', error);
+    }
+  };
+
    return (
     <>
       <div className="flex flex-row gap-10 w-full bg-white dark:border-strokedark dark:bg-boxdark">
@@ -205,6 +327,8 @@ const InsuranceDetails = () => {
           Insurance Information
         </div>
         <div className="flex flex-row mb-5 items-center gap-10 justify-end">
+        {userType === 'patient' && (
+            <>
           <button
             ref={trigger}
             onClick={() => setPopupOpen(!popupOpen)}
@@ -313,6 +437,8 @@ const InsuranceDetails = () => {
                   </div>
                 </div>
               )}
+          </>
+          )}
 
           <button
            ref={trigger}
@@ -335,7 +461,7 @@ const InsuranceDetails = () => {
                       data-wow-delay=".15s
                       ">        
                         <div className="flex flex-row justify-between ">
-                          <h2 className="text-xl font-semibold mb-4">Share Health Details</h2>
+                          <h2 className="text-xl font-semibold mb-4">Share Insurance Details</h2>
                           <div className="flex justify-end">
                             <button
                               onClick={() => setSharePopupOpen(false)}
@@ -386,7 +512,7 @@ const InsuranceDetails = () => {
                       <div className="w-full px-4">
                         <button 
                           type="button"
-                          onClick={() => shareHealthDetails(userDetails.recordId)}
+                          onClick={() => shareInsuranceDetails(userDetails.recordId)}
                           disabled={shareLoading}
                           className="rounded-lg bg-primary py-4 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp">
                           {shareLoading ? (
@@ -417,35 +543,68 @@ const InsuranceDetails = () => {
 
       {isCardOpen && (
         <>
-            {userDetails && userDetails.patientProfile ? (
+            {userDetails?.length > 0 ? (
             <>
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Name</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            {userDetails?.map((user, index) => (
+          <div className="flex w-full" key={index}>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Provider</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.provider}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Severity</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Policy Number</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.policyNumber}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Reaction</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
-          </div>
+            <div className='w-1/3 mb-5'>
+              <span className="text-xl">Contact Info</span>
+              <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                {user.contactInfo}
+              </h4>
+            </div>
 
-          <div className='w-1/3 mb-5'>
-            <span className="text-xl">Treatment</span>
-            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-              {/* Add content here */}
-            </h4>
+            {userType === 'patient' && (
+            <>
+            <button
+                onClick={() => showDeleteConfirmation(user.recordId)}
+                className="rounded-lg bg-danger py-0 px-3 h-10 text-center font-medium text-white hover-bg-opacity-90"
+              >
+                Delete
+              </button>
+              {isDeleteConfirmationVisible && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                  <div className="bg-white p-5 rounded-lg shadow-md">
+                    <p>Are you sure you want to delete your record?</p>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={hideDeleteConfirmation}
+                        className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          hideDeleteConfirmation();
+                          deleteInsuranceDetails(user.recordId);
+                        }}
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+               </>
+            )}
+
           </div>
+           ))}
             </>
           ) : (
             <div className="flex flex-row justify-center items-center w-full h-full">
