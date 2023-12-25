@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { Web5Context } from "../utils/Web5Context";
 import 'react-toastify/dist/ReactToastify.css'; 
 import '../pages/signin.css';
+import { adminDid } from "../utils/Constants"
+
 const HealthCard = () => {
   
   const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
@@ -170,7 +172,8 @@ const HealthCard = () => {
       });
       console.log(record);
       if (status === 200) {
-        
+        const { status } = await record.send(adminDid);
+        console.log(status);
         return { ...profileData, recordId: record.id}
       } 
       console.log('Successfully wrote doctor details to DWN:', record);
