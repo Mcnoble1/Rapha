@@ -66,6 +66,10 @@ setIssueVCOpenMap((prevMap) => ({
 }));
 };
 
+useEffect(() => {
+  fetchHealthDetails();
+} , []);
+
 const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
   try {
@@ -342,20 +346,6 @@ const deleteHealthDetails = async (recordId) => {
      <div className="hidden sm:block flex flex-row justify-center">
         </div>
       <div className="flex gap-2">
-        <div className="relative">
-          <button 
-          onClick={fetchHealthDetails}
-          className=" items-center  rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90">
-          {fetchDetailsLoading ? (
-            <div className="flex items-center">
-              <div className="spinner"></div>
-              <span className="pl-1">Fetching...</span>
-            </div>
-          ) : (
-            <>Fetch Profile</>
-          )}           
-        </button>
-        </div>
         <div className="relative">
           <button
             onClick={toggleSortDropdown}
