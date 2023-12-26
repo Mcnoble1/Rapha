@@ -51,6 +51,11 @@ const Doctors: React.FC = () => {
     }));
   };
 
+  useEffect(() => {
+    fetchHealthDetails();
+  }
+  , []);
+
   const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
   try {
@@ -114,7 +119,7 @@ const Doctors: React.FC = () => {
               <div className="mb-6 flex flex-row gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <Breadcrumb pageName="All Doctors" />
                 <div>
-                  <button 
+                  {/* <button 
                     onClick={fetchHealthDetails}
                     className=" items-center mr-5 rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90">
                     {fetchDetailsLoading ? (
@@ -125,7 +130,7 @@ const Doctors: React.FC = () => {
                     ) : (
                       <>Fetch Profile</>
                     )}           
-                  </button>
+                  </button> */}
 
                   <button 
                     ref={trigger}
@@ -144,11 +149,11 @@ const Doctors: React.FC = () => {
               </div>
 
               <div className="flex flex-row gap-10 ">
-                <div className="rounded-sm w-1/2 rounded-2xl border bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+                <div className=" w-2/5 rounded-2xl bg-white px-5 shadow-default dark:border-strokedark dark:bg-boxdark ">
                   <div className="">
                     {doctorsDetails.map((doctor, index) => (
                         <div className="" key={index}>
-                        <div className='flex flex-row mb-10 gap-5 p-5 flex-wrap w-full'>
+                        <div className='flex flex-row mb-1 gap-20 p-5 w-full'>
                           <div className="flex">
                             <div className="flex-shrink-0 ">
                               <img
@@ -158,53 +163,55 @@ const Doctors: React.FC = () => {
                               />
                             </div>
                           </div>
-                          <div className='flex flex-col'>
-                              <div className='mb-1 flex' >
-                                <h4 className="text-2xl mt-1 font-bold text-black dark:text-white">
-                                  {doctor.name }
-                                </h4>
+                          <div className=''>
+                              <div className='mb-2 flex' >
+                                <p className="text-2xl font-bold text-black dark:text-white">
+                                  {doctor.name} 
+                                </p>
+                                <button className='bg-warning px-1 rounded-xl ml-2'>Unverified</button>
                               </div>
 
-                              <div className=' gap-5'>
-                                <div className='w-1/2 mb-1' >
+                              <div className='flex flex-row gap-x-5 gap-y-2 flex-wrap'>
+                                {/* <div className='w-1/2 mb-1' >
                                   <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
                                     {doctor.gender }
                                   </h4>
-                                </div>
+                                </div> */}
 
-                                <div className='w-1/2 mb-1' >
-                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                <div className='' >
+                                  <p className="text-lg font-medium text-black dark:text-white">
                                     {doctor.hospital }
-                                  </h4>
+                                  </p>
                                 </div>
 
-                                <div className='w-1/2 mb-1' >
-                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                <div className='' >
+                                  <p className="text-lg font-medium text-black dark:text-white">
+                                    {doctor.gender }
+                                  </p>
+                                </div>
+
+                                <div className='' >
+                                  <p className="text-lg font-medium text-black dark:text-white">
                                     {doctor.specialty }
-                                  </h4>
+                                  </p>
                                 </div>
 
-                                <div className='w-1/2 mb-1' >
-                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
-                                    {doctor.yearsOfExperience }
-                                  </h4>
+                                <div className='' >
+                                  <p className="text-lg font-medium text-black dark:text-white">
+                                    {doctor.yearsOfExperience } 
+                                  </p>
                                 </div>
 
-                                <div className='w-1/2 mb-1' >
-                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                <div className='mb-5' >
+                                  <p className="text-lg font-medium text-black dark:text-white">
                                     { doctor.country }
-                                  </h4>
+                                  </p>
                                 </div>
-                              </div>                          
-                          </div> 
-                              
-                          
-                      </div>
-
-                      <div className="relative">
+                              </div>      
+                              <div className="relative">
                         <button
                           onClick={() =>  togglePop(doctor.recordId)}                      
-                          className="inline-flex mb-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                          className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                           >
                           Book
                         </button>
@@ -346,6 +353,8 @@ const Doctors: React.FC = () => {
                                     </div>
                                 </div>
                               )} */}
+                          </div>                    
+                          </div> 
                       </div>
                       </div>
                     ))}
