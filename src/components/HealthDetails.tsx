@@ -1,4 +1,4 @@
-import { useState, useRef, ChangeEvent, FormEvent, useContext } from 'react';
+import { useState, useRef, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context";
@@ -94,6 +94,10 @@ const HealthDetails = () => {
   const toggleDetails = () => {
     setShowDetails((prevShowDetails) => !prevShowDetails);
   };
+
+  useEffect(() => {
+    fetchHealthDetails();
+  }, []);
 
   const togglePopup = (userId: string) => {
     usersDetails.map((user) => { 
@@ -374,7 +378,7 @@ const deleteHealthDetails = async (recordId) => {
   return (
     <div className="lg:mx-5 flex flex-col rounded-lg border break-words border-stroke bg-white p-10 shadow-default dark:border-strokedark dark:bg-boxdark">
      <div className="flex flex-row mb-5 items-center gap-4 justify-end">
-      <button 
+      {/* <button 
         onClick={fetchHealthDetails}
         className=" items-center  rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90">
         {fetchDetailsLoading ? (
@@ -385,7 +389,7 @@ const deleteHealthDetails = async (recordId) => {
         ) : (
           <>Fetch Profile</>
         )}           
-      </button>
+      </button> */}
       <div className="relative">
         <button
           onClick={toggleDetails}

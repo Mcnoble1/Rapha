@@ -66,6 +66,10 @@ setIssueVCOpenMap((prevMap) => ({
 }));
 };
 
+useEffect(() => {
+  fetchHealthDetails();
+} , []);
+
 const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
   try {
@@ -75,7 +79,6 @@ const fetchHealthDetails = async () => {
         filter: {
             protocol: 'https://rapha.com/protocol',
             protocolPath: 'doctorProfile',
-            // schema: 'https://did-box.com/schemas/healthDetails',
         },
       },
     });
@@ -117,45 +120,6 @@ const fetchHealthDetails = async () => {
   };
 };
 
-
-const shareHealthDetails = async (recordId: string) => {
-  setShareLoading(true);
-  try {
-    const response = await web5.dwn.records.query({
-      message: {
-        filter: {
-          recordId: recordId,
-        },
-      },
-    });
-
-    if (response.records && response.records.length > 0) {
-      const record = response.records[0];
-      const { status } = await record.send(recipientDid);
-      console.log('Send record status in shareProfile', status);
-      toast.success('Successfully shared doctor record', {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
-      setShareLoading(false);
-      setSharePopupOpen(false);
-    } else {
-      console.error('No record found with the specified ID');
-      toast.error('Failed to share doctor record', {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
-    }
-    setShareLoading(false);
-  } catch (err) {
-    console.error('Error in shareProfile:', err);
-    toast.error('Error in shareProfile. Please try again later.', {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 5000,
-    });
-    setShareLoading(false);
-  }
-};
 
 const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { name, value } = e.target;
@@ -342,20 +306,6 @@ const deleteHealthDetails = async (recordId) => {
      <div className="hidden sm:block flex flex-row justify-center">
         </div>
       <div className="flex gap-2">
-        <div className="relative">
-          <button 
-          onClick={fetchHealthDetails}
-          className=" items-center  rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90">
-          {fetchDetailsLoading ? (
-            <div className="flex items-center">
-              <div className="spinner"></div>
-              <span className="pl-1">Fetching...</span>
-            </div>
-          ) : (
-            <>Fetch Profile</>
-          )}           
-        </button>
-        </div>
         <div className="relative">
           <button
             onClick={toggleSortDropdown}
