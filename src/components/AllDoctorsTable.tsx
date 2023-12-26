@@ -79,7 +79,6 @@ const fetchHealthDetails = async () => {
         filter: {
             protocol: 'https://rapha.com/protocol',
             protocolPath: 'doctorProfile',
-            // schema: 'https://did-box.com/schemas/healthDetails',
         },
       },
     });
@@ -121,45 +120,6 @@ const fetchHealthDetails = async () => {
   };
 };
 
-
-const shareHealthDetails = async (recordId: string) => {
-  setShareLoading(true);
-  try {
-    const response = await web5.dwn.records.query({
-      message: {
-        filter: {
-          recordId: recordId,
-        },
-      },
-    });
-
-    if (response.records && response.records.length > 0) {
-      const record = response.records[0];
-      const { status } = await record.send(recipientDid);
-      console.log('Send record status in shareProfile', status);
-      toast.success('Successfully shared doctor record', {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
-      setShareLoading(false);
-      setSharePopupOpen(false);
-    } else {
-      console.error('No record found with the specified ID');
-      toast.error('Failed to share doctor record', {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
-    }
-    setShareLoading(false);
-  } catch (err) {
-    console.error('Error in shareProfile:', err);
-    toast.error('Error in shareProfile. Please try again later.', {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 5000,
-    });
-    setShareLoading(false);
-  }
-};
 
 const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { name, value } = e.target;
