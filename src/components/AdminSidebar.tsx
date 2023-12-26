@@ -117,7 +117,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }`}
                 >
                    <FontAwesomeIcon icon={faCircleUser} style={{color: "#ffffff",}} />
-                  Profile
+                  Overview
                 </NavLink>
               </li>
              
