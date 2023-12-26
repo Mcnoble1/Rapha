@@ -55,14 +55,14 @@ const Homepage = () => {
               <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
                 <div className="bg-white p-5 rounded-lg shadow-md">
                   <p>Choose your Role in the Rapha Ecosystem</p>
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-4 flex justify-center">
                     <button
                       onClick={() => {
                         hideDeleteConfirmation();
                         setUserTypeAndRedirect("patient");
                         navigate('/patient/dashboard');
                       }}
-                      className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                      className="mr-4 rounded-xl bg-primary py-2 px-3 text-white hover:bg-opacity-90"
                     >
                       Patient
                     </button>
@@ -72,7 +72,7 @@ const Homepage = () => {
                         setUserTypeAndRedirect("doctor");
                         navigate('/doctor/dashboard');
                       }}
-                      className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                      className="rounded-xl bg-primary py-2 px-3 text-white hover:bg-opacity-90"
                     >
                       Doctor
                     </button>
