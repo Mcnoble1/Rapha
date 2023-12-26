@@ -7,6 +7,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import { toast } from 'react-toastify';
 import { Web5Context } from "../../utils/Web5Context.tsx";
 import 'react-toastify/dist/ReactToastify.css';
+import Image from '../../images/user/3.png';
 import '../signin.css';
 
 const Doctors: React.FC = () => {
@@ -130,121 +131,74 @@ const Doctors: React.FC = () => {
                     ref={trigger}
                     onClick={() => setPatientPopupOpen(!categoryPopupOpen)}
                     className="inline-flex mr-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
-                      Add Patient
+                      Sort
                   </button>
 
                   <button
                   ref={trigger}
                   onClick={() => setServicePopupOpen(!servicePopupOpen)}
                   className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
-                    Add Service
+                    Filter
                   </button>
                 </div>   
               </div>
 
-              <div className="flex flex-col gap-10">
-                <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-                  <div className="flex flex-col justify-between">
+              <div className="flex flex-row gap-10 ">
+                <div className="rounded-sm w-1/2 rounded-2xl border bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+                  <div className="">
                     {doctorsDetails.map((doctor, index) => (
                         <div className="" key={index}>
-                        <div className='flex mb-10 p-5 flex-wrap w-full rounded-lg'>
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Name</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.name }
-                            </h4>
+                        <div className='flex flex-row mb-10 gap-5 p-5 flex-wrap w-full'>
+                          <div className="flex">
+                            <div className="flex-shrink-0 ">
+                              <img
+                                src={Image}
+                                alt={doctor.name}
+                                className="h-30 w-30 rounded-full" 
+                              />
+                            </div>
                           </div>
+                          <div className='flex flex-col'>
+                              <div className='mb-1 flex' >
+                                <h4 className="text-2xl mt-1 font-bold text-black dark:text-white">
+                                  {doctor.name }
+                                </h4>
+                              </div>
 
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Date of Birth</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.dateOfBirth }
-                            </h4>
-                          </div>
+                              <div className=' gap-5'>
+                                <div className='w-1/2 mb-1' >
+                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                    {doctor.gender }
+                                  </h4>
+                                </div>
 
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Gender</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.gender }
-                            </h4>
-                          </div>
+                                <div className='w-1/2 mb-1' >
+                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                    {doctor.hospital }
+                                  </h4>
+                                </div>
 
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Hospital</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.hospital }
-                            </h4>
-                          </div>
+                                <div className='w-1/2 mb-1' >
+                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                    {doctor.specialty }
+                                  </h4>
+                                </div>
 
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Specialty</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.specialty }
-                            </h4>
-                          </div>
+                                <div className='w-1/2 mb-1' >
+                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                    {doctor.yearsOfExperience }
+                                  </h4>
+                                </div>
 
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Registration Number</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.registrationNumber }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Identification Number</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.identificationNumber }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Years of Experience</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.yearsOfExperience }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Email Address</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.email }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Phone Number</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.phone }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Home Address</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.homeAddress }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">City</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.city }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">State</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              {doctor.state }
-                            </h4>
-                          </div>
-
-                          <div className='w-1/3 mb-5' >
-                            <span className="text-xl">Country</span>
-                            <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
-                              { doctor.country }
-                            </h4>
-                          </div>
+                                <div className='w-1/2 mb-1' >
+                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
+                                    { doctor.country }
+                                  </h4>
+                                </div>
+                              </div>                          
+                          </div> 
+                              
+                          
                       </div>
 
                       <div className="relative">
@@ -252,9 +206,9 @@ const Doctors: React.FC = () => {
                           onClick={() =>  togglePop(doctor.recordId)}                      
                           className="inline-flex mb-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                           >
-                          Issue VC
+                          Book
                         </button>
-                          {issueVCOpenMap[doctor.recordId] && (
+                          {/* {issueVCOpenMap[doctor.recordId] && (
                                 <div
                                   ref={popup}
                                   className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-90"
@@ -391,7 +345,7 @@ const Doctors: React.FC = () => {
                                     </button>
                                     </div>
                                 </div>
-                              )}
+                              )} */}
                       </div>
                       </div>
                     ))}
