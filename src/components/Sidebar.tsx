@@ -108,6 +108,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
 
+            <li>
+                <NavLink
+                  to="/patient/dashboard"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 dark:hover:bg-meta-4 ${
+                    pathname.includes('dashboard') && 'border-r-4 dark:bg-meta-4'
+                  }`}
+                >
+                   <FontAwesomeIcon icon={faCircleUser} style={{color: "#ffffff",}} />
+                  Overview
+                </NavLink>
+              </li>
          
              <li>
                 <NavLink
@@ -123,7 +134,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
              
               <li>
                 <NavLink
-                  to="/patient/dashboard"
+                  to="/patient/records"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes('health') &&
                     'border-r-4 dark:bg-meta-4'
@@ -160,7 +171,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
 
-              <li>
+              {/* <li>
                 <NavLink
                   to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
@@ -171,7 +182,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
                   Community
                 </NavLink>
-              </li>
+              </li> */}
 
              
             </ul>
