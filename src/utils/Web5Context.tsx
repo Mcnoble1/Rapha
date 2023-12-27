@@ -59,6 +59,14 @@ const ContextProvider = ({ children }) => {
         schema: "https://rapha.com/schemas/patientProfile",
         dataFormats: ["application/json"]
       },
+      profileImage: {
+        schema: "https://rapha.com/schemas/profileImage",
+        dataFormats: ["image/jpg", "image/png", "image/jpeg"]
+      },
+      coverImage: {
+        schema: "https://rapha.com/schemas/coverImage",
+        dataFormats: ["image/jpg", "image/png", "image/jpeg"]
+      },
       doctorProfile: {
         schema: "https://rapha.com/schemas/doctorProfile",
         dataFormats: ["application/json"]
@@ -69,6 +77,10 @@ const ContextProvider = ({ children }) => {
       },
       surgeryRecord: {
         schema: "https://rapha.com/schemas/surgeryRecord",
+        dataFormats: ["application/json"]
+      },
+      insuranceRecord: {
+        schema: "https://rapha.com/schemas/insuranceRecord",
         dataFormats: ["application/json"]
       },
       diagnosisRecord: {
@@ -96,6 +108,22 @@ const ContextProvider = ({ children }) => {
           { who: "author", of: "patientProfile", can: "read"},
           { who: "author", of: "patientProfile", can: "update"}
         ],
+        profileImage: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "patientProfile", can: "read" },
+            { who: "author", of: "patientProfile", can: "read"},
+            { who: "author", of: "patientProfile", can: "update"}
+          ]
+        },
+        coverImage: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "patientProfile", can: "read" },
+            { who: "author", of: "patientProfile", can: "read"},
+            { who: "author", of: "patientProfile", can: "update"}
+          ]
+        },
         allergyRecord: {
           $actions: [
             { who: "recipient", of: "patientProfile", can: "write" },
@@ -184,6 +212,22 @@ const ContextProvider = ({ children }) => {
           { who: "author", of: "doctorProfile", can: "read"},
           { who: "author", of: "doctorProfile", can: "update"}
         ],
+        profileImage: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "doctorProfile", can: "read" },
+            { who: "author", of: "doctorProfile", can: "read"},
+            { who: "author", of: "doctorProfile", can: "update"}
+          ]
+        },
+        coverImage: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "recipient", of: "doctorProfile", can: "read" },
+            { who: "author", of: "doctorProfile", can: "read"},
+            { who: "author", of: "doctorProfile", can: "update"}
+          ]
+        },
       }
     }
   }
