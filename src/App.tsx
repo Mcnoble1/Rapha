@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Patient from './pages/Patient/Dashboard';
+import Records from './pages/Patient/Records';
 import Patients from './pages/Doctor/Patients';
 import Record from './pages/Doctor/Patient';
 import Doctor from './pages/Doctor/Dashboard';
@@ -35,6 +36,7 @@ function App() {
         <Route path="/homepage" index element={<Homepage />} />
         <Route path="/doctor/dashboard" element={<Doctor />} />
         <Route path="/patient/dashboard" element={<Patient />} />
+        <Route path="/patient/records" element={<Records />} />
         <Route path="/doctor/patients" element={<Patients />} />
         <Route path="/doctor/calendar" element={<Calendar />} />
         <Route path="/doctor/patient/:id" element={<Record />} />
