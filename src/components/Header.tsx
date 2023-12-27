@@ -75,7 +75,7 @@ const Header = (props: {
         </div>
 
         <div className="hidden text-xl font-bold sm:block flex flex-row justify-center">
-          DID-Box
+          Rapha
         </div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">
