@@ -44,7 +44,10 @@ const Profile = () => {
     image: null
   }); 
 
-  const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const parentId = JSON.parse(localStorage.getItem('recordId'));
+  const contextId = JSON.parse(localStorage.getItem('contextId'));
+
+  const [imageURL, setImageURL] = useState("");
 
 
   const trigger = useRef<HTMLButtonElement | null>(null);
@@ -478,7 +481,7 @@ const handleAddPicture = async (e: FormEvent) => {
     }
 
     setSelectedFileName("Click to add Image")
-
+    fetchHealthDetails();
     setPopupOpen(false);
     toast.success('Successfully created picture record', {
       position: toast.POSITION.TOP_RIGHT,
@@ -497,17 +500,20 @@ const handleAddPicture = async (e: FormEvent) => {
     } 
 };
 
-   const writePictureToDwn = async (pictureData) => {
+   const writePictureToDwn = async (pictureData : any) => {
     try {
+      console.log(pictureData)
       const pictureProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
         data: pictureData,
         message: {
           protocol: pictureProtocol.protocol,
-          protocolPath: 'doctorProfile/profilePicture',
+          protocolPath: 'doctorProfile/profileImage',
           schema: pictureProtocol.types.profileImage.schema,
           recipient: myDid,
-          dataFormat: "image/png"
+          dataFormat: "image/png",
+          parentId: parentId,
+          contextId: contextId,
         },
       });
       console.log(record);
@@ -563,7 +569,7 @@ const handleAddPicture = async (e: FormEvent) => {
         console.log(imageresult)
         const imageUrl = URL.createObjectURL(imageresult);
         console.log(imageUrl)
-        setImageURLs(prevImageURLs => [...prevImageURLs, imageUrl]);
+        setImageURL(imageUrl);
       })
       toast.success('Successfully fetched picture details', {
           position: toast.POSITION.TOP_RIGHT,
@@ -635,7 +641,7 @@ const handleAddPicture = async (e: FormEvent) => {
           <div className="px-4 pb-6 lg:pb-8 xl:pb-11.5">
             <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
               <div className="relative drop-shadow-2">
-                <img src={user?.image || userSix} alt="profile" />
+                <img src={imageURL || userSix} alt="profile" />
                 <label
                   htmlFor="profile"
                   className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2"
