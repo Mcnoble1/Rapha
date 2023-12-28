@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Web5Context } from "../../utils/Web5Context.tsx";
 import { adminDid } from "../../utils/Constants"
 
-
 const Profile = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,7 +25,7 @@ const Profile = () => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
   const [popupOpenMap, setPopupOpenMap] = useState<{ [key: number]: boolean }>({});
-  const [personalData, setPersonalData] = useState<{ name: string; yearsOfExperience: string; dateOfBirth: string; phone: string; hospital: string; specialty: string; identificationNumber: string; registrationNumber: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; image: File | null }>({
+  const [personalData, setPersonalData] = useState<{ name: string; yearsOfExperience: string; status: string; dateOfBirth: string; phone: string; hospital: string; specialty: string; identificationNumber: string; registrationNumber: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; image: File | null }>({
     name: '',
     dateOfBirth: '',
     hospital: '',
@@ -37,6 +36,7 @@ const Profile = () => {
     gender: '',
     homeAddress: '',
     email: '',
+    status: 'Unverified',
     city: '',
     state: '',
     country: '',
@@ -44,8 +44,8 @@ const Profile = () => {
     image: null
   }); 
 
-  const parentId = JSON.parse(localStorage.getItem('recordId'));
-  const contextId = JSON.parse(localStorage.getItem('contextId'));
+  const parentId = localStorage.getItem('recordId');
+  const contextId = localStorage.getItem('contextId');
 
   const [imageURL, setImageURL] = useState("");
 
@@ -55,8 +55,11 @@ const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
+    if (web5 && myDid) {
     fetchHealthDetails();
-  }, []);
+    fetchPictureDetails();
+    }
+  }, [web5, myDid]);
 
   const togglePopup = (userId: string) => {
     usersDetails.map((user) => { 
@@ -77,6 +80,7 @@ const Profile = () => {
           country: user.country,
           phone: user.phone,
           image: user.image, 
+          status: user.status,
         });
       }
     });
@@ -94,6 +98,17 @@ const Profile = () => {
       if (file) {
         setSelectedFileName(file.name);
       }
+  
+    setPersonalData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    handleAddPicture(e);
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
   
       if (name === 'phone' ) {
         const phoneRegex = /^[+]?[0-9\b]+$/;
@@ -113,7 +128,6 @@ const Profile = () => {
       [name]: value,
     }));
 
-    handleAddPicture(e);
   };
 
 
@@ -187,12 +201,14 @@ const Profile = () => {
         gender: '',
         homeAddress: '',
         email: '',
+        status: 'Unverified',
         city: '',
         state: '',
         country: '',
         phone: '',
+        image: null
       })
-  
+      fetchHealthDetails();
       setPopupOpen(false);
       toast.success('Successfully created health record', {
         position: toast.POSITION.TOP_RIGHT,
@@ -212,11 +228,15 @@ const Profile = () => {
   };
 
   const writeProfileToDwn = async (profileData) => {
+
+    const currentDate = new Date().toLocaleDateString();
+    const timestamp = `${currentDate}`;
+
     try {
       console.log(profileData)
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: profileData,
+        data: {...profileData, timestamp: timestamp},
         message: {
           protocol: healthProtocol.protocol,
           protocolPath: 'doctorProfile',
@@ -255,7 +275,6 @@ const closePopup = (userId: string) => {
 
 const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
-  fetchPictureDetails();
   try {
     const response = await web5.dwn.records.query({
       from: myDid,
@@ -273,8 +292,8 @@ const fetchHealthDetails = async () => {
         response.records.map(async (record) => {
           const data = await record.data.json();
           console.log(data);
-        localStorage.setItem('recordId', JSON.stringify(record.id));
-        localStorage.setItem('contextId', JSON.stringify(record.contextId));
+        localStorage.setItem('recordId', record.id);
+        localStorage.setItem('contextId', record.contextId);
           return {
             ...data,
             recordId: record.id,
@@ -458,8 +477,8 @@ const handleAddPicture = async (e: FormEvent) => {
   e.preventDefault();
   setLoading(true); 
     
-  const formdata = new FormData();
-  formdata.append('image', fileInputRef.current?.files?.[0], fileInputRef.current?.files?.[0].name);
+  // const formdata = new FormData();
+  // formdata.append('image', fileInputRef.current?.files?.[0], fileInputRef.current?.files?.[0].name);
 
   const blob = new Blob(fileInputRef.current.files, { type: "image/png" });
 

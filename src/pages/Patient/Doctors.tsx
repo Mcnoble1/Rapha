@@ -168,7 +168,7 @@ const Doctors: React.FC = () => {
                                 <p className="text-2xl font-bold text-black dark:text-white">
                                   {doctor.name} 
                                 </p>
-                                <button className='bg-warning px-1 rounded-xl ml-2'>Unverified</button>
+                                <button className='bg-warning px-1 rounded-xl ml-2'>{doctor.status}</button>
                               </div>
 
                               <div className='flex flex-row gap-x-5 gap-y-2 flex-wrap'>

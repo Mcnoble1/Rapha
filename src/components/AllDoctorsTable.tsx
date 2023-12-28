@@ -390,10 +390,10 @@ const deleteHealthDetails = async (recordId) => {
               {/* Header cells */}
               <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Doctors Image</th>
               <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Doctor Name</th>
-              <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Status</th>
               <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Specialization</th>
               <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Gender</th>
-              <th className="p-2.5 xl:p-5 text-sm font-medium text left uppercase">Created On</th>
+              <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Status</th>
+              <th className="p-2.5 xl:p-5 text-sm font-medium text left uppercase">Joined On</th>
               <th className="p-2.5 xl:p-5 text-sm font-medium text-left uppercase">Actions</th>
             </tr>
           </thead>
@@ -413,10 +413,10 @@ const deleteHealthDetails = async (recordId) => {
                   </div>
                 </td>                
                 <td className="p-2.5 xl:p-5 ">{doctor.name}</td>                
-                <td className="p-2.5 xl:p-5 ">{doctor.createdAt}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.specialty}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.gender}</td>
-                <td className="p-2.5 xl:p-5 ">{doctor.status}</td>
+                <td className="p-2.5 xl:p-5"><span className='bg-warning p-2 rounded-xl'>{doctor.status}</span></td>
+                <td className="p-2.5 xl:p-5 ">{doctor.timestamp}</td>
                 <td className="p-2.5 xl:p-5 ">
                   <div className="flex flex-row gap-4">
                   <button 
