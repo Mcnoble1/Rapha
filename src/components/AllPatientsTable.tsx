@@ -210,7 +210,7 @@ const PatientsTable: React.FC = () => {
           <tbody>
             {/* Table body */}
             {patientsDetails.map((patient, index) => (
-              <tr key={patient._id} className={`border-b border-stroke dark:border-strokedark ${index === 0 ? 'rounded-t-sm' : ''}`}>
+              <tr key={patient.recordId} className={`border-b border-stroke dark:border-strokedark ${index === 0 ? 'rounded-t-sm' : ''}`}>
                 <td className="p-2.5 xl:p-5">
                   <div className="flex gap-3">
                     <div className="flex-shrink-0 ">

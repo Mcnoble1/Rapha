@@ -23,7 +23,7 @@ const Profile = () => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fetchDetailsLoading, setFetchDetailsLoading] = useState(false);
   const [popupOpenMap, setPopupOpenMap] = useState<{ [key: number]: boolean }>({});
-  const [personalData, setPersonalData] = useState<{ name: string; dateOfBirth: string; phone: string; maritalStatus: string; identificationNumber: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; }>({
+  const [personalData, setPersonalData] = useState<{ name: string; dateOfBirth: string; phone: string; maritalStatus: string; identificationNumber: string; gender: string; homeAddress: string; email: string; city: string; state: string; country: string; image: File | null }>({
     name: '',
     dateOfBirth: '',
     maritalStatus: '',
@@ -35,6 +35,7 @@ const Profile = () => {
     state: '',
     country: '',
     phone: '',
+    image: null
   }); 
 
   const [guardianData, setGuardianData] = useState<{ guardianName: string; guardianPhone: string; relationship: string; guardianGender: string; guardianHomeAddress: string; guardianEmail: string; guardianCity: string; guardianState: string; guardianCountry: string; }>({
@@ -62,6 +63,12 @@ const Profile = () => {
     doctorPhone: '',
   }); 
 
+
+  const parentId = localStorage.getItem('recordId');
+  const contextId = localStorage.getItem('contextId');
+
+  const [imageURL, setImageURL] = useState("");
+
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null); 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -86,6 +93,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchHealthDetails();
+    fetchPictureDetails();
   }, []);
 
   const togglePopup = (userId: string) => {
@@ -229,6 +237,7 @@ const handleAddProfile = async (e: FormEvent) => {
       state: '',
       country: '',
       phone: '',
+      image: null
     })
 
     setGuardianData({
@@ -273,6 +282,24 @@ const handleAddProfile = async (e: FormEvent) => {
       setLoading(false);
     } 
 };
+
+const handleImageChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const { name, value } = e.target;
+
+  const file = e.target.files?.[0];
+
+    if (file) {
+      setSelectedFileName(file.name);
+    }
+
+  setPersonalData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+
+  handleAddPicture(e);
+};
+
 
 const writeProfileToDwn = async (profileData) => {
   try {
@@ -326,8 +353,8 @@ const fetchHealthDetails = async () => {
         response.records.map(async (record) => {
           const data = await record.data.json();
           console.log(data);
-        localStorage.setItem('recordId', JSON.stringify(record.id));
-        localStorage.setItem('contextId', JSON.stringify(record.contextId));
+        localStorage.setItem('recordId', record.id);
+        localStorage.setItem('contextId', record.contextId);
           return {
             ...data,
             recordId: record.id,
@@ -530,6 +557,138 @@ const deleteHealthDetails = async (recordId) => {
   }
 };
 
+const handleAddPicture = async (e: FormEvent) => {
+  e.preventDefault();
+  setLoading(true); 
+    
+  // const formdata = new FormData();
+  // formdata.append('image', fileInputRef.current?.files?.[0], fileInputRef.current?.files?.[0].name);
+
+  const blob = new Blob(fileInputRef.current.files, { type: "image/png" });
+
+  try {
+    let record;
+    console.log(blob);
+    record = await writePictureToDwn(blob);
+    console.log(record);
+    if (record) {
+      const { status } = await record.send(myDid);
+      console.log("Send record status in handleAddPicture", status);
+    } else {
+      toast.error('Failed to create picture record', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000, 
+        });
+        setLoading(false);
+      throw new Error('Failed to create picture record');       
+    }
+
+    setSelectedFileName("Click to add Image")
+    fetchHealthDetails();
+    setPopupOpen(false);
+    toast.success('Successfully created picture record', {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000, 
+    });
+
+    setLoading(false);
+
+  } catch (err) {
+      console.error('Error in handleAddPicture:', err);
+      toast.error('Error in handleAddPicture. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000, // Adjust the duration as needed
+      });
+      setLoading(false);
+    } 
+};
+
+   const writePictureToDwn = async (pictureData : any) => {
+    try {
+      console.log(pictureData)
+      const pictureProtocol = profileProtocolDefinition;
+      const { record, status } = await web5.dwn.records.write({
+        data: pictureData,
+        message: {
+          protocol: pictureProtocol.protocol,
+          protocolPath: 'patientProfile/profileImage',
+          schema: pictureProtocol.types.profileImage.schema,
+          recipient: myDid,
+          dataFormat: "image/png",
+          parentId: parentId,
+          contextId: contextId,
+        },
+      });
+      console.log(record);
+
+      if (status === 200) {
+        return { ...pictureData, recordId: record.id}
+      } 
+      console.log('Successfully wrote picture details to DWN:', record);
+      toast.success('Picture Details written to DWN', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000, 
+      });
+      return record;
+    } catch (err) {
+      console.error('Failed to write picture details to DWN:', err);
+      toast.error('Failed to write picture details to DWN. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+      });
+    }
+   }; 
+
+
+   const fetchPictureDetails = async () => {
+    setFetchDetailsLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              protocol: 'https://rapha.com/protocol',
+              protocolPath: 'patientProfile/profileImage',
+          },
+        },
+      });
+      console.log('Picture Details:', response);
+  
+    response.records.forEach( async (imageRec) => {
+    console.log('this is the each image record', imageRec);
+    // // Get the blob of the image data
+    const imageId = imageRec.id
+    console.log(imageId)
+     const {record, status }= await web5.dwn.records.read({
+      message: {
+         filter: {
+          recordId: imageId,
+         },
+      },
+      });
+    console.log ({record, status})
+  
+        const imageresult = await record.data.blob();
+        console.log(imageresult)
+        const imageUrl = URL.createObjectURL(imageresult);
+        console.log(imageUrl)
+        setImageURL(imageUrl);
+      })
+      toast.success('Successfully fetched picture details', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+  
+      setFetchDetailsLoading(false);
+    } catch (err) {
+      console.error('Error in fetchPictureDetails:', err);
+      toast.error('Error in fetchPictureDetails. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setFetchDetailsLoading(false);
+    };
+  };
 
 
   return (
@@ -585,7 +744,7 @@ const deleteHealthDetails = async (recordId) => {
           <div className="px-4 pb-6 lg:pb-8 xl:pb-11.5">
             <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
               <div className="relative drop-shadow-2">
-                <img src={userSix} alt="profile" />
+                <img src={imageURL || userSix} alt="profile" />
                 <label
                   htmlFor="profile"
                   className="absolute bottom-0 right-0 flex h-8.5 w-8.5 cursor-pointer items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 sm:bottom-2 sm:right-2"
@@ -614,6 +773,9 @@ const deleteHealthDetails = async (recordId) => {
                   <input
                     type="file"
                     name="profile"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
                     id="profile"
                     className="sr-only"
                   />
