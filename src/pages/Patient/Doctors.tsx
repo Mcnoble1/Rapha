@@ -52,9 +52,10 @@ const Doctors: React.FC = () => {
   };
 
   useEffect(() => {
+    if (web5 && myDid) {
     fetchHealthDetails();
-  }
-  , []);
+    }
+  }, []);
 
   const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
@@ -168,15 +169,10 @@ const Doctors: React.FC = () => {
                                 <p className="text-2xl font-bold text-black dark:text-white">
                                   {doctor.name} 
                                 </p>
-                                <button className='bg-warning px-1 rounded-xl ml-2'>{doctor.status}</button>
+                                <button className={` ${doctor.status === 'Verified' ? 'bg-success' : 'bg-warning'} p-1 text-white rounded-xl ml-5`}>{doctor.status}</button>
                               </div>
 
                               <div className='flex flex-row gap-x-5 gap-y-2 flex-wrap'>
-                                {/* <div className='w-1/2 mb-1' >
-                                  <h4 className="text-lg mt-1 font-medium text-black dark:text-white">
-                                    {doctor.gender }
-                                  </h4>
-                                </div> */}
 
                                 <div className='' >
                                   <p className="text-lg font-medium text-black dark:text-white">
@@ -209,12 +205,15 @@ const Doctors: React.FC = () => {
                                 </div>
                               </div>      
                               <div className="relative">
-                        <button
-                          onClick={() =>  togglePop(doctor.recordId)}                      
-                          className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-                          >
-                          Book
-                        </button>
+
+                        {doctor.status === 'Verified' ? (
+                          <button
+                            onClick={() =>  togglePop(doctor.recordId)}                      
+                            className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                            >
+                            Book
+                          </button>
+                        ) : null }
                           {/* {issueVCOpenMap[doctor.recordId] && (
                                 <div
                                   ref={popup}

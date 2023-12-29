@@ -170,7 +170,8 @@ const Profile = () => {
     personaldata.append("state", personalData.state);
     personaldata.append("country", personalData.country);
     personaldata.append("phone", personalData.phone);
-
+    personaldata.append("status", personalData.status);
+    
     setLoading(false);
   
     try {

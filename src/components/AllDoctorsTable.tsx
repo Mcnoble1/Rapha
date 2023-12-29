@@ -11,8 +11,8 @@ const DoctorsTable: React.FC = () => {
 
   const [doctorsDetails, setDoctorsDetails] = useState<Doctor[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
-  const [doctorToDeleteId, setDoctorToDeleteId] = useState<number | null>(null);
+  const [isRevokeConfirmationVisible, setRevokeConfirmationVisible] = useState(false);
+  const [doctorToRevokeId, setDoctorToRevokeId] = useState<number | null>(null);
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
@@ -178,18 +178,23 @@ const { record } = await web5.dwn.records.create({
 // (optional) immediately send record to users remote DWNs
 const { status } = await record.send(myDid);
 
-updateHealthDetails(recordId, { status: 'Verified' });
+console.log(doctorsDetails)
+doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0].status = 'Verified';
+setDoctorsDetails(doctorsDetails);
+console.log(doctorsDetails)
+
+updateHealthDetails(recordId, doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0]);
 
 };
 
-const showDeleteConfirmation = (doctorId: string) => {
-    setDoctorToDeleteId(doctorId);
-    setDeleteConfirmationVisible(true);
+const showRevokeConfirmation = (doctorId: string) => {
+    setDoctorToRevokeId(doctorId);
+    setRevokeConfirmationVisible(true);
   };
 
-  const hideDeleteConfirmation = () => {
-    setDoctorToDeleteId(null);
-    setDeleteConfirmationVisible(false);
+  const hideRevokeConfirmation = () => {
+    setDoctorToRevokeId(null);
+    setRevokeConfirmationVisible(false);
   };
 
   const updateHealthDetails = async (recordId, data) => {
@@ -304,13 +309,11 @@ const deleteHealthDetails = async (recordId) => {
 
   const handleSort = (option: string) => {
     let sortedData = [...doctorsDetails];
-    if (option === 'ascending') {
-      sortedData.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (option === 'descending') {
-      sortedData.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (option === 'date') {
-      sortedData.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-    }
+    if (option === 'Verified') {
+      sortedData.filter((doctor) => doctor.status === 'Verified');
+    } else if (option === 'Unverified') {
+      sortedData.filter((doctor) => doctor.status === 'Unverified');
+    } 
     setDoctorsDetails(sortedData);
     setSortOption(option);
     setSortDropdownVisible(false);
@@ -337,28 +340,20 @@ const deleteHealthDetails = async (recordId) => {
             <div className="absolute top-12 left-0 bg-white border border-stroke rounded-b-sm shadow-lg dark:bg-boxdark">
               <ul className="py-2">
                 <li
-                  onClick={() => handleSort('ascending')}
+                  onClick={() => handleSort('Verified')}
                   className={`cursor-pointer px-4 py-2 ${
-                    sortOption === 'ascending' ? 'bg-primary text-white' : ''
+                    sortOption === 'Verified' ? 'bg-primary text-white' : ''
                   }`}
                 >
-                  Ascending Order
+                  Verified
                 </li>
                 <li
-                  onClick={() => handleSort('descending')}
+                  onClick={() => handleSort('Unverified')}
                   className={`cursor-pointer px-4 py-2 ${
-                    sortOption === 'descending' ? 'bg-primary text-white' : ''
+                    sortOption === 'Unverified' ? 'bg-primary text-white' : ''
                   }`}
                 >
-                  Descending Order
-                </li>
-                <li
-                  onClick={() => handleSort('date')}
-                  className={`cursor-pointer px-4 py-2 ${
-                    sortOption === 'date' ? 'bg-primary text-white' : ''
-                  }`}
-                >
-                  Date
+                  Unverified
                 </li>
               </ul>
             </div>
@@ -398,15 +393,49 @@ const deleteHealthDetails = async (recordId) => {
                 <td className="p-2.5 xl:p-5 ">{doctor.name}</td>                
                 <td className="p-2.5 xl:p-5 ">{doctor.specialty}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.gender}</td>
-                <td className="p-2.5 xl:p-5"><span className='bg-warning p-2 rounded-xl'>{doctor.status}</span></td>
+                <td className="p-2.5 xl:p-5"><span className={` ${doctor.status === 'Verified' ? 'bg-success' : 'bg-warning'} p-2 text-white rounded-xl`}>{doctor.status}</span></td>
                 <td className="p-2.5 xl:p-5 ">{doctor.timestamp}</td>
                 <td className="p-2.5 xl:p-5 ">
                   <div className="flex flex-row gap-4">
-                  <button 
+
+                  {doctor.status === 'Verified' ? (
+                    <button 
+                        onClick={() => showRevokeConfirmation(doctor.recordId)}                      
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90">
+                      Revoke
+                    </button>
+                    ) : (
+                    <button 
                         onClick={() => togglePopup(doctor.recordId)}                      
                         className="rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90">
-                      View
+                      Verify
                     </button>
+                    )}
+                     {isRevokeConfirmationVisible && (
+                      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                        <div className="bg-white p-5 rounded-lg shadow-md">
+                          <p>Are you sure you want to revoke the credential?</p>
+                          <div className="mt-4 flex justify-end">
+                            <button
+                              onClick={hideRevokeConfirmation}
+                              className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => {
+                                hideRevokeConfirmation();
+                                // deleteHealthDetails(doctor.recordId);
+                              }}
+                              className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                            >
+                              Confirm
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {popupOpenMap[doctor.recordId] && (
                             <div
                               ref={popup}
