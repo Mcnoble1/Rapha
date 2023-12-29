@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect, useContext, ChangeEvent } from 'rea
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context.tsx";
-
+import { VerifiableCredential } from "@web5/credentials";
+import { DidKeyMethod } from '@web5/dids';
 
 const DoctorsTable: React.FC = () => {
 
@@ -26,13 +27,11 @@ const DoctorsTable: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [popupOpenMap, setPopupOpenMap] = useState<{ [key: number]: boolean }>({});
   const [issueVCOpenMap, setIssueVCOpenMap] = useState<{ [key: number]: boolean }>({});
-  const [vcData, setVcData] = useState<{ name: string; dateOfBirth: string; hospital: string; specialty: string; registrationNumber: string; }>({
-    name: '',
-    dateOfBirth: '',
-    hospital: '',
-    specialty: '',
-    registrationNumber: '',
-  }); 
+  const [vcData, setVcData] = useState<{ specialty: string, hospital: string, licenseStatus: string; }>({
+    specialty: "",
+    hospital: "",
+    licenseStatus: "",
+  });
 
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null); 
@@ -67,8 +66,10 @@ setIssueVCOpenMap((prevMap) => ({
 };
 
 useEffect(() => {
+  if (web5 && myDid) {
   fetchHealthDetails();
-} , []);
+  }
+} , [web5, myDid]);
 
 const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
@@ -143,6 +144,42 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>)
   if (file) {
     setSelectedFileName(file.name);
   } 
+};
+
+const issueVC = async (recordId) => {
+
+  const raphaDid = await DidKeyMethod.create();
+  const doctorDid = await DidKeyMethod.create();
+
+  const vc = await VerifiableCredential.create({
+    type: 'LicenseCredential',
+    issuer: raphaDid.did,
+    subject: doctorDid.did,
+    data: {
+        "specialty": "Cardiologist",
+        "licenseStatus": "Valid"
+    }
+  });
+
+console.log(vc);
+
+const signedLicenseJWT = await vc.sign({ did: raphaDid });
+
+console.log(signedLicenseJWT);
+
+const { record } = await web5.dwn.records.create({
+  data: signedLicenseJWT,
+  message: {
+    schema: 'EmploymentCredential',
+    dataFormat: 'application/vc+jwt',
+  },
+});
+
+// (optional) immediately send record to users remote DWNs
+const { status } = await record.send(myDid);
+
+updateHealthDetails(recordId, { status: 'Verified' });
+
 };
 
 const showDeleteConfirmation = (doctorId: string) => {
@@ -265,10 +302,6 @@ const deleteHealthDetails = async (recordId) => {
     setSortDropdownVisible(!sortDropdownVisible);
   };
 
-  const toggleFilterDropdown = () => {
-    setFilterDropdownVisible(!filterDropdownVisible);
-  };
-
   const handleSort = (option: string) => {
     let sortedData = [...doctorsDetails];
     if (option === 'ascending') {
@@ -283,19 +316,6 @@ const deleteHealthDetails = async (recordId) => {
     setSortDropdownVisible(false);
   };
 
-  const handleFilter = (option: string) => {
-    let filteredData = [...doctorsDetails];
-    // map over the doctorsDetails and filter using the names of the doctors
-    if (option !== '') {
-    filteredData = filteredData.filter((doctor) => doctor.name === option);
-    } else {
-      // fetchData();
-    }
-
-    setDoctorsDetails(filteredData);
-    setFilterOption(option);
-    setFilterDropdownVisible(false);
-  };
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -339,43 +359,6 @@ const deleteHealthDetails = async (recordId) => {
                   }`}
                 >
                   Date
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
-
-        <div className="relative">
-          <button
-            onClick={toggleFilterDropdown}
-            className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90 lg:px-8 xl:px-10"
-          >
-            Filter
-          </button>
-          {filterDropdownVisible && (
-            <div className="absolute top-12 left-0 bg-white border border-stroke rounded-b-sm shadow-lg dark:bg-boxdark">
-              <ul className="py-2">
-                {/* map over the doctorsDetails and list the doctor names as dropdown options */}
-                {doctorsDetails.map((doctor) => (
-                  <li
-                    key={doctor._id}
-                    onClick={() => handleFilter(doctor.name)}
-                    className={`cursor-pointer px-4 py-2 ${
-                      filterOption === doctor.name ? 'bg-primary text-white' : ''
-                    }`}
-                  >
-                    {doctor.name}
-                  </li>
-                ))}
-                {/* add more options here */}
-                  {/* clear filter */}
-                <li
-                  onClick={() => handleFilter('')}
-                  className={`cursor-pointer px-4 py-2 ${
-                    filterOption === '' ? 'bg-primary text-white' : ''
-                  }`}
-                >
-                  Clear Filter
                 </li>
               </ul>
             </div>
@@ -600,94 +583,61 @@ const deleteHealthDetails = async (recordId) => {
                                                   </div>
                                                   <form>
                                                   <div className= "rounded-sm px-6.5 bg-white dark:border-strokedark dark:bg-boxdark">
-                                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                            <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Name
-                                                </label>
-                                                <div className={`relative ${vcData.name ? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="name"
-                                                  required
-                                                  value={vcData.name}
-                                                  onChange={handleInputChange}
-                                                  placeholder="John Doe"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
+                                                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                                  <div className="w-full xl:w-3/5">
+                                                      <label className="mb-2.5 block text-black dark:text-white">
+                                                        Specialty
+                                                      </label>
+                                                      <div className={`relative ${vcData.specialty ? 'bg-light-blue' : ''}`}>
+                                                      <input
+                                                        type="text"
+                                                        name="specialty"
+                                                        required
+                                                        value={vcData.specialty}
+                                                        onChange={handleInputChange}
+                                                        placeholder="John Doe"
+                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      </div>
+                                                    </div>
 
-                                              <div className="w-full xl:w-1/2">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Date of Birth
-                                                </label>
-                                                <div className={`relative ${vcData.dateOfBirth ? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="date" 
-                                                  name="dateOfBirth"
-                                                  required
-                                                  value={vcData.dateOfBirth}
-                                                  onChange={handleInputChange}
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div> 
+                                                    <div className="w-full xl:w-3/5">
+                                                      <label className="mb-2.5 block text-black dark:text-white">
+                                                        Hospital
+                                                      </label>
+                                                      <div className={`relative ${vcData.hospital ? 'bg-light-blue' : ''}`}>
+                                                      <input
+                                                        type="text"
+                                                        name="hospital"
+                                                        required
+                                                        value={vcData.hospital}
+                                                        onChange={handleInputChange}
+                                                        placeholder="John Doe"
+                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      </div>
+                                                    </div>
 
-                                              <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Hospital
-                                                </label>
-                                                <div className={`relative ${vcData.hospital? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="hospital"
-                                                  required
-                                                  value={vcData.hospital}
-                                                  onChange={handleInputChange}
-                                                  placeholder="John Hopkins"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-
-                                            <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Specialty
-                                                </label>
-                                                <div className={`relative ${vcData.specialty? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="specialty"
-                                                  required
-                                                  value={vcData.specialty}
-                                                  onChange={handleInputChange}
-                                                  placeholder="Family Medicine"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
-
-                                              <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Registration Number
-                                                </label>
-                                                <div className={`relative ${vcData.registrationNumber? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="registrationNumber"
-                                                  required
-                                                  value={vcData.registrationNumber}
-                                                  onChange={handleInputChange}
-                                                  placeholder="SSN123456"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
-                                            </div>                 
-                                            </div>
+                                                    <div className="w-full xl:w-3/5">
+                                                      <label className="mb-2.5 block text-black dark:text-white">
+                                                        License Status
+                                                      </label>
+                                                      <div className={`relative ${vcData.licenseStatus? 'bg-light-blue' : ''}`}>
+                                                      <input
+                                                        type="text"
+                                                        name="licenseStatus"
+                                                        required
+                                                        value={vcData.licenseStatus}
+                                                        onChange={handleInputChange}
+                                                        placeholder="John Hopkins"
+                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      </div>
+                                                    </div>
+                                                   </div>    
+                                                  </div>
                                                   </form>
                                                 <button
                                                   type="button"
-                                                  onClick={() => updateHealthDetails(doctor.recordId, vcData)}
+                                                  // onClick={() => updateHealthDetails(doctor.recordId, vcData)}
+                                                  onClick={() => issueVC(doctor.recordId)}
                                                   disabled={updateLoading}
                                                   className={`mr-5 mb-5 inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 ${updateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >
