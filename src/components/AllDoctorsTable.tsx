@@ -319,7 +319,6 @@ const deleteHealthDetails = async (recordId) => {
     setSortDropdownVisible(false);
   };
 
-
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
        <div className="flex flex-row justify-between">
@@ -334,7 +333,7 @@ const deleteHealthDetails = async (recordId) => {
             onClick={toggleSortDropdown}
             className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
-            Sort
+            Filter
           </button>
           {sortDropdownVisible && (
             <div className="absolute top-12 left-0 bg-white border border-stroke rounded-b-sm shadow-lg dark:bg-boxdark">
@@ -618,14 +617,42 @@ const deleteHealthDetails = async (recordId) => {
                                                         Specialty
                                                       </label>
                                                       <div className={`relative ${vcData.specialty ? 'bg-light-blue' : ''}`}>
-                                                      <input
-                                                        type="text"
-                                                        name="specialty"
-                                                        required
-                                                        value={vcData.specialty}
-                                                        onChange={handleInputChange}
-                                                        placeholder="John Doe"
-                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      <select
+                                                          name="specialty"
+                                                          value={vcData.specialty}
+                                                          onChange={handleInputChange}
+                                                          required
+                                                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                                          <option value="">Select Specialty</option>                        
+                                                          <option value="Family Medicine">Family Medicine</option>
+                                                          <option value="General Medicine">General Medicine</option>
+                                                          <option value="Internal Medicine">Internal Medicine</option>
+                                                          <option value="Emergency Medicine">Emergency Medicine</option>
+                                                          <option value="Preventive Medicine">Preventive Medicine</option>
+                                                          <option value="Occupational Medicine">Occupational Medicine</option>
+                                                          <option value="Pediatrics">Pediatrics</option>
+                                                          <option value="Psychiatry">Psychiatry</option>
+                                                          <option value="Surgery">Surgery</option>
+                                                          <option value="Obstetrics and Gynecology">Obstetrics and Gynecology</option>
+                                                          <option value="Neurology">Neurology</option>
+                                                          <option value="Cardiology">Cardiology</option>
+                                                          <option value="Dermatology">Dermatology</option>
+                                                          <option value="Ophthalmology">Ophthalmology</option>
+                                                          <option value="Orthopedics">Orthopedics</option>
+                                                          <option value="Otolaryngology">Otolaryngology</option>
+                                                          <option value="Urology">Urology</option>
+                                                          <option value="Radiology">Radiology</option>
+                                                          <option value="Anesthesiology">Anesthesiology</option>
+                                                          <option value="Pathology">Pathology</option>
+                                                          <option value="Medical Genetics">Medical Genetics</option>
+                                                          <option value="Public Health">Public Health</option>
+                                                          <option value="Nursing">Nursing</option>
+                                                          <option value="Physiotherapy">Physiotherapy</option>
+                                                          <option value="Dentistry">Dentistry</option>
+                                                          <option value="Nutrition">Nutrition</option>
+                                                          <option value="Veterinary Medicine">Veterinary Medicine</option>
+                                                          <option value="Other">Other</option>
+                                                        </select> 
                                                       </div>
                                                     </div>
 
