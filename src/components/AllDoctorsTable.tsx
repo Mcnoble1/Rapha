@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect, useContext, ChangeEvent } from 'rea
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context.tsx";
-
+import { VerifiableCredential } from "@web5/credentials";
+import { DidKeyMethod } from '@web5/dids';
 
 const DoctorsTable: React.FC = () => {
 
@@ -10,8 +11,8 @@ const DoctorsTable: React.FC = () => {
 
   const [doctorsDetails, setDoctorsDetails] = useState<Doctor[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
-  const [doctorToDeleteId, setDoctorToDeleteId] = useState<number | null>(null);
+  const [isRevokeConfirmationVisible, setRevokeConfirmationVisible] = useState(false);
+  const [doctorToRevokeId, setDoctorToRevokeId] = useState<number | null>(null);
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
@@ -26,13 +27,11 @@ const DoctorsTable: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [popupOpenMap, setPopupOpenMap] = useState<{ [key: number]: boolean }>({});
   const [issueVCOpenMap, setIssueVCOpenMap] = useState<{ [key: number]: boolean }>({});
-  const [vcData, setVcData] = useState<{ name: string; dateOfBirth: string; hospital: string; specialty: string; registrationNumber: string; }>({
-    name: '',
-    dateOfBirth: '',
-    hospital: '',
-    specialty: '',
-    registrationNumber: '',
-  }); 
+  const [vcData, setVcData] = useState<{ specialty: string, hospital: string, licenseStatus: string; }>({
+    specialty: "",
+    hospital: "",
+    licenseStatus: "",
+  });
 
   const trigger = useRef<HTMLButtonElement | null>(null);
   const popup = useRef<HTMLDivElement | null>(null); 
@@ -67,8 +66,10 @@ setIssueVCOpenMap((prevMap) => ({
 };
 
 useEffect(() => {
+  if (web5 && myDid) {
   fetchHealthDetails();
-} , []);
+  }
+} , [web5, myDid]);
 
 const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
@@ -145,14 +146,55 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>)
   } 
 };
 
-const showDeleteConfirmation = (doctorId: string) => {
-    setDoctorToDeleteId(doctorId);
-    setDeleteConfirmationVisible(true);
+const issueVC = async (recordId) => {
+
+  const raphaDid = await DidKeyMethod.create();
+  const doctorDid = await DidKeyMethod.create();
+
+  const vc = await VerifiableCredential.create({
+    type: 'LicenseCredential',
+    issuer: raphaDid.did,
+    subject: doctorDid.did,
+    data: {
+        "specialty": "Cardiologist",
+        "licenseStatus": "Valid"
+    }
+  });
+
+console.log(vc);
+
+const signedLicenseJWT = await vc.sign({ did: raphaDid });
+
+console.log(signedLicenseJWT);
+
+const { record } = await web5.dwn.records.create({
+  data: signedLicenseJWT,
+  message: {
+    schema: 'EmploymentCredential',
+    dataFormat: 'application/vc+jwt',
+  },
+});
+
+// (optional) immediately send record to users remote DWNs
+const { status } = await record.send(myDid);
+
+console.log(doctorsDetails)
+doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0].status = 'Verified';
+setDoctorsDetails(doctorsDetails);
+console.log(doctorsDetails)
+
+updateHealthDetails(recordId, doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0]);
+
+};
+
+const showRevokeConfirmation = (doctorId: string) => {
+    setDoctorToRevokeId(doctorId);
+    setRevokeConfirmationVisible(true);
   };
 
-  const hideDeleteConfirmation = () => {
-    setDoctorToDeleteId(null);
-    setDeleteConfirmationVisible(false);
+  const hideRevokeConfirmation = () => {
+    setDoctorToRevokeId(null);
+    setRevokeConfirmationVisible(false);
   };
 
   const updateHealthDetails = async (recordId, data) => {
@@ -265,36 +307,16 @@ const deleteHealthDetails = async (recordId) => {
     setSortDropdownVisible(!sortDropdownVisible);
   };
 
-  const toggleFilterDropdown = () => {
-    setFilterDropdownVisible(!filterDropdownVisible);
-  };
-
   const handleSort = (option: string) => {
     let sortedData = [...doctorsDetails];
-    if (option === 'ascending') {
-      sortedData.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (option === 'descending') {
-      sortedData.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (option === 'date') {
-      sortedData.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-    }
+    if (option === 'Verified') {
+      sortedData.filter((doctor) => doctor.status === 'Verified');
+    } else if (option === 'Unverified') {
+      sortedData.filter((doctor) => doctor.status === 'Unverified');
+    } 
     setDoctorsDetails(sortedData);
     setSortOption(option);
     setSortDropdownVisible(false);
-  };
-
-  const handleFilter = (option: string) => {
-    let filteredData = [...doctorsDetails];
-    // map over the doctorsDetails and filter using the names of the doctors
-    if (option !== '') {
-    filteredData = filteredData.filter((doctor) => doctor.name === option);
-    } else {
-      // fetchData();
-    }
-
-    setDoctorsDetails(filteredData);
-    setFilterOption(option);
-    setFilterDropdownVisible(false);
   };
 
   return (
@@ -311,71 +333,26 @@ const deleteHealthDetails = async (recordId) => {
             onClick={toggleSortDropdown}
             className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
-            Sort
+            Filter
           </button>
           {sortDropdownVisible && (
             <div className="absolute top-12 left-0 bg-white border border-stroke rounded-b-sm shadow-lg dark:bg-boxdark">
               <ul className="py-2">
                 <li
-                  onClick={() => handleSort('ascending')}
+                  onClick={() => handleSort('Verified')}
                   className={`cursor-pointer px-4 py-2 ${
-                    sortOption === 'ascending' ? 'bg-primary text-white' : ''
+                    sortOption === 'Verified' ? 'bg-primary text-white' : ''
                   }`}
                 >
-                  Ascending Order
+                  Verified
                 </li>
                 <li
-                  onClick={() => handleSort('descending')}
+                  onClick={() => handleSort('Unverified')}
                   className={`cursor-pointer px-4 py-2 ${
-                    sortOption === 'descending' ? 'bg-primary text-white' : ''
+                    sortOption === 'Unverified' ? 'bg-primary text-white' : ''
                   }`}
                 >
-                  Descending Order
-                </li>
-                <li
-                  onClick={() => handleSort('date')}
-                  className={`cursor-pointer px-4 py-2 ${
-                    sortOption === 'date' ? 'bg-primary text-white' : ''
-                  }`}
-                >
-                  Date
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
-
-        <div className="relative">
-          <button
-            onClick={toggleFilterDropdown}
-            className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90 lg:px-8 xl:px-10"
-          >
-            Filter
-          </button>
-          {filterDropdownVisible && (
-            <div className="absolute top-12 left-0 bg-white border border-stroke rounded-b-sm shadow-lg dark:bg-boxdark">
-              <ul className="py-2">
-                {/* map over the doctorsDetails and list the doctor names as dropdown options */}
-                {doctorsDetails.map((doctor) => (
-                  <li
-                    key={doctor._id}
-                    onClick={() => handleFilter(doctor.name)}
-                    className={`cursor-pointer px-4 py-2 ${
-                      filterOption === doctor.name ? 'bg-primary text-white' : ''
-                    }`}
-                  >
-                    {doctor.name}
-                  </li>
-                ))}
-                {/* add more options here */}
-                  {/* clear filter */}
-                <li
-                  onClick={() => handleFilter('')}
-                  className={`cursor-pointer px-4 py-2 ${
-                    filterOption === '' ? 'bg-primary text-white' : ''
-                  }`}
-                >
-                  Clear Filter
+                  Unverified
                 </li>
               </ul>
             </div>
@@ -415,15 +392,49 @@ const deleteHealthDetails = async (recordId) => {
                 <td className="p-2.5 xl:p-5 ">{doctor.name}</td>                
                 <td className="p-2.5 xl:p-5 ">{doctor.specialty}</td>
                 <td className="p-2.5 xl:p-5 ">{doctor.gender}</td>
-                <td className="p-2.5 xl:p-5"><span className='bg-warning p-2 rounded-xl'>{doctor.status}</span></td>
+                <td className="p-2.5 xl:p-5"><span className={` ${doctor.status === 'Verified' ? 'bg-success' : 'bg-warning'} p-2 text-white rounded-xl`}>{doctor.status}</span></td>
                 <td className="p-2.5 xl:p-5 ">{doctor.timestamp}</td>
                 <td className="p-2.5 xl:p-5 ">
                   <div className="flex flex-row gap-4">
-                  <button 
+
+                  {doctor.status === 'Verified' ? (
+                    <button 
+                        onClick={() => showRevokeConfirmation(doctor.recordId)}                      
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90">
+                      Revoke
+                    </button>
+                    ) : (
+                    <button 
                         onClick={() => togglePopup(doctor.recordId)}                      
                         className="rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90">
-                      View
+                      Verify
                     </button>
+                    )}
+                     {isRevokeConfirmationVisible && (
+                      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+                        <div className="bg-white p-5 rounded-lg shadow-md">
+                          <p>Are you sure you want to revoke the credential?</p>
+                          <div className="mt-4 flex justify-end">
+                            <button
+                              onClick={hideRevokeConfirmation}
+                              className="mr-4 rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => {
+                                hideRevokeConfirmation();
+                                // deleteHealthDetails(doctor.recordId);
+                              }}
+                              className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90"
+                            >
+                              Confirm
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {popupOpenMap[doctor.recordId] && (
                             <div
                               ref={popup}
@@ -600,94 +611,89 @@ const deleteHealthDetails = async (recordId) => {
                                                   </div>
                                                   <form>
                                                   <div className= "rounded-sm px-6.5 bg-white dark:border-strokedark dark:bg-boxdark">
-                                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                            <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Name
-                                                </label>
-                                                <div className={`relative ${vcData.name ? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="name"
-                                                  required
-                                                  value={vcData.name}
-                                                  onChange={handleInputChange}
-                                                  placeholder="John Doe"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
+                                                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                                  <div className="w-full xl:w-3/5">
+                                                      <label className="mb-2.5 block text-black dark:text-white">
+                                                        Specialty
+                                                      </label>
+                                                      <div className={`relative ${vcData.specialty ? 'bg-light-blue' : ''}`}>
+                                                      <select
+                                                          name="specialty"
+                                                          value={vcData.specialty}
+                                                          onChange={handleInputChange}
+                                                          required
+                                                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                                          <option value="">Select Specialty</option>                        
+                                                          <option value="Family Medicine">Family Medicine</option>
+                                                          <option value="General Medicine">General Medicine</option>
+                                                          <option value="Internal Medicine">Internal Medicine</option>
+                                                          <option value="Emergency Medicine">Emergency Medicine</option>
+                                                          <option value="Preventive Medicine">Preventive Medicine</option>
+                                                          <option value="Occupational Medicine">Occupational Medicine</option>
+                                                          <option value="Pediatrics">Pediatrics</option>
+                                                          <option value="Psychiatry">Psychiatry</option>
+                                                          <option value="Surgery">Surgery</option>
+                                                          <option value="Obstetrics and Gynecology">Obstetrics and Gynecology</option>
+                                                          <option value="Neurology">Neurology</option>
+                                                          <option value="Cardiology">Cardiology</option>
+                                                          <option value="Dermatology">Dermatology</option>
+                                                          <option value="Ophthalmology">Ophthalmology</option>
+                                                          <option value="Orthopedics">Orthopedics</option>
+                                                          <option value="Otolaryngology">Otolaryngology</option>
+                                                          <option value="Urology">Urology</option>
+                                                          <option value="Radiology">Radiology</option>
+                                                          <option value="Anesthesiology">Anesthesiology</option>
+                                                          <option value="Pathology">Pathology</option>
+                                                          <option value="Medical Genetics">Medical Genetics</option>
+                                                          <option value="Public Health">Public Health</option>
+                                                          <option value="Nursing">Nursing</option>
+                                                          <option value="Physiotherapy">Physiotherapy</option>
+                                                          <option value="Dentistry">Dentistry</option>
+                                                          <option value="Nutrition">Nutrition</option>
+                                                          <option value="Veterinary Medicine">Veterinary Medicine</option>
+                                                          <option value="Other">Other</option>
+                                                        </select> 
+                                                      </div>
+                                                    </div>
 
-                                              <div className="w-full xl:w-1/2">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Date of Birth
-                                                </label>
-                                                <div className={`relative ${vcData.dateOfBirth ? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="date" 
-                                                  name="dateOfBirth"
-                                                  required
-                                                  value={vcData.dateOfBirth}
-                                                  onChange={handleInputChange}
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div> 
+                                                    <div className="w-full xl:w-3/5">
+                                                      <label className="mb-2.5 block text-black dark:text-white">
+                                                        Hospital
+                                                      </label>
+                                                      <div className={`relative ${vcData.hospital ? 'bg-light-blue' : ''}`}>
+                                                      <input
+                                                        type="text"
+                                                        name="hospital"
+                                                        required
+                                                        value={vcData.hospital}
+                                                        onChange={handleInputChange}
+                                                        placeholder="John Doe"
+                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      </div>
+                                                    </div>
 
-                                              <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Hospital
-                                                </label>
-                                                <div className={`relative ${vcData.hospital? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="hospital"
-                                                  required
-                                                  value={vcData.hospital}
-                                                  onChange={handleInputChange}
-                                                  placeholder="John Hopkins"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-
-                                            <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Specialty
-                                                </label>
-                                                <div className={`relative ${vcData.specialty? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="specialty"
-                                                  required
-                                                  value={vcData.specialty}
-                                                  onChange={handleInputChange}
-                                                  placeholder="Family Medicine"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
-
-                                              <div className="w-full xl:w-3/5">
-                                                <label className="mb-2.5 block text-black dark:text-white">
-                                                  Registration Number
-                                                </label>
-                                                <div className={`relative ${vcData.registrationNumber? 'bg-light-blue' : ''}`}>
-                                                <input
-                                                  type="text"
-                                                  name="registrationNumber"
-                                                  required
-                                                  value={vcData.registrationNumber}
-                                                  onChange={handleInputChange}
-                                                  placeholder="SSN123456"
-                                                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                                </div>
-                                              </div>
-                                            </div>                 
-                                            </div>
+                                                    <div className="w-full xl:w-3/5">
+                                                      <label className="mb-2.5 block text-black dark:text-white">
+                                                        License Status
+                                                      </label>
+                                                      <div className={`relative ${vcData.licenseStatus? 'bg-light-blue' : ''}`}>
+                                                      <input
+                                                        type="text"
+                                                        name="licenseStatus"
+                                                        required
+                                                        value={vcData.licenseStatus}
+                                                        onChange={handleInputChange}
+                                                        placeholder="John Hopkins"
+                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      </div>
+                                                    </div>
+                                                   </div>    
+                                                  </div>
                                                   </form>
                                                 <button
                                                   type="button"
-                                                  onClick={() => updateHealthDetails(doctor.recordId, vcData)}
+                                                  // onClick={() => updateHealthDetails(doctor.recordId, vcData)}
+                                                  onClick={() => issueVC(doctor.recordId)}
                                                   disabled={updateLoading}
                                                   className={`mr-5 mb-5 inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 ${updateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >

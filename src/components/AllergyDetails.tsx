@@ -214,10 +214,6 @@ const AllergyDetails = () => {
         );
         setUserDetails(allergyDetails);
         console.log(allergyDetails);
-        toast.success('Successfully fetched allergy details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
         setFetchDetailsLoading(false);
       } else {
         console.error('No allergy details found');

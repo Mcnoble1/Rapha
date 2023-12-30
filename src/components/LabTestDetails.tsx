@@ -216,10 +216,7 @@ const LabTestDetails = () => {
         );
         setUserDetails(labTestDetails);
         console.log(labTestDetails);
-        toast.success('Successfully fetched labTest details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
+        
         setFetchDetailsLoading(false);
       } else {
         console.error('No labTest details found');

@@ -209,10 +209,7 @@ const InsuranceDetails = () => {
         );
         setUserDetails(insuranceDetails);
         console.log(insuranceDetails);
-        toast.success('Successfully fetched insurance details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
+       
         setFetchDetailsLoading(false);
       } else {
         console.error('No insurance details found');
