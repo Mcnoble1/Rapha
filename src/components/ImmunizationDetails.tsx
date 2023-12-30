@@ -217,10 +217,6 @@ const ImmunizationDetails = () => {
         );
         setUserDetails(immunizationDetails);
         console.log(immunizationDetails);
-        toast.success('Successfully fetched immunization details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
         setFetchDetailsLoading(false);
       } else {
         console.error('No immunization details found');

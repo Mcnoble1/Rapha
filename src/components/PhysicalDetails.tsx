@@ -220,10 +220,6 @@ const PhysicalDetails = () => {
         );
         setUserDetails(physicalDetails);
         console.log(physicalDetails);
-        toast.success('Successfully fetched physical details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
         setFetchDetailsLoading(false);
       } else {
         console.error('No physical details found');

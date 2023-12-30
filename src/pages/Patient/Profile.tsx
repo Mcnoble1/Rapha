@@ -92,8 +92,10 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    if (web5 && myDid) {
     fetchHealthDetails();
     fetchPictureDetails();
+    }
   }, []);
 
   const togglePopup = (userId: string) => {
@@ -1138,12 +1140,12 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Name
                                   </label>
-                                  <div className={`relative ${personalData.name ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.name ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="name"
                                     required
-                                    value={personalData.name}
+                                    value={user.name}
                                     onChange={handleInputChange}
                                     placeholder="John Doe"
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -1154,12 +1156,12 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Date of Birth
                                   </label>
-                                  <div className={`relative ${personalData.dateOfBirth ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.dateOfBirth ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="date" 
                                     name="dateOfBirth"
                                     required
-                                    value={personalData.dateOfBirth}
+                                    value={user.dateOfBirth}
                                     onChange={handleInputChange}
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                                   </div>
@@ -1169,10 +1171,10 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Marital Status
                                   </label>
-                                  <div className={`relative ${personalData.maritalStatus ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.maritalStatus ? 'bg-light-blue' : ''}`}>
                                   <select
                                         name="maritalStatus"
-                                        value={personalData.maritalStatus}
+                                        value={user.maritalStatus}
                                         onChange={handleInputChange}
                                         required
                                         className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
@@ -1190,11 +1192,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Identification Number
                                   </label>
-                                  <div className={`relative ${personalData.identificationNumber ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.identificationNumber ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="identificationNumber"
-                                    value={personalData.identificationNumber}
+                                    value={user.identificationNumber}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="SSN123456"
@@ -1206,10 +1208,10 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Gender
                                   </label>
-                                  <div className={`relative ${personalData.gender ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.gender ? 'bg-light-blue' : ''}`}>
                                   <select
                                         name="gender"
-                                        value={personalData.gender}
+                                        value={user.gender}
                                         onChange={handleInputChange}
                                         required
                                         className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
@@ -1224,11 +1226,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Phone Number
                                   </label>
-                                  <div className={`relative ${personalData.phone ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.phone ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="phone"
-                                    value={personalData.phone}
+                                    value={user.phone}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="+234 80123456"
@@ -1243,11 +1245,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Email Address
                                   </label>
-                                  <div className={`relative ${personalData.email ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.email ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="email"
-                                    value={personalData.email}
+                                    value={user.email}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="xyz@gmail.com"
@@ -1259,11 +1261,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Home Address
                                   </label>
-                                  <div className={`relative ${personalData.homeAddress ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.homeAddress ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="homeAddress"
-                                    value={personalData.homeAddress}
+                                    value={user.homeAddress}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
@@ -1275,11 +1277,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     City
                                   </label>
-                                  <div className={`relative ${personalData.city ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.city ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="city"
-                                    value={personalData.city}
+                                    value={user.city}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="Lagos"
@@ -1295,11 +1297,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     State
                                   </label>
-                                  <div className={`relative ${personalData.state ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.state ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="state"
-                                    value={personalData.state}
+                                    value={user.state}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="US-CA"
@@ -1311,11 +1313,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                   <label className="mb-2.5 block text-black dark:text-white">
                                     Country
                                   </label>
-                                  <div className={`relative ${personalData.country ? 'bg-light-blue' : ''}`}>
+                                  <div className={`relative ${user.country ? 'bg-light-blue' : ''}`}>
                                   <input
                                     type="text"
                                     name="country"
-                                    value={personalData.country}
+                                    value={user.country}
                                     required
                                     onChange={handleInputChange}
                                     placeholder="USA"
@@ -1332,12 +1334,12 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Name
                                         </label>
-                                        <div className={`relative ${guardianData.guardianName ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianName ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianName"
                                           required
-                                          value={guardianData.guardianName}
+                                          value={user.guardianName}
                                           onChange={handleGuardianInputChange}
                                           placeholder="John Doe"
                                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -1348,10 +1350,10 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Gender
                                         </label>
-                                        <div className={`relative ${guardianData.guardianGender ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianGender ? 'bg-light-blue' : ''}`}>
                                         <select
                                               name="guardianGender"
-                                              value={guardianData.guardianGender}
+                                              value={user.guardianGender}
                                               onChange={handleGuardianInputChange}
                                               required
                                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
@@ -1366,11 +1368,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Relationship to Patient
                                         </label>
-                                        <div className={`relative ${guardianData.relationship ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.relationship ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="relationship"
-                                          value={guardianData.relationship}
+                                          value={user.relationship}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="Partner"
@@ -1385,11 +1387,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Phone Number
                                         </label>
-                                        <div className={`relative ${guardianData.guardianPhone ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianPhone ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianPhone"
-                                          value={guardianData.guardianPhone}
+                                          value={user.guardianPhone}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="+234 80123456"
@@ -1401,11 +1403,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Email Address
                                         </label>
-                                        <div className={`relative ${guardianData.guardianEmail ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianEmail ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianEmail"
-                                          value={guardianData.guardianEmail}
+                                          value={user.guardianEmail}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="xyz@gmail.com"
@@ -1417,11 +1419,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Home Address
                                         </label>
-                                        <div className={`relative ${guardianData.guardianHomeAddress ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianHomeAddress ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianHomeAddress"
-                                          value={guardianData.guardianHomeAddress}
+                                          value={user.guardianHomeAddress}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="Phoenix Court, 1st Avenue"
@@ -1436,11 +1438,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           City
                                         </label>
-                                        <div className={`relative ${guardianData.guardianCity ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianCity ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianCity"
-                                          value={guardianData.guardianCity}
+                                          value={user.guardianCity}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="Lagos"
@@ -1452,11 +1454,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           State
                                         </label>
-                                        <div className={`relative ${guardianData.guardianState ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianState ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianState"
-                                          value={guardianData.guardianState}
+                                          value={user.guardianState}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="US-CA"
@@ -1468,11 +1470,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Country
                                         </label>
-                                        <div className={`relative ${guardianData.guardianCountry ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.guardianCountry ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="guardianCountry"
-                                          value={guardianData.guardianCountry}
+                                          value={user.guardianCountry}
                                           required
                                           onChange={handleGuardianInputChange}
                                           placeholder="USA"
@@ -1490,12 +1492,12 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Name
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorName ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorName ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorName"
                                           required
-                                          value={primaryDoctorData.doctorName}
+                                          value={user.doctorName}
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="John Doe"
                                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
@@ -1506,13 +1508,13 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Hospital
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.hospital ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.hospital ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text" 
                                           name="hospital"
                                           required
                                           placeholder='John Hopkins Hospital'
-                                          value={primaryDoctorData.hospital}
+                                          value={user.hospital}
                                           onChange={handlePrimaryDoctorInputChange}
                                           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                                         </div>
@@ -1522,11 +1524,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                         Specialty
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.specialty ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.specialty ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="specialty"
-                                          value={primaryDoctorData.specialty}
+                                          value={user.specialty}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="Family Medicine"
@@ -1541,11 +1543,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Email Address
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorEmail ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorEmail ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorEmail"
-                                          value={primaryDoctorData.doctorEmail}
+                                          value={user.doctorEmail}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="xyz@gmail.com"
@@ -1557,10 +1559,10 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Gender
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorGender ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorGender ? 'bg-light-blue' : ''}`}>
                                         <select
                                               name="doctorGender"
-                                              value={primaryDoctorData.doctorGender}
+                                              value={user.doctorGender}
                                               onChange={handlePrimaryDoctorInputChange}
                                               required
                                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
@@ -1575,11 +1577,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Phone Number
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorPhone ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorPhone ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorPhone"
-                                          value={primaryDoctorData.doctorPhone}
+                                          value={user.doctorPhone}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="+234 80123456"
@@ -1594,11 +1596,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Home Address
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorHomeAddress ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorHomeAddress ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorHomeAddress"
-                                          value={primaryDoctorData.doctorHomeAddress}
+                                          value={user.doctorHomeAddress}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="Phoenix Court, 1st Avenue, Gwarinpa, Abuja"
@@ -1610,11 +1612,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           City
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorCity ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorCity ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorCity"
-                                          value={primaryDoctorData.doctorCity}
+                                          value={user.doctorCity}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="Lagos"
@@ -1626,11 +1628,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           State
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorState ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorState ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorState"
-                                          value={primaryDoctorData.doctorState}
+                                          value={user.doctorState}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="US-CA"
@@ -1647,11 +1649,11 @@ const handleAddPicture = async (e: FormEvent) => {
                                         <label className="mb-2.5 block text-black dark:text-white">
                                           Country
                                         </label>
-                                        <div className={`relative ${primaryDoctorData.doctorCountry ? 'bg-light-blue' : ''}`}>
+                                        <div className={`relative ${user.doctorCountry ? 'bg-light-blue' : ''}`}>
                                         <input
                                           type="text"
                                           name="doctorCountry"
-                                          value={primaryDoctorData.doctorCountry}
+                                          value={user.doctorCountry}
                                           required
                                           onChange={handlePrimaryDoctorInputChange}
                                           placeholder="USA"

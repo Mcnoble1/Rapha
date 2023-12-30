@@ -215,11 +215,7 @@ const CardiologyDetails = () => {
           })
         );
         setUserDetails(cardiologyDetails);
-        console.log(cardiologyDetails);
-        toast.success('Successfully fetched cardiology details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
+        console.log(cardiologyDetails)
         setFetchDetailsLoading(false);
       } else {
         console.error('No cardiology details found');

@@ -216,10 +216,6 @@ const SurgeryDetails = () => {
         );
         setUserDetails(surgeryDetails);
         console.log(surgeryDetails);
-        toast.success('Successfully fetched surgery details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
         setFetchDetailsLoading(false);
       } else {
         console.error('No surgery details found');

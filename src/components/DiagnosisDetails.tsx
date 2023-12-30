@@ -209,10 +209,6 @@ const DiagnosisDetails = () => {
         );
         setUserDetails(diagnosisDetails);
         console.log(diagnosisDetails);
-        toast.success('Successfully fetched diagnosis details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
         setFetchDetailsLoading(false);
       } else {
         console.error('No diagnosis details found');

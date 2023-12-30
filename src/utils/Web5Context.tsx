@@ -2,7 +2,6 @@
 /* eslint-disable react/prop-types */
 import { Web5 } from "@web5/api/browser";
 import { createContext, useEffect, useState } from "react";
-import { adminDid } from "./Constants"
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 
@@ -12,8 +11,6 @@ const ContextProvider = ({ children }) => {
   const [web5, setWeb5] = useState(null);
   const [myDid, setMyDid] = useState(null);
   const [userType, setUserType] = useState(null);
-  const [doctorList, setDoctorList] = useState([]);
-  const [loadingDoctor, setLoadingDoctor] = useState(true);
 
   useEffect(() => {
     const connectWeb5 = async () => {
@@ -319,43 +316,9 @@ const ContextProvider = ({ children }) => {
         }
     };
 
-    const fetchDoctors = async () => {
-      try {
-        const response = await web5.dwn.records.query({
-          from: adminDid,
-          message: {
-            filter: {
-              protocol: profileProtocolDefinition.protocol,
-              schema: profileProtocolDefinition.types.doctorProfile.schema,
-            },
-          },
-        });
-
-        if (response.status.code === 200) {
-          const doctorProfile = await Promise.all(
-            response.records.map(async (record) => {
-              const data = await record.data.json();
-              return {
-                ...data,
-                recordId: record.id,
-              };
-            })
-          );
-          setDoctorList(doctorProfile);
-          setLoadingDoctor(false);
-          return doctorProfile;
-        } else {
-          console.error("error fetching this profile", response.status);
-          return [];
-        }
-      } catch (error) {
-        console.error("error fetching doctor profile :", error);
-      }
-    };
     
     if (web5 && myDid) {
         configureProtocol(web5, myDid);
-        fetchDoctors();
     }
   }, [web5, myDid]);
 
@@ -364,8 +327,6 @@ const ContextProvider = ({ children }) => {
     myDid,
     profileProtocolDefinition,
     userType,
-    doctorList,
-    loadingDoctor,
     setUserTypeAndRedirect,
     logout,
   };

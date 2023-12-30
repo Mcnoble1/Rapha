@@ -217,10 +217,6 @@ const MedicalHistoryDetails = () => {
         );
         setUserDetails(medicalHistoryDetails);
         console.log(medicalHistoryDetails);
-        toast.success('Successfully fetched medicalHistory details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
         setFetchDetailsLoading(false);
       } else {
         console.error('No medicalHistory details found');

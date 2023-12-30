@@ -216,10 +216,7 @@ const VitalSignsDetails = () => {
         );
         setUserDetails(vitalSignsDetails);
         console.log(vitalSignsDetails);
-        toast.success('Successfully fetched vitalSigns details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
+      
         setFetchDetailsLoading(false);
       } else {
         console.error('No vitalSigns details found');
