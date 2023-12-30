@@ -71,6 +71,10 @@ const ContextProvider = ({ children }) => {
         schema: "https://rapha.com/schemas/doctorProfile",
         dataFormats: ["application/json"]
       },
+      cardiologyRecord: {
+        schema: "https://rapha.com/schemas/cardiologyRecord",
+        dataFormats: ["application/json"]
+      },
       allergyRecord: {
         schema: "https://rapha.com/schemas/allergyRecord",
         dataFormats: ["application/json"]
@@ -97,6 +101,14 @@ const ContextProvider = ({ children }) => {
       },
       vitalSignsRecord: {
         schema: "https://rapha.com/schemas/vital-signsRecord",
+        dataFormats: ["application/json"]
+      },
+      physicalRecord: {
+        schema: "https://rapha.com/schemas/physicalRecord",
+        dataFormats: ["application/json"]
+      },
+      labTestRecord: {
+        schema: "https://rapha.com/schemas/lab-testRecord",
         dataFormats: ["application/json"]
       }
     },
@@ -204,7 +216,7 @@ const ContextProvider = ({ children }) => {
             { who: "author", of: "healthRecord", can: "update"}
           ]
         }
-      },
+      }, 
       doctorProfile: {
         $actions: [
           { who: "anyone", can: "write" },
