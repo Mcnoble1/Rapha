@@ -60,6 +60,7 @@ const Doctors: React.FC = () => {
   const fetchHealthDetails = async () => {
   setFetchDetailsLoading(true);
   try {
+    console.log(adminDid);
     const response = await web5.dwn.records.query({
       from: adminDid,
       message: {

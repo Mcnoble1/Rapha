@@ -1,1 +1,2 @@
-export const adminDid = import.meta.env.ADMIN_DID;
+export const adminDid = import.meta.env.VITE_ADMIN_DID;
+console.log(adminDid);

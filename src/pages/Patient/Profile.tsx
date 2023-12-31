@@ -208,16 +208,14 @@ const handleAddProfile = async (e: FormEvent) => {
   primaryDoctordata.append("doctorCountry", primaryDoctorData.doctorCountry);
   primaryDoctordata.append("doctorPhone", primaryDoctorData.doctorPhone);
 
-  setLoading(false);
-
   try {
     let record;
-    console.log(personalData, guardianData, primaryDoctorData);
+    // console.log(personalData, guardianData, primaryDoctorData);
     record = await writeProfileToDwn({...personalData, ...guardianData, ...primaryDoctorData});
 
     if (record) {
       const { status } = await record.send(myDid);
-      console.log("Send record status in handleAddProfile", status);
+      // console.log("Send record status in handleAddProfile", status);
     } else {
       toast.error('Failed to create health record', {
         position: toast.POSITION.TOP_RIGHT,
@@ -272,7 +270,7 @@ const handleAddProfile = async (e: FormEvent) => {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 3000, 
     });
-
+    fetchHealthDetails();
     setLoading(false);
 
   } catch (err) {
@@ -305,7 +303,7 @@ const handleImageChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>)
 
 const writeProfileToDwn = async (profileData) => {
   try {
-    console.log(profileData)
+    // console.log(profileData)
     const healthProtocol = profileProtocolDefinition;
     const { record, status } = await web5.dwn.records.write({
       data: profileData,
@@ -316,12 +314,12 @@ const writeProfileToDwn = async (profileData) => {
         recipient: myDid,
       },
     });
-    console.log(record);
+    // console.log(record);
     if (status === 200) {
       
       return { ...profileData, recordId: record.id}
     } 
-    console.log('Successfully wrote health details to DWN:', record);
+    // console.log('Successfully wrote health details to DWN:', record);
     toast.success('Health Details written to DWN', {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 3000, 
@@ -348,13 +346,13 @@ const fetchHealthDetails = async () => {
         },
       },
     });
-    console.log('Health Details:', response);
+    // console.log('Health Details:', response);
 
     if (response.status.code === 200) {
       const healthDetails = await Promise.all(
         response.records.map(async (record) => {
           const data = await record.data.json();
-          console.log(data);
+          // console.log(data);
         localStorage.setItem('recordId', record.id);
         localStorage.setItem('contextId', record.contextId);
           return {
@@ -364,11 +362,11 @@ const fetchHealthDetails = async () => {
         })
       );
       setUsersDetails(healthDetails);
-      console.log(healthDetails);
-      toast.success('Successfully fetched health details', {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
+      // console.log(healthDetails);
+      // toast.success('Successfully fetched health details', {
+      //   position: toast.POSITION.TOP_RIGHT,
+      //   autoClose: 3000,
+      // });
       setFetchDetailsLoading(false);
     } else {
       console.error('No health details found');
@@ -403,7 +401,7 @@ const shareHealthDetails = async (recordId: string) => {
     if (response.records && response.records.length > 0) {
       const record = response.records[0];
       const { status } = await record.send(recipientDid);
-      console.log('Send record status in shareProfile', status);
+      // console.log('Send record status in shareProfile', status);
       toast.success('Successfully shared health record', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -570,12 +568,12 @@ const handleAddPicture = async (e: FormEvent) => {
 
   try {
     let record;
-    console.log(blob);
+    // console.log(blob);
     record = await writePictureToDwn(blob);
-    console.log(record);
+    // console.log(record);
     if (record) {
       const { status } = await record.send(myDid);
-      console.log("Send record status in handleAddPicture", status);
+      // console.log("Send record status in handleAddPicture", status);
     } else {
       toast.error('Failed to create picture record', {
         position: toast.POSITION.TOP_RIGHT,
@@ -586,7 +584,7 @@ const handleAddPicture = async (e: FormEvent) => {
     }
 
     setSelectedFileName("Click to add Image")
-    fetchHealthDetails();
+    fetchPictureDetails();
     setPopupOpen(false);
     toast.success('Successfully created picture record', {
       position: toast.POSITION.TOP_RIGHT,
@@ -607,7 +605,7 @@ const handleAddPicture = async (e: FormEvent) => {
 
    const writePictureToDwn = async (pictureData : any) => {
     try {
-      console.log(pictureData)
+      // console.log(pictureData)
       const pictureProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
         data: pictureData,
@@ -621,12 +619,12 @@ const handleAddPicture = async (e: FormEvent) => {
           contextId: contextId,
         },
       });
-      console.log(record);
+      // console.log(record);
 
       if (status === 200) {
         return { ...pictureData, recordId: record.id}
       } 
-      console.log('Successfully wrote picture details to DWN:', record);
+      // console.log('Successfully wrote picture details to DWN:', record);
       toast.success('Picture Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
@@ -654,13 +652,13 @@ const handleAddPicture = async (e: FormEvent) => {
           },
         },
       });
-      console.log('Picture Details:', response);
+      // console.log('Picture Details:', response);
   
     response.records.forEach( async (imageRec) => {
-    console.log('this is the each image record', imageRec);
+    // console.log('this is the each image record', imageRec);
     // // Get the blob of the image data
     const imageId = imageRec.id
-    console.log(imageId)
+    // console.log(imageId)
      const {record, status }= await web5.dwn.records.read({
       message: {
          filter: {
@@ -668,18 +666,18 @@ const handleAddPicture = async (e: FormEvent) => {
          },
       },
       });
-    console.log ({record, status})
+    // console.log ({record, status})
   
         const imageresult = await record.data.blob();
-        console.log(imageresult)
+        // console.log(imageresult)
         const imageUrl = URL.createObjectURL(imageresult);
-        console.log(imageUrl)
+        // console.log(imageUrl)
         setImageURL(imageUrl);
       })
-      toast.success('Successfully fetched picture details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
+      // toast.success('Successfully fetched picture details', {
+      //     position: toast.POSITION.TOP_RIGHT,
+      //     autoClose: 3000,
+      //   });
   
       setFetchDetailsLoading(false);
     } catch (err) {
@@ -1525,14 +1523,42 @@ const handleAddPicture = async (e: FormEvent) => {
                                         Specialty
                                         </label>
                                         <div className={`relative ${user.specialty ? 'bg-light-blue' : ''}`}>
-                                        <input
-                                          type="text"
-                                          name="specialty"
-                                          value={user.specialty}
-                                          required
-                                          onChange={handlePrimaryDoctorInputChange}
-                                          placeholder="Family Medicine"
-                                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                        <select
+                              name="specialty"
+                              value={primaryDoctorData.specialty}
+                              onChange={handlePrimaryDoctorInputChange}
+                              required
+                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                              <option value="">Select Specialty</option>                        
+                              <option value="Family Medicine">Family Medicine</option>
+                              <option value="General Medicine">General Medicine</option>
+                              <option value="Internal Medicine">Internal Medicine</option>
+                              <option value="Emergency Medicine">Emergency Medicine</option>
+                              <option value="Preventive Medicine">Preventive Medicine</option>
+                              <option value="Occupational Medicine">Occupational Medicine</option>
+                              <option value="Pediatrics">Pediatrics</option>
+                              <option value="Psychiatry">Psychiatry</option>
+                              <option value="Surgery">Surgery</option>
+                              <option value="Obstetrics and Gynecology">Obstetrics and Gynecology</option>
+                              <option value="Neurology">Neurology</option>
+                              <option value="Cardiology">Cardiology</option>
+                              <option value="Dermatology">Dermatology</option>
+                              <option value="Ophthalmology">Ophthalmology</option>
+                              <option value="Orthopedics">Orthopedics</option>
+                              <option value="Otolaryngology">Otolaryngology</option>
+                              <option value="Urology">Urology</option>
+                              <option value="Radiology">Radiology</option>
+                              <option value="Anesthesiology">Anesthesiology</option>
+                              <option value="Pathology">Pathology</option>
+                              <option value="Medical Genetics">Medical Genetics</option>
+                              <option value="Public Health">Public Health</option>
+                              <option value="Nursing">Nursing</option>
+                              <option value="Physiotherapy">Physiotherapy</option>
+                              <option value="Dentistry">Dentistry</option>
+                              <option value="Nutrition">Nutrition</option>
+                              <option value="Veterinary Medicine">Veterinary Medicine</option>
+                              <option value="Other">Other</option>
+                                </select>
                                         </div>
                                       </div>
                                     </div>
@@ -2157,14 +2183,42 @@ const handleAddPicture = async (e: FormEvent) => {
                              Specialty
                             </label>
                             <div className={`relative ${primaryDoctorData.specialty ? 'bg-light-blue' : ''}`}>
-                            <input
-                              type="text"
+                            <select
                               name="specialty"
                               value={primaryDoctorData.specialty}
-                              required
                               onChange={handlePrimaryDoctorInputChange}
-                              placeholder="Family Medicine"
-                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                              required
+                              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                              <option value="">Select Specialty</option>                        
+                              <option value="Family Medicine">Family Medicine</option>
+                              <option value="General Medicine">General Medicine</option>
+                              <option value="Internal Medicine">Internal Medicine</option>
+                              <option value="Emergency Medicine">Emergency Medicine</option>
+                              <option value="Preventive Medicine">Preventive Medicine</option>
+                              <option value="Occupational Medicine">Occupational Medicine</option>
+                              <option value="Pediatrics">Pediatrics</option>
+                              <option value="Psychiatry">Psychiatry</option>
+                              <option value="Surgery">Surgery</option>
+                              <option value="Obstetrics and Gynecology">Obstetrics and Gynecology</option>
+                              <option value="Neurology">Neurology</option>
+                              <option value="Cardiology">Cardiology</option>
+                              <option value="Dermatology">Dermatology</option>
+                              <option value="Ophthalmology">Ophthalmology</option>
+                              <option value="Orthopedics">Orthopedics</option>
+                              <option value="Otolaryngology">Otolaryngology</option>
+                              <option value="Urology">Urology</option>
+                              <option value="Radiology">Radiology</option>
+                              <option value="Anesthesiology">Anesthesiology</option>
+                              <option value="Pathology">Pathology</option>
+                              <option value="Medical Genetics">Medical Genetics</option>
+                              <option value="Public Health">Public Health</option>
+                              <option value="Nursing">Nursing</option>
+                              <option value="Physiotherapy">Physiotherapy</option>
+                              <option value="Dentistry">Dentistry</option>
+                              <option value="Nutrition">Nutrition</option>
+                              <option value="Veterinary Medicine">Veterinary Medicine</option>
+                              <option value="Other">Other</option>
+                                </select>
                             </div>
                           </div>
                         </div>

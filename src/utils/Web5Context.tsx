@@ -218,6 +218,8 @@ const ContextProvider = ({ children }) => {
         $actions: [
           { who: "anyone", can: "write" },
           { who: "recipient", of: "doctorProfile", can: "read" },
+          { who: "recipient", of: "doctorProfile", can: "write" },
+          { who: "recipient", of: "doctorProfile", can: "update" },
           { who: "author", of: "doctorProfile", can: "read"},
           { who: "author", of: "doctorProfile", can: "update"}
         ],
