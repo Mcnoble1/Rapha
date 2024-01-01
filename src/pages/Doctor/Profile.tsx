@@ -706,6 +706,8 @@ const handleAddPicture = async (e: FormEvent) => {
                 {user.name}
               </h3>
               <p className="text-center mb-5 font-medium">{user.specialty}</p>
+              <span className={` ${user.status === 'Verified' ? 'bg-success' : 'bg-warning'} p-1 text-white text-center mx-[47%] rounded-xl`}>{user.status}</span>
+
                   <div className='flex mb-10 p-5 flex-wrap w-full rounded-lg'>
 
                   <div className='w-1/3 mb-5' >

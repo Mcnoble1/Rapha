@@ -5,6 +5,7 @@ import Patient from './pages/Patient/Dashboard';
 import Records from './pages/Patient/Records';
 import Patients from './pages/Doctor/Patients';
 import Record from './pages/Doctor/Patient';
+import Chat from './pages/Chat';
 import Doctor from './pages/Doctor/Dashboard';
 import Calendar from './pages/Doctor/Calendar';
 import Doctors from './pages/Patient/Doctors';
@@ -37,6 +38,7 @@ function App() {
         <Route path="/doctor/dashboard" element={<Doctor />} />
         <Route path="/patient/dashboard" element={<Patient />} />
         <Route path="/patient/records" element={<Records />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/doctor/patients" element={<Patients />} />
         <Route path="/doctor/calendar" element={<Calendar />} />
         <Route path="/doctor/patient/:id" element={<Record />} />

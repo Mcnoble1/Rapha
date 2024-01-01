@@ -242,7 +242,6 @@ const AllergyDetails = () => {
         message: {
           filter: {
             recordId: recordId,
-            protocol:  ""
           },
         },
       });
