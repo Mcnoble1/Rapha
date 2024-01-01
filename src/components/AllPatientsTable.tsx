@@ -27,7 +27,9 @@ const PatientsTable: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchHealthDetails();
+    if (web5 && myDid) {
+      fetchHealthDetails();
+    }
   } , []);
   
   const fetchHealthDetails = async () => {

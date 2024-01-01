@@ -43,7 +43,6 @@ const Profile = () => {
     phone: '',
     image: null
   }); 
-
   const parentId = localStorage.getItem('recordId');
   const contextId = localStorage.getItem('contextId');
 
@@ -171,17 +170,19 @@ const Profile = () => {
     personaldata.append("country", personalData.country);
     personaldata.append("phone", personalData.phone);
     personaldata.append("status", personalData.status);
-
-    setLoading(false);
   
     try {
       let record;
-      console.log(personalData);
+      // console.log(personalData);
       record = await writeProfileToDwn(personalData);
   
-      if (record) {
-        const { status } = await record.send(myDid);
-        console.log("Send record status in handleAddProfile", status);
+      if (record) {        
+        const DIDs = [myDid, adminDid];
+        await Promise.all(
+        DIDs.map(async (did) => {
+          const { status } = await record.send(did);
+        })
+      );
       } else {
         toast.error('Failed to create health record', {
           position: toast.POSITION.TOP_RIGHT,
@@ -234,7 +235,7 @@ const Profile = () => {
     const timestamp = `${currentDate}`;
 
     try {
-      console.log(profileData)
+      // console.log(profileData)
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
         data: {...profileData, timestamp: timestamp},
@@ -243,15 +244,14 @@ const Profile = () => {
           protocolPath: 'doctorProfile',
           schema: healthProtocol.types.doctorProfile.schema,
           recipient: myDid,
+          published: true,
         },
       });
       console.log(record);
       if (status === 200) {
-        const { status } = await record.send(adminDid);
-        console.log(status);
         return { ...profileData, recordId: record.id}
       } 
-      console.log('Successfully wrote doctor details to DWN:', record);
+      // console.log('Successfully wrote doctor details to DWN:', record);
       toast.success('Doctor Profile Details written to DWN', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, 
@@ -292,7 +292,7 @@ const fetchHealthDetails = async () => {
       const healthDetails = await Promise.all(
         response.records.map(async (record) => {
           const data = await record.data.json();
-          console.log(data);
+          // console.log(data);
         localStorage.setItem('recordId', record.id);
         localStorage.setItem('contextId', record.contextId);
           return {
@@ -302,11 +302,11 @@ const fetchHealthDetails = async () => {
         })
       );
       setUsersDetails(healthDetails);
-      console.log(healthDetails);
-      toast.success('Successfully fetched doctor details', {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-      });
+      // console.log(healthDetails);
+      // toast.success('Successfully fetched doctor details', {
+      //   position: toast.POSITION.TOP_RIGHT,
+      //   autoClose: 3000,
+      // });
       setFetchDetailsLoading(false);
     } else {
       console.error('No doctor details found');
@@ -433,10 +433,10 @@ const deleteHealthDetails = async (recordId) => {
         },
       },
     });
-    console.log(response);
+    // console.log(response);
     if (response.records && response.records.length > 0) {
       const record = response.records[0];
-      console.log(record)
+      // console.log(record)
       const deleteResult = await web5.dwn.records.delete({
         message: {
           recordId: recordId
@@ -449,7 +449,7 @@ const deleteHealthDetails = async (recordId) => {
           recordId: recordId,
         },
       });
-      console.log(remoteResponse);
+      // console.log(remoteResponse);
       
       if (deleteResult.status.code === 202) {
         console.log('Health Details deleted successfully');
@@ -490,7 +490,7 @@ const handleAddPicture = async (e: FormEvent) => {
     console.log(record);
     if (record) {
       const { status } = await record.send(myDid);
-      console.log("Send record status in handleAddPicture", status);
+      // console.log("Send record status in handleAddPicture", status);
     } else {
       toast.error('Failed to create picture record', {
         position: toast.POSITION.TOP_RIGHT,
@@ -501,12 +501,12 @@ const handleAddPicture = async (e: FormEvent) => {
     }
 
     setSelectedFileName("Click to add Image")
-    fetchHealthDetails();
+    fetchPictureDetails();
     setPopupOpen(false);
-    toast.success('Successfully created picture record', {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 3000, 
-    });
+    // toast.success('Successfully created picture record', {
+    //   position: toast.POSITION.TOP_RIGHT,
+    //   autoClose: 3000, 
+    // });
 
     setLoading(false);
 
@@ -572,10 +572,10 @@ const handleAddPicture = async (e: FormEvent) => {
       console.log('Picture Details:', response);
   
     response.records.forEach( async (imageRec) => {
-    console.log('this is the each image record', imageRec);
+    // console.log('this is the each image record', imageRec);
     // // Get the blob of the image data
     const imageId = imageRec.id
-    console.log(imageId)
+    // console.log(imageId)
      const {record, status }= await web5.dwn.records.read({
       message: {
          filter: {
@@ -583,18 +583,18 @@ const handleAddPicture = async (e: FormEvent) => {
          },
       },
       });
-    console.log ({record, status})
+    // console.log ({record, status})
   
         const imageresult = await record.data.blob();
-        console.log(imageresult)
+        // console.log(imageresult)
         const imageUrl = URL.createObjectURL(imageresult);
-        console.log(imageUrl)
+        // console.log(imageUrl)
         setImageURL(imageUrl);
       })
-      toast.success('Successfully fetched picture details', {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-        });
+      // toast.success('Successfully fetched picture details', {
+      //     position: toast.POSITION.TOP_RIGHT,
+      //     autoClose: 3000,
+      //   });
   
       setFetchDetailsLoading(false);
     } catch (err) {
@@ -706,6 +706,8 @@ const handleAddPicture = async (e: FormEvent) => {
                 {user.name}
               </h3>
               <p className="text-center mb-5 font-medium">{user.specialty}</p>
+              <span className={` ${user.status === 'Verified' ? 'bg-success' : 'bg-warning'} p-1 text-white text-center mx-[47%] rounded-xl`}>{user.status}</span>
+
                   <div className='flex mb-10 p-5 flex-wrap w-full rounded-lg'>
 
                   <div className='w-1/3 mb-5' >

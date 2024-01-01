@@ -48,7 +48,9 @@ const HealthDetails = () => {
   };
 
   useEffect(() => {
-    fetchHealthDetails();
+    if (web5 && myDid) {
+      fetchHealthDetails();
+    }
   }, []);
 
   const togglePopup = (userId: string) => {

@@ -209,6 +209,8 @@ const AllergyDetails = () => {
             return {
               ...data,
               recordId: record.id,
+              // protocol: 'https://rapha.com/protocol',
+              // protocolPath: 'patientProfile/allergyRecord',
             };
           })
         );

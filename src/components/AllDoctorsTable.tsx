@@ -219,6 +219,7 @@ const showRevokeConfirmation = (doctorId: string) => {
         });
         setDoctorsDetails(prevHealthDetails => prevHealthDetails.map(message => message.recordId === recordId ? { ...message, ...data } : message));
         setUpdateLoading(false);
+        // updateResult.send(doctorDid);
       } else {
         console.error('Error updating message:', updateResult.status);
         toast.error('Error updating campaign', {

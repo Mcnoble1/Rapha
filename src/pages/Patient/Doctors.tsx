@@ -208,10 +208,11 @@ const Doctors: React.FC = () => {
 
                         {doctor.status === 'Verified' ? (
                           <button
-                            onClick={() =>  togglePop(doctor.recordId)}                      
+                            // onClick={() =>  togglePop(doctor.recordId)}  
+                            onClick={() => navigate('/chat')}                    
                             className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                             >
-                            Book
+                            Consult
                           </button>
                         ) : null }
                           {/* {issueVCOpenMap[doctor.recordId] && (
