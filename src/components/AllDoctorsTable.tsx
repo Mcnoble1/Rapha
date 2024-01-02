@@ -146,46 +146,46 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>)
   } 
 };
 
-// const issueVC = async (recordId) => {
+const issueVC = async (recordId) => {
 
-//   const raphaDid = await DidKeyMethod.create();
-//   const doctorDid = await DidKeyMethod.create();
+  const raphaDid = await DidKeyMethod.create();
+  const doctorDid = await DidKeyMethod.create();
 
-//   const vc = await VerifiableCredential.create({
-//     type: 'LicenseCredential',
-//     issuer: raphaDid.did,
-//     subject: doctorDid.did,
-//     data: {
-//         "specialty": "Cardiologist",
-//         "licenseStatus": "Valid"
-//     }
-//   });
+  const vc = await VerifiableCredential.create({
+    type: 'LicenseCredential',
+    issuer: raphaDid.did,
+    subject: doctorDid.did,
+    data: {
+        "specialty": "Cardiologist",
+        "licenseStatus": "Valid"
+    }
+  });
 
-// console.log(vc);
+console.log(vc);
 
-// const signedLicenseJWT = await vc.sign({ did: raphaDid });
+const signedLicenseJWT = await vc.sign({ did: raphaDid });
 
-// console.log(signedLicenseJWT);
+console.log(signedLicenseJWT);
 
-// const { record } = await web5.dwn.records.create({
-//   data: signedLicenseJWT,
-//   message: {
-//     schema: 'EmploymentCredential',
-//     dataFormat: 'application/vc+jwt',
-//   },
-// });
+const { record } = await web5.dwn.records.create({
+  data: signedLicenseJWT,
+  message: {
+    schema: 'EmploymentCredential',
+    dataFormat: 'application/vc+jwt',
+  },
+});
 
-// // (optional) immediately send record to users remote DWNs
-// const { status } = await record.send(myDid);
+// (optional) immediately send record to users remote DWNs
+const { status } = await record.send(myDid);
 
-// console.log(doctorsDetails)
-// doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0].status = 'Verified';
-// setDoctorsDetails(doctorsDetails);
-// console.log(doctorsDetails)
+console.log(doctorsDetails)
+doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0].status = 'Verified';
+setDoctorsDetails(doctorsDetails);
+console.log(doctorsDetails)
 
-// updateHealthDetails(recordId, doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0]);
+updateHealthDetails(recordId, doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0]);
 
-// };
+};
 
 const showRevokeConfirmation = (doctorId: string) => {
     setDoctorToRevokeId(doctorId);
@@ -411,6 +411,11 @@ const deleteHealthDetails = async (recordId) => {
                       Verify
                     </button>
                     )}
+                    <button 
+                        onClick={() => deleteHealthDetails(doctor.recordId)}                      
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90">
+                      Delete
+                    </button>
                      {isRevokeConfirmationVisible && (
                       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
                         <div className="bg-white p-5 rounded-lg shadow-md">
