@@ -411,6 +411,11 @@ const deleteHealthDetails = async (recordId) => {
                       Verify
                     </button>
                     )}
+                    <button 
+                        onClick={() => deleteHealthDetails(doctor.recordId)}                      
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90">
+                      Delete
+                    </button>
                      {isRevokeConfirmationVisible && (
                       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
                         <div className="bg-white p-5 rounded-lg shadow-md">

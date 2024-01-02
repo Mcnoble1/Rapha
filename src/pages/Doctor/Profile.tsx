@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../../utils/Web5Context.tsx";
 import { adminDid } from "../../utils/Constants"
+import HealthDetails from '../../components/HealthDetails.tsx';
 
 const Profile = () => {
 
@@ -301,6 +302,7 @@ const fetchHealthDetails = async () => {
           };
         })
       );
+      console.log(healthDetails)
       setUsersDetails(healthDetails);
       // console.log(healthDetails);
       // toast.success('Successfully fetched doctor details', {

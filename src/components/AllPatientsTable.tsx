@@ -78,6 +78,55 @@ const PatientsTable: React.FC = () => {
     };
   };
 
+  const deleteHealthDetails = async (recordId) => {
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+      console.log(response);
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        console.log(record)
+        const deleteResult = await web5.dwn.records.delete({
+          message: {
+            recordId: recordId
+          },
+        });
+  
+        const remoteResponse = await web5.dwn.records.delete({
+          from: myDid,
+          message: {
+            recordId: recordId,
+          },
+        });
+        console.log(remoteResponse);
+        
+        if (deleteResult.status.code === 202) {
+          console.log('Health Details deleted successfully');
+          toast.success('Health Details deleted successfully', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+          setPatientsDetails(prevHealthDetails => prevHealthDetails.filter(message => message.recordId !== recordId));
+        } else {
+          console.error('Error deleting record:', deleteResult.status);
+          toast.error('Error deleting record:', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000, 
+          });
+        }
+      } else {
+        // console.error('No record found with the specified ID');
+      }
+    } catch (error) {
+      console.error('Error in deleteHealthDetails:', error);
+    }
+  };
+
   const toggleSortDropdown = () => {
     setSortDropdownVisible(!sortDropdownVisible);
   };
@@ -232,6 +281,11 @@ const PatientsTable: React.FC = () => {
                         onClick={() => navigate('/doctor/patient/:id')}                      
                         className="rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90">
                       View Record
+                    </button>
+                    <button 
+                        onClick={() => deleteHealthDetails(patient.recordId)}                      
+                        className="rounded bg-danger py-2 px-3 text-white hover:bg-opacity-90">
+                      Delete
                     </button>
                   </div>
                 </td>

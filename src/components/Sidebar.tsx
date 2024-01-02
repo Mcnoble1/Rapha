@@ -162,7 +162,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/chat"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('health') &&
+                    pathname.includes('chat') &&
                     'border-r-4 dark:bg-meta-4'
                   }`}
                 >
