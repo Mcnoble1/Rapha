@@ -11,10 +11,10 @@ import vitePluginRequire from "vite-plugin-require";
 export default defineConfig({
   plugins: [react(), nodePolyfills(), vitePluginRequire.default(), viteCommonjs()],
   optimizeDeps:{
-    include: ['esm-dep > cjs-dep'],
+    include: ['@web5/credentials'],
     esbuildOptions:{
       plugins:[
-        esbuildCommonjs(['web5/credentials']) 
+        esbuildCommonjs(['@web5/credentials']) 
       ]
     }
   },
