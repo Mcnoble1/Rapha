@@ -12,7 +12,7 @@ export default defineConfig({
   optimizeDeps:{
     esbuildOptions:{
       plugins:[
-        esbuildCommonjs(['@web5/credentials']) 
+        esbuildCommonjs(['web5/credentials']) 
       ]
     }
   },
