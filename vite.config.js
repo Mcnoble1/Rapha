@@ -1,7 +1,31 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+import { esbuildCommonjs } from '@originjs/vite-plugin-commonjs'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import vitePluginRequire from "vite-plugin-require";
 
 // https://vitejs.dev/config/
+/** @type {import('vite').UserConfig} */
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), nodePolyfills(), vitePluginRequire.default(), viteCommonjs()],
+  optimizeDeps:{
+    include: ['esm-dep > cjs-dep'],
+    esbuildOptions:{
+      plugins:[
+        esbuildCommonjs(['web5/credentials']) 
+      ]
+    }
+  },
+  build: {
+    target: ['chrome109', 'edge112', 'firefox102', 'safari15.6', 'ios15.6'],
+  },
+  define: {
+    global: 'globalThis',
+  },
 })
+
+
+
+

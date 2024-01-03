@@ -2,22 +2,12 @@ import React, { useState, useRef, useEffect, useContext, ChangeEvent } from 'rea
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context.tsx";
-
-// import { VerifiableCredential } from "@web5/credentials";
-
+import { VerifiableCredential } from "@web5/credentials";
 import { DidKeyMethod } from '@web5/dids';
 
 const DoctorsTable: React.FC = () => {
 
-  useEffect(() => {
-    const vcInit = async () => {
-    const { VerifiableCredential } = await import('@web5/credentials');
-    }
-
-    vcInit()
-  }) 
-
-  const { web5, myDid } = useContext( Web5Context);
+  const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
 
   const [doctorsDetails, setDoctorsDetails] = useState<Doctor[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -156,18 +146,23 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>)
   } 
 };
 
+// const doctorDid = doctorsDetails.map((doctor) => doctor.sender);
+// console.log(doctorDid);
+
 const issueVC = async (recordId) => {
 
   const raphaDid = await DidKeyMethod.create();
-  const doctorDid = await DidKeyMethod.create();
+  const doctorDid = doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0].sender;
+
+console.log(doctorDid);
 
   const vc = await VerifiableCredential.create({
     type: 'LicenseCredential',
     issuer: raphaDid.did,
-    subject: doctorDid.did,
+    subject: doctorDid,
     data: {
-        "specialty": "Cardiologist",
-        "licenseStatus": "Valid"
+        "specialty": vcData.specialty,
+        "licenseStatus": vcData.licenseStatus,
     }
   });
 
@@ -177,16 +172,22 @@ const signedLicenseJWT = await vc.sign({ did: raphaDid });
 
 console.log(signedLicenseJWT);
 
+const vcProtocol = profileProtocolDefinition;
 const { record } = await web5.dwn.records.create({
   data: signedLicenseJWT,
   message: {
-    schema: 'EmploymentCredential',
+    protocol: vcProtocol.protocol,
+    protocolPath: 'licenseCredential',
+    schema: vcProtocol.types.licenseCredential.schema,
     dataFormat: 'application/vc+jwt',
+    recipient: myDid,
   },
 });
 
-// (optional) immediately send record to users remote DWNs
-const { status } = await record.send(myDid);
+console.log(record);
+
+const { status } = await record.send(doctorDid);
+console.log(status)
 
 console.log(doctorsDetails)
 doctorsDetails.filter((doctor) => doctor.recordId === recordId)[0].status = 'Verified';
@@ -304,8 +305,6 @@ const deleteHealthDetails = async (recordId) => {
     console.error('Error in deleteHealthDetails:', error);
   }
 };
-
-
  
   const formatDatetime = (datetimeString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
