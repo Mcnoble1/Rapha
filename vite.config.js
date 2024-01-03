@@ -3,12 +3,13 @@ import react from '@vitejs/plugin-react'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import { esbuildCommonjs } from '@originjs/vite-plugin-commonjs'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import vitePluginRequire from "vite-plugin-require";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
 
 export default defineConfig({
-  plugins: [react(), nodePolyfills(), viteCommonjs()],
+  plugins: [react(), nodePolyfills(), vitePluginRequire(), viteCommonjs()],
   optimizeDeps:{
     esbuildOptions:{
       plugins:[
