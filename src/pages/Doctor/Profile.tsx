@@ -7,7 +7,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../../utils/Web5Context.tsx";
 import { adminDid } from "../../utils/Constants"
-import HealthDetails from '../../components/HealthDetails.tsx';
+import { VerifiableCredential, PresentationExchange } from "@web5/credentials";
+
 
 const Profile = () => {
 
@@ -15,6 +16,7 @@ const Profile = () => {
   const { web5, myDid, profileProtocolDefinition } = useContext( Web5Context);
 
   const [usersDetails, setUsersDetails] = useState<User[]>([]);
+  const [signedVcJwt, setSignedVcJwt] = useState("");
   const [loading, setLoading] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [recipientDid, setRecipientDid] = useState("");
@@ -58,6 +60,7 @@ const Profile = () => {
     if (web5 && myDid) {
     fetchHealthDetails();
     fetchPictureDetails();
+    vcJWT();
     }
   }, [web5, myDid]);
 
@@ -475,7 +478,6 @@ const deleteHealthDetails = async (recordId) => {
   }
 };
 
-
 const handleAddPicture = async (e: FormEvent) => {
   e.preventDefault();
   setLoading(true); 
@@ -558,7 +560,6 @@ const handleAddPicture = async (e: FormEvent) => {
     }
    }; 
 
-
    const fetchPictureDetails = async () => {
     setFetchDetailsLoading(true);
     try {
@@ -609,6 +610,98 @@ const handleAddPicture = async (e: FormEvent) => {
     };
   };
 
+
+
+
+
+  const vcJWT = async () => {
+    try {
+      const response = await web5.dwn.records.query({
+        from: myDid,
+        message: {
+          filter: {
+              schema: 'LicenseCredential',
+              dataFormat: 'application/vc+jwt',
+          },
+        },
+      });
+      console.log('vcJWT:', response);
+  
+      if (response.status.code === 200) {
+        const jwt = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.text();
+            console.log(data);
+            setSignedVcJwt(data);
+            return {
+              ...data,
+              recordId: record.id,
+            };
+          })
+        );        
+      } else {
+        console.error('No jwt details found');
+      }
+    } catch (err) {
+      console.error('Error in fetching jwt:', err);
+    };
+  };
+
+
+// VC Presentation Exchange
+if (signedVcJwt !== ""  && signedVcJwt !== undefined) {
+const parsedVc = VerifiableCredential.parseJwt({ vcJwt: signedVcJwt });
+
+console.log("ParsedVC:", parsedVc);
+
+const presentationDefinition = {
+  'id'                : 'presDefId123',
+  'name'              : 'Rapha Medical Practitioner Presentation Definition',
+  'purpose'           : 'for proving medical practitioner license',
+  'input_descriptors' : [
+    {
+      'id'          : 'licenseStatus',
+      'purpose'     : 'is your license valid?',
+      'constraints' : {
+        'fields': [
+          {
+            'path': [
+              '$.credentialSubject.licenseStatus',
+            ]
+          }
+        ]
+      }
+    }
+  ]
+};
+
+const definitionValidation = PresentationExchange.validateDefinition({ presentationDefinition });
+console.log("Definition Validation:", definitionValidation);
+
+// Does VC Satisfy the Presentation Definition
+
+try {
+    PresentationExchange.satisfiesPresentationDefinition({vcJwts: [signedVcJwt], presentationDefinition: presentationDefinition});
+    console.log('\nVC Verification successful!\n');
+    usersDetails.filter((user) => user.status = 'Verified');
+
+    toast.success('You are now a Verified Rapha Doctor', {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000, 
+    });
+  } catch (err) {
+    console.log('\nVC Verification failed: ' + err.message + '\n');
+    toast.success('You are not yet verified', {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 3000, 
+    });
+  }
+
+  // Create Presentation Result that contains a Verifiable Presentation and Presentation Submission
+const presentationResult = PresentationExchange.createPresentationFromCredentials({vcJwts: [signedVcJwt], presentationDefinition: presentationDefinition });
+console.log('\nPresentation Result: ' + JSON.stringify(presentationResult));
+
+};
 
   return (
     <>

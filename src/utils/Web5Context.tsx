@@ -68,6 +68,10 @@ const ContextProvider = ({ children }) => {
         schema: "https://rapha.com/schemas/doctorProfile",
         dataFormats: ["application/json"]
       },
+      licenseCredential: {
+        schema: 'LicenseCredential',
+        // dataFormat: 'application/vc+jwt',
+      },
       cardiologyRecord: {
         schema: "https://rapha.com/schemas/cardiologyRecord",
         dataFormats: ["application/json"]
@@ -138,7 +142,7 @@ const ContextProvider = ({ children }) => {
             { who: "recipient", of: "patientProfile", can: "write" },
             { who: "author", of: "patientProfile", can: "read" },
             { who: "author", of: "allergyRecord", can: "read"},
-            // { who: "author", of: "allergyRecord", can: "update"}
+            { who: "author", of: "allergyRecord", can: "update"}
           ]
         },
         surgeryRecord: {
@@ -239,7 +243,15 @@ const ContextProvider = ({ children }) => {
             { who: "author", of: "doctorProfile", can: "update"}
           ]
         },
-      }
+      },
+      licenseCredential: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "recipient", of: "licenseCredential", can: "read" },
+          { who: "author", of: "licenseCredential", can: "read"},
+          { who: "author", of: "licenseCredential", can: "update"}
+        ]
+      },
     }
   }
 
