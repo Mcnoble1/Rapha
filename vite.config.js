@@ -9,7 +9,7 @@ import vitePluginRequire from "vite-plugin-require";
 /** @type {import('vite').UserConfig} */
 
 export default defineConfig({
-  plugins: [react(), nodePolyfills(), vitePluginRequire(), viteCommonjs()],
+  plugins: [react(), nodePolyfills(), vitePluginRequire.default(), viteCommonjs()],
   optimizeDeps:{
     esbuildOptions:{
       plugins:[
