@@ -211,12 +211,12 @@ export default function Home() {
 
   const shareHealthDetails = () => {
     setActiveRecipient(recipientDid);
-    setActiveRecipient(recipientDid);
+    setActiveRecipient(recipientDid); 
     setShowNewChatInput(false);
     if (!groupedDings[recipientDid]) {
       groupedDings[recipientDid] = [];
     }
-  };
+  }; 
 
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">

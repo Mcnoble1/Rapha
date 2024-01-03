@@ -239,7 +239,7 @@ const Profile = () => {
       // console.log(profileData)
       const healthProtocol = profileProtocolDefinition;
       const { record, status } = await web5.dwn.records.write({
-        data: {...profileData, timestamp: timestamp},
+        data: {...profileData, timestamp: timestamp, sender: myDid },
         message: {
           protocol: healthProtocol.protocol,
           protocolPath: 'doctorProfile',
