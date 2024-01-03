@@ -2,10 +2,20 @@ import React, { useState, useRef, useEffect, useContext, ChangeEvent } from 'rea
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context.tsx";
-import { VerifiableCredential } from "@web5/credentials";
+
+// import { VerifiableCredential } from "@web5/credentials";
+
 import { DidKeyMethod } from '@web5/dids';
 
 const DoctorsTable: React.FC = () => {
+
+  useEffect(() => {
+    const vcInit = async () => {
+    const { VerifiableCredential } = await import('@web5/credentials');
+    }
+
+    vcInit()
+  }) 
 
   const { web5, myDid } = useContext( Web5Context);
 
