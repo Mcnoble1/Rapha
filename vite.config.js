@@ -9,23 +9,23 @@ import vitePluginRequire from "vite-plugin-require";
 /** @type {import('vite').UserConfig} */
 
 export default defineConfig({
-  plugins: [react(), nodePolyfills(), vitePluginRequire.default(), viteCommonjs()],
-  optimizeDeps:{
-    include: ['@web5/credentials'],
-    esbuildOptions:{
-      plugins:[
-        esbuildCommonjs(['@web5/credentials']) 
-      ]
-    }
-  },
+  plugins: [react(), viteCommonjs()],
+  // optimizeDeps:{
+  //   include: ['@web5/credentials'],
+  //   esbuildOptions:{
+  //     plugins:[
+  //       esbuildCommonjs(['@web5/credentials']) 
+  //     ]
+  //   }
+  // },
   build: {
     commonjsOptions: {
       transformMixedEsModules: true,
     },
   },
-  define: {
-    global: 'globalThis',
-  },
+  // define: {
+  //   global: 'globalThis',
+  // },
 })
 
 
