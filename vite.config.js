@@ -19,7 +19,9 @@ export default defineConfig({
     }
   },
   build: {
-    target: ['chrome109', 'edge112', 'firefox102', 'safari15.6', 'ios15.6'],
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
   define: {
     global: 'globalThis',
