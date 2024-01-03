@@ -12,7 +12,7 @@ export default defineConfig({
   optimizeDeps:{
     esbuildOptions:{
       plugins:[
-        esbuildCommonjs(['react-calendar','react-date-picker']) 
+        esbuildCommonjs(['@web5/credentials']) 
       ]
     }
   },
