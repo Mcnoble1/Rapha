@@ -150,9 +150,8 @@ const Doctors: React.FC = () => {
               </div>
 
               <div className="flex flex-row gap-10 ">
-                <div className=" w-2/5 rounded-2xl bg-white px-5 shadow-default dark:border-strokedark dark:bg-boxdark ">
-                  <div className="">
                     {doctorsDetails.map((doctor, index) => (
+                      <div className=" w-2/5 rounded-2xl bg-white px-5 shadow-default dark:border-strokedark dark:bg-boxdark ">
                         <div className="" key={index}>
                         <div className='flex flex-row mb-1 gap-20 p-5 w-full'>
                           <div className="flex">
@@ -357,9 +356,9 @@ const Doctors: React.FC = () => {
                           </div> 
                       </div>
                       </div>
+                      </div>
+
                     ))}
-                  </div>
-                </div>
               </div>
 
               </div>

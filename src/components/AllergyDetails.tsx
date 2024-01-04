@@ -106,16 +106,25 @@ const AllergyDetails = () => {
     allergydata.append("severity", allergyData.severity);
     allergydata.append("reaction", allergyData.reaction);
     allergydata.append("treatment", allergyData.treatment);
-
   
     try {
       let record;
       console.log(allergyData);
       record = await writeProfileToDwn(allergyData);
-      if (record) {
-        const { status } = await record.send(myDid);
-        console.log("Send record status in handleAddProfile", status);
-      } else {
+
+      const patientDid = userDetails.filter((patient) => patient.sender);
+
+      if (record) {    
+        console.log(record);    
+        console.log(patientDid);
+        const DIDs = [myDid, patientDid];
+        await Promise.all(
+        DIDs.map(async (did) => {
+          const { status } = await record.send(did);
+          console.log('Send record status in allergyRecord', status)
+        })
+      );
+      }  else {
         toast.error('Failed to create allergy record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 

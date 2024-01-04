@@ -180,7 +180,9 @@ const Profile = () => {
       // console.log(personalData);
       record = await writeProfileToDwn(personalData);
   
-      if (record) {        
+      if (record) {    
+        console.log(record);    
+        console.log(adminDid);
         const DIDs = [myDid, adminDid];
         await Promise.all(
         DIDs.map(async (did) => {
