@@ -168,6 +168,12 @@ console.log(doctorDid);
 
 console.log(vc);
 
+setVcData({
+  specialty: "",
+  hospital: "",
+  licenseStatus: "",
+});
+
 const signedLicenseJWT = await vc.sign({ did: raphaDid });
 
 console.log(signedLicenseJWT);

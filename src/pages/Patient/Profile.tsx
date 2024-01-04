@@ -306,7 +306,7 @@ const writeProfileToDwn = async (profileData) => {
     // console.log(profileData)
     const healthProtocol = profileProtocolDefinition;
     const { record, status } = await web5.dwn.records.write({
-      data: profileData,
+      data: {...profileData, sender: myDid },
       message: {
         protocol: healthProtocol.protocol,
         protocolPath: 'patientProfile',

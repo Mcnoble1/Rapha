@@ -114,10 +114,20 @@ const CardiologyDetails = () => {
       let record;
       console.log(cardiologyData);
       record = await writeProfileToDwn(cardiologyData);
-      if (record) {
-        const { status } = await record.send(myDid);
-        console.log("Send record status in handleAddProfile", status);
-      } else {
+
+      // const patientDid = userDetails.filter((patient) => patient.sender);
+
+      // if (record) {    
+      //   console.log(record);    
+      //   console.log(patientDid);
+      //   const DIDs = [myDid, patientDid];
+      //   await Promise.all(
+      //   DIDs.map(async (did) => {
+      //     const { status } = await record.send(did);
+      //     console.log('Send record status in allergyRecord', status)
+      //   })
+      // );
+      // }  else {
         toast.error('Failed to create cardiology record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
