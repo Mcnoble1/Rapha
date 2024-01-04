@@ -163,6 +163,10 @@ const PatientsTable: React.FC = () => {
     setFilterDropdownVisible(false);
   };
 
+  const chat = async (patientDid) => {
+    console.log(patientDid);
+    navigate('/doctor/patient/:id')
+  }
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
        <div className="flex flex-row justify-between">
@@ -278,9 +282,10 @@ const PatientsTable: React.FC = () => {
                 <td className="p-2.5 xl:p-5 ">
                   <div className="flex flex-row gap-4">
                   <button 
-                        onClick={() => navigate('/doctor/patient/:id')}                      
+                        // onClick={() => navigate('/doctor/patient/:id')}
+                        onClick={() => chat(patient.sender)}                       
                         className="rounded bg-primary py-2 px-3 text-white hover:bg-opacity-90">
-                      View Record
+                      Chat
                     </button>
                     <button 
                         onClick={() => deleteHealthDetails(patient.recordId)}                      

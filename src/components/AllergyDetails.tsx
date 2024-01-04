@@ -112,19 +112,19 @@ const AllergyDetails = () => {
       console.log(allergyData);
       record = await writeProfileToDwn(allergyData);
 
-      // const patientDid = userDetails.filter((patient) => patient.sender);
+      const patientDid = userDetails.filter((patient) => patient.sender);
 
-      // if (record) {    
-      //   console.log(record);    
-      //   console.log(patientDid);
-      //   const DIDs = [myDid, patientDid];
-      //   await Promise.all(
-      //   DIDs.map(async (did) => {
-      //     const { status } = await record.send(did);
-      //     console.log('Send record status in allergyRecord', status)
-      //   })
-      // );
-      // }  else {
+      if (record) {    
+        console.log(record);    
+        console.log(patientDid);
+        const DIDs = [myDid, patientDid];
+        await Promise.all(
+        DIDs.map(async (did) => {
+          const { status } = await record.send(did);
+          console.log('Send record status in allergyRecord', status)
+        })
+      );
+      }  else {
         toast.error('Failed to create allergy record', {
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000, 
