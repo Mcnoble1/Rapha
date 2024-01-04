@@ -348,19 +348,6 @@ export default function Home() {
                             </div>
                             <p className="text-right text-xs">1:55pm</p>
                         </div>
-                        <div className="max-w-125">
-                            <p className="mb-2.5 text-sm font-medium">Andri Thomas</p>
-                            <div className="mb-2.5 rounded-2xl rounded-tl-none bg-gray py-3 px-5 dark:bg-boxdark-2">
-                              <p>Ok, Thanks for your reply.</p>
-                            </div>
-                            <p className="text-xs">1:55pm</p>
-                        </div>
-                        <div className="ml-auto max-w-125">
-                            <div className="mb-2.5 rounded-2xl rounded-br-none bg-primary py-3 px-5">
-                              <p className="text-white">You are welcome!</p>
-                            </div>
-                            <p className="text-right text-xs">1:55pm</p>
-                        </div>
                       </div>
                       <div className="sticky bottom-0 border-t border-stroke bg-white py-5 px-6 dark:border-strokedark dark:bg-boxdark">
                         <form className="flex items-center justify-between space-x-4.5">
