@@ -362,7 +362,7 @@ const fetchHealthDetails = async () => {
         })
       );
       setUsersDetails(healthDetails);
-      // console.log(healthDetails);
+      console.log(healthDetails);
       // toast.success('Successfully fetched health details', {
       //   position: toast.POSITION.TOP_RIGHT,
       //   autoClose: 3000,

@@ -107,6 +107,44 @@ const Doctors: React.FC = () => {
     setFetchDetailsLoading(false);
   };
 };
+
+
+const fetchPatientProfile = async (recipientDid) => {
+  try {
+    const response = await web5.dwn.records.query({
+      from: myDid,
+      message: {
+        filter: {
+            protocol: 'https://rapha.com/protocol',
+            protocolPath: 'patientProfile',
+        },
+      },
+    });
+    console.log(response);
+    
+        if (response.records && response.records.length > 0) {
+          const record = response.records[0];
+          const { status } = await record.send(recipientDid);
+          console.log('Send record status in shareProfile', status);
+          toast.success('Successfully shared health record', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          });
+        } else {
+          console.error('No record found with the specified ID');
+          toast.error('Failed to share health record', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 3000,
+          });
+        }
+      } catch (err) {
+    console.error('Error in fetchPatientProfile:', err);
+    toast.error('Error in fetchPatientProfile. Please try again later.', {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 5000,
+    });
+  };
+};
   
 
   return (
@@ -120,29 +158,16 @@ const Doctors: React.FC = () => {
               <div className="mb-6 flex flex-row gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <Breadcrumb pageName="All Doctors" />
                 <div>
-                  {/* <button 
-                    onClick={fetchHealthDetails}
-                    className=" items-center mr-5 rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90">
-                    {fetchDetailsLoading ? (
-                      <div className="flex items-center">
-                        <div className="spinner"></div>
-                        <span className="pl-1">Fetching...</span>
-                      </div>
-                    ) : (
-                      <>Fetch Profile</>
-                    )}           
-                  </button> */}
-
                   <button 
                     ref={trigger}
-                    onClick={() => setPatientPopupOpen(!categoryPopupOpen)}
+                    // onClick={() => setPatientPopupOpen(!categoryPopupOpen)}
                     className="inline-flex mr-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                       Sort
                   </button>
 
                   <button
                   ref={trigger}
-                  onClick={() => setServicePopupOpen(!servicePopupOpen)}
+                  // onClick={() => setServicePopupOpen(!servicePopupOpen)}
                   className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                     Filter
                   </button>
@@ -208,150 +233,15 @@ const Doctors: React.FC = () => {
                         {doctor.status === 'Verified' ? (
                           <button
                             // onClick={() =>  togglePop(doctor.recordId)}  
-                            onClick={() => navigate('/chat')}                    
+                            onClick={() => {
+                              fetchPatientProfile(doctor.sender);
+                              navigate(`/chat?did=${doctor.sender}&name=${doctor.name}`)}}                   
                             className="inline-flex items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                             >
                             Consult
                           </button>
                         ) : null }
-                          {/* {issueVCOpenMap[doctor.recordId] && (
-                                <div
-                                  ref={popup}
-                                  className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-90"
-                                >
-                                  <div
-                                      className="bg-white lg:mt-15 lg:w-1/2 rounded-lg pt-3 px-4 shadow-md"
-                                      style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'scroll' }}
-                                    >              
-                                        <div className="flex flex-row justify-between">
-                                        <h2 className="text-xl font-semibold mb-4">Issue Certified Doctor VC</h2>
-                                        <div className="flex justify-end">
-                                          <button
-                                            onClick={() => closePop(doctor.recordId)}
-                                            className="text-blue-500 hover:text-gray-700 focus:outline-none"
-                                          >
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              className="h-5 w-5 fill-current bg-primary rounded-full p-1 hover:bg-opacity-90"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke="white"
-                                            >
-                                              <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M6 18L18 6M6 6l12 12"
-                                              />
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                      <form>
-                                      <div className= "rounded-sm px-6.5 bg-white dark:border-strokedark dark:bg-boxdark">
-                                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                <div className="w-full xl:w-3/5">
-                                    <label className="mb-2.5 block text-black dark:text-white">
-                                      Name
-                                    </label>
-                                    <div className={`relative ${vcData.name ? 'bg-light-blue' : ''}`}>
-                                    <input
-                                      type="text"
-                                      name="name"
-                                      required
-                                      value={vcData.name}
-                                      onChange={handleInputChange}
-                                      placeholder="John Doe"
-                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                    </div>
-                                  </div>
-
-                                  <div className="w-full xl:w-1/2">
-                                    <label className="mb-2.5 block text-black dark:text-white">
-                                      Date of Birth
-                                    </label>
-                                    <div className={`relative ${vcData.dateOfBirth ? 'bg-light-blue' : ''}`}>
-                                    <input
-                                      type="date" 
-                                      name="dateOfBirth"
-                                      required
-                                      value={vcData.dateOfBirth}
-                                      onChange={handleInputChange}
-                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                    </div>
-                                  </div> 
-
-                                  <div className="w-full xl:w-3/5">
-                                    <label className="mb-2.5 block text-black dark:text-white">
-                                      Hospital
-                                    </label>
-                                    <div className={`relative ${vcData.hospital? 'bg-light-blue' : ''}`}>
-                                    <input
-                                      type="text"
-                                      name="hospital"
-                                      required
-                                      value={vcData.hospital}
-                                      onChange={handleInputChange}
-                                      placeholder="John Hopkins"
-                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-
-                                <div className="w-full xl:w-3/5">
-                                    <label className="mb-2.5 block text-black dark:text-white">
-                                      Specialty
-                                    </label>
-                                    <div className={`relative ${vcData.specialty? 'bg-light-blue' : ''}`}>
-                                    <input
-                                      type="text"
-                                      name="specialty"
-                                      required
-                                      value={vcData.specialty}
-                                      onChange={handleInputChange}
-                                      placeholder="Family Medicine"
-                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                    </div>
-                                  </div>
-
-                                  <div className="w-full xl:w-3/5">
-                                    <label className="mb-2.5 block text-black dark:text-white">
-                                      Registration Number
-                                    </label>
-                                    <div className={`relative ${vcData.registrationNumber? 'bg-light-blue' : ''}`}>
-                                    <input
-                                      type="text"
-                                      name="registrationNumber"
-                                      required
-                                      value={vcData.registrationNumber}
-                                      onChange={handleInputChange}
-                                      placeholder="SSN123456"
-                                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
-                                    </div>
-                                  </div>
-                                </div>                 
-                                </div>
-                                      </form>
-                                    <button
-                                      type="button"
-                                      onClick={() => updateHealthDetails(doctor.recordId, vcData)}
-                                      disabled={updateLoading}
-                                      className={`mr-5 mb-5 inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 ${updateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    >
-                                      {updateLoading ? (
-                                        <div className="flex items-center">
-                                          <div className="spinner"></div>
-                                          <span className="pl-1">Issuing...</span>
-                                        </div>
-                                      ) : (
-                                        <>Issue</>
-                                      )}
-                                    </button>
-                                    </div>
-                                </div>
-                              )} */}
+                          
                           </div>                    
                           </div> 
                       </div>

@@ -5,7 +5,8 @@ import DoctorSidebar from '../components/DoctorSidebar';
 import Header from '../components/Header';
 import { Web5Context } from "../utils/Web5Context.tsx";
 import { useNavigate } from 'react-router-dom'; 
-
+import { toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
 
 
 export default function Home() {
@@ -13,16 +14,19 @@ export default function Home() {
   const { web5, myDid, userType, profileProtocolDefinition  } = useContext( Web5Context);
   const navigate = useNavigate();
 
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
   const [activeRecipient, setActiveRecipient] = useState(null);
 
   const [receivedChats, setReceivedChats] = useState([]);
   const [sentChats, setSentChats] = useState([]);
+  const [shareLoading, setShareLoading] = useState(false);
 
   const [noteValue, setNoteValue] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
   const [recipientDid, setRecipientDid] = useState("");
 
-  const [didCopied, setDidCopied] = useState(false);
   const [showNewChatInput, setShowNewChatInput] = useState(false);
 
   const allChats = [...receivedChats, ...sentChats];
@@ -38,11 +42,11 @@ export default function Home() {
     return acc;
   }, {});
 
-  useEffect(() => {
-    if (web5 && myDid) {
-       fetchChats();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (web5 && myDid) {
+  //      fetchChats();
+  //   }
+  // }, []);
 
 useEffect(() => {
   if (!web5 || !myDid) return;
@@ -59,7 +63,7 @@ useEffect(() => {
     const chat = {
       sender: myDid,
       note: noteValue,
-      recipient: recipientDid,
+      recipient: did,
       timestampWritten: `${currentDate} ${currentTime}`,
     };
     return chat;
@@ -73,26 +77,29 @@ useEffect(() => {
         protocol: chatProtocol.protocol,
         protocolPath: "chat",
         schema: chatProtocol.types.chat.schema,
-        recipient: recipientDid,
+        recipient: did,
       },
     });
     return record;
   };
 
   const sendRecord = async (record) => {
-    return await record.send(recipientDid);
+    console.log(record);
+    return await record.send(did);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!noteValue.trim()) {
-      setErrorMessage('Please type a message before senchat.');
+      setErrorMessage('Please type a message before sending.');
       return;
     }
 
     const chat = constructChat();
+    console.log(chat);
     const record = await writeToDwn(chat);
+    console.log(record);
     const { status } = await sendRecord(record);
 
     console.log("Send record status", status);
@@ -110,7 +117,7 @@ useEffect(() => {
         dateSort: "createdAscending",
       },
     });
-    console.log(records);
+    // console.log(records);
 
     try {
       const results = await Promise.all(
@@ -119,9 +126,9 @@ useEffect(() => {
 
       if (recordStatus.code == 200) {
         const received = results.filter((result) => result?.recipient === myDid);
-        console.log(received);
+        // console.log(received);
         const sent = results.filter((result) => result?.sender === myDid);
-        console.log(sent)
+        // console.log(sent)
         setReceivedChats(received);
         setSentChats(sent);
       }
@@ -135,24 +142,65 @@ useEffect(() => {
     setShowNewChatInput(true);
   };
 
-  const handleSetActiveRecipient = (recipient) => {
-    setRecipientDid(recipient);
-    setActiveRecipient(recipient);
+  const handleSetActiveRecipient = () => {
+    setRecipientDid(did);
+    setActiveRecipient(did);
     setShowNewChatInput(false);
   };
 
   const handleConfirmNewChat = () => {
-    setActiveRecipient(recipientDid);
-    setActiveRecipient(recipientDid);
+    setActiveRecipient(did);
+    setActiveRecipient(did);
     setShowNewChatInput(false);
-    if (!groupedChats[recipientDid]) {
-      groupedChats[recipientDid] = [];
+    if (!groupedChats[did]) {
+      groupedChats[did] = [];
     }
   };
 
-  const shareHealthDetails = () => {
-    
-  }; 
+  const shareHealthDetails = async (recordId: string) => {
+    setShareLoading(true);
+    try {
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            recordId: recordId,
+          },
+        },
+      });
+  
+      if (response.records && response.records.length > 0) {
+        const record = response.records[0];
+        const { status } = await record.send(recipientDid);
+        console.log('Send record status in shareProfile', status);
+        toast.success('Successfully shared health record', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+        setShareLoading(false);
+      } else {
+        console.error('No record found with the specified ID');
+        toast.error('Failed to share health record', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+        });
+      }
+      setShareLoading(false);
+    } catch (err) {
+      console.error('Error in shareProfile:', err);
+      toast.error('Error in shareProfile. Please try again later.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 5000,
+      });
+      setShareLoading(false);
+    }
+  };
+
+
+const name = urlParams.get('name')
+
+const did = urlParams.get('did')
+
+  
 
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
@@ -171,7 +219,7 @@ useEffect(() => {
                 <div>
                   {userType === 'patient' ? (
                     <button 
-                    onClick={shareHealthDetails}
+                    // onClick={() => shareHealthDetails("1")}
                     className="inline-flex mr-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                       Share Record
                   </button>
@@ -202,7 +250,7 @@ useEffect(() => {
                                     }`}
                                     onClick={() => handleSetActiveRecipient(recipient)}
                                   >
-                                    <h3>{recipient?.slice(0, 15) + "..." + myDid?.slice(-8)}</h3>
+                                    <h3>Dr.  {name}</h3>
                                   </div>
                                 ))}
                                 </div>
@@ -224,23 +272,18 @@ useEffect(() => {
                                     </button>
                                   </div>
                                 )}
-                                
-                                <div className="absolute flex justify-center bottom-5">
-                                  <button className="bg-primary text-white rounded p-2" onClick={handleStartNewChat}>
-                                    <span>Add Friends +</span>
-                                  </button>
-                                </div>                            
+                                                         
                             </div>
                         </div>
                         
-                  {activeRecipient ? (
+                  {/* {activeRecipient ? ( */}
                   <div className="flex h-full flex-col border-l border-stroke dark:border-strokedark xl:w-3/4">
                       <div className="sticky flex items-center justify-between border-b border-stroke px-6 py-4.5 dark:border-strokedark">
                         <div className="flex items-center">
                             <div className="mr-4.5 h-13 w-full max-w-13 overflow-hidden rounded-full">
                               <img src="/assets/user-01-b007ff3f.png" alt="avatar" className="h-full w-full object-cover object-center"/></div>
                             <div>
-                              <h5 className="font-medium text-black dark:text-white">{activeRecipient?.slice(0, 15) + "..." + myDid?.slice(-8)}</h5>
+                              <h5 className="font-medium text-black dark:text-white">Dr. {name}</h5>
                               <p className="text-sm">{userType}</p>
                             </div>
                         </div>     
@@ -305,7 +348,7 @@ useEffect(() => {
                       </div>
 
                   </div>
-                  ) : (
+                  {/* ) : (
                     <div className="flex flex-col mx-30 justify-center align-center">
                     <h3>Start a new chat or select an existing chat</h3>
                     <p>
@@ -313,7 +356,7 @@ useEffect(() => {
                       that chats may take awhile to render.
                     </p>
                   </div>
-                  )}
+                  )} */}
                 </div>
 
               </div>

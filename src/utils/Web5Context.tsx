@@ -111,7 +111,11 @@ const ContextProvider = ({ children }) => {
       labTestRecord: {
         schema: "https://rapha.com/schemas/lab-testRecord",
         dataFormats: ["application/json"]
-      }
+      },
+      chat: {
+        schema: "https://rapha.com/schemas/chat",
+        dataFormats: ["application/json"],
+      },
     },
     structure: {
       patientProfile: {
@@ -251,6 +255,13 @@ const ContextProvider = ({ children }) => {
           { who: "author", of: "licenseCredential", can: "read"},
           { who: "author", of: "licenseCredential", can: "update"}
         ]
+      },
+      chat: {
+        $actions: [
+          { who: "anyone", can: "write" },
+          { who: "author", of: "chat", can: "read" },
+          { who: "recipient", of: "chat", can: "read" },
+        ],
       },
     }
   }
