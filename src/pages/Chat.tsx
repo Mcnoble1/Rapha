@@ -7,8 +7,8 @@ import { Web5Context } from "../utils/Web5Context.tsx";
 import { useNavigate } from 'react-router-dom'; 
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
-import DoctorImage from '../../images/user/3.png';
-import PatientImage from '../../images/user/4.png';
+import DoctorImage from '../images/user/3.png';
+import PatientImage from '../images/user/4.png';
 
 
 export default function Home() {
