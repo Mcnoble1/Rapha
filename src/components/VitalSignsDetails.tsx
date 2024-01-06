@@ -5,8 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../pages/signin.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import HealthDetails from './HealthDetails';
 
-const VitalSignsDetails = () => {
+const VitalSignsDetails = (props) => {
   
   const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
@@ -114,9 +115,17 @@ const VitalSignsDetails = () => {
       console.log(vitalSignsData);
       record = await writeProfileToDwn(vitalSignsData);
   
-      if (record) {
-        const { status } = await record.send(myDid);
-        console.log("Send record status in handleAddVitalSigns", status);
+      const patientDid = props.patientDid;
+      console.log(patientDid);
+      if (record) {    
+        console.log(record);    
+        const DIDs = [myDid, patientDid];
+        await Promise.all(
+        DIDs.map(async (did) => {
+          const { status } = await record.send(did);
+          console.log('Send record status in vitalSignsRecord', status)
+        })
+      );
       } else {
         toast.error('Failed to create health record', {
           position: toast.POSITION.TOP_RIGHT,

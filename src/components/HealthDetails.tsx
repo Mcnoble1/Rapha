@@ -47,6 +47,9 @@ const HealthDetails = () => {
     setShowDetails((prevShowDetails) => !prevShowDetails);
   };
 
+  let patientDid = usersDetails.filter((patient) => patient.sender);
+  console.log(patientDid);
+
   useEffect(() => {
     if (web5 && myDid) {
       fetchHealthDetails();
@@ -108,6 +111,7 @@ const fetchHealthDetails = async () => {
         })
       );
       setUsersDetails(healthDetails);
+      
       console.log(healthDetails);
       toast.success('Successfully fetched health details', {
         position: toast.POSITION.TOP_RIGHT,
@@ -308,18 +312,7 @@ const deleteHealthDetails = async (recordId) => {
   return (
     <div className="lg:mx-5 flex flex-col rounded-lg border break-words border-stroke bg-white p-10 shadow-default dark:border-strokedark dark:bg-boxdark">
      <div className="flex flex-row mb-5 items-center gap-4 justify-end">
-      {/* <button 
-        onClick={fetchHealthDetails}
-        className=" items-center  rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover-bg-opacity-90">
-        {fetchDetailsLoading ? (
-          <div className="flex items-center">
-            <div className="spinner"></div>
-            <span className="pl-1">Fetching...</span>
-          </div>
-        ) : (
-          <>Fetch Profile</>
-        )}           
-      </button> */}
+      
       <div className="relative">
         <button
           onClick={toggleDetails}
@@ -379,34 +372,34 @@ const deleteHealthDetails = async (recordId) => {
       </div> 
 
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <AllergyDetails />
+        <AllergyDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <CardiologyDetails />
+        <CardiologyDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <DiagnosisDetails />
+        <DiagnosisDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <ImmunizationDetails />
+        <ImmunizationDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <InsuranceDetails />
+        <InsuranceDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <LabTestDetails />
+        <LabTestDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <MedicalHistoryDetails />
+        <MedicalHistoryDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <SurgeryDetails />
+        <SurgeryDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <VitalSignsDetails />
+        <VitalSignsDetails patientDid={patientDid}/>
       </div>
       <div className='flex flex-wrap  mb-10 p-5 w-full shadow-2xl rounded-lg'>
-        <PhysicalDetails />
+        <PhysicalDetails patientDid={patientDid}/>
       </div>
 
         <div className='w-full flex flex-row justify-evenly mb-5'>

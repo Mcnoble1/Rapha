@@ -5,8 +5,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../pages/signin.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import HealthDetails from './HealthDetails';
 
-const PhysicalDetails = () => {
+const PhysicalDetails = (props) => {
   
   const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
@@ -116,9 +117,18 @@ const PhysicalDetails = () => {
       let record;
       console.log(physicalData);
       record = await writeProfileToDwn(physicalData);
-      if (record) {
-        const { status } = await record.send(myDid);
-        console.log("Send record status in handleAddProfile", status);
+
+      const patientDid = props.patientDid;
+      console.log(patientDid);
+      if (record) {    
+        console.log(record);    
+        const DIDs = [myDid, patientDid];
+        await Promise.all(
+        DIDs.map(async (did) => {
+          const { status } = await record.send(did);
+          console.log('Send record status in physicalRecord', status)
+        })
+      );
       } else {
         toast.error('Failed to create physical record', {
           position: toast.POSITION.TOP_RIGHT,
