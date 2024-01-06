@@ -35,6 +35,9 @@ const AllergyDetails = (props) => {
   const parentId = JSON.parse(localStorage.getItem('recordId'));
   const contextId = JSON.parse(localStorage.getItem('contextId'));
 
+  const patientDid = props.patientDid;
+      console.log(patientDid);
+      
   useEffect(() => {
     fetchAllergyDetails();
   }, []);
@@ -112,8 +115,7 @@ const AllergyDetails = (props) => {
       console.log(allergyData);
       record = await writeProfileToDwn(allergyData);
 
-      const patientDid = props.patientDid;
-      console.log(patientDid);
+      
       if (record) {    
         console.log(record);    
         const DIDs = [myDid, patientDid];
@@ -171,7 +173,7 @@ const AllergyDetails = (props) => {
           protocol: allergyProtocol.protocol,
           protocolPath: 'patientProfile/allergyRecord',
           schema: allergyProtocol.types.allergyRecord.schema,
-          recipient: myDid,
+          recipient: patientDid,
           parentId: parentId,
           contextId: contextId,
         },

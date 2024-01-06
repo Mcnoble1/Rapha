@@ -187,13 +187,13 @@ const fetchPatientProfile = async (recipientDid) => {
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <main>
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-              <div className="mb-6 flex flex-row gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-6 flex flex-row gap-0 lg:gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <Breadcrumb pageName="All Doctors" />
                 <div>
                   <button 
                     ref={trigger}
                     // onClick={() => setPatientPopupOpen(!categoryPopupOpen)}
-                    className="inline-flex mr-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                    className="ml-2 mr-2 inline-flex lg:mr-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                       Sort
                   </button>
 
@@ -208,7 +208,7 @@ const fetchPatientProfile = async (recipientDid) => {
 
               <div className="flex flex-row gap-10 ">
                     {doctorsDetails.map((doctor, index) => (
-                      <div className=" w-2/5 rounded-2xl bg-white px-5 shadow-default dark:border-strokedark dark:bg-boxdark ">
+                      <div className=" lg:w-2/5 rounded-2xl bg-white px-5 shadow-default dark:border-strokedark dark:bg-boxdark ">
                         <div className="" key={index}>
                         <div className='flex flex-row mb-1 gap-20 p-5 w-full'>
                           <div className="flex">

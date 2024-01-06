@@ -782,7 +782,7 @@ const handleAddPicture = async (e: FormEvent) => {
                 </label>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 ">
               <div className="flex flex-row flex-wrap justify-evenly gap-2">
               <div className="">
                 <h3 className="mb-1.5 text-center text-2xl font-semibold text-black dark:text-white">
@@ -794,63 +794,63 @@ const handleAddPicture = async (e: FormEvent) => {
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Date of Birth</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.dateOfBirth }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Marital Status</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.maritalStatus }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Identification Number</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.identificationNumber }
                   </h4>
                 </div>
 
-                <div className='w-1/3 mb-5' >
-                  <span className="text-xl">Email Address</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                <div className='w-1/3 mb-5 text-wrap' >
+                  <span className="text-xl ">Email Address</span>
+                  <h4 className="text-xl mt-1 break-words break-words font-medium text-black dark:text-white">
                     { user.email }
                   </h4>
                 </div>
 
-                <div className='w-1/3 mb-5' >
+                <div className='w-1/3 mb-5 text-wrap' >
                   <span className="text-xl">Phone Number</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.phone }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Home Address</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.homeAddress }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">City</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.city }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">State</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.state }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Country</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.country }
                   </h4>
                 </div>
@@ -860,63 +860,63 @@ const handleAddPicture = async (e: FormEvent) => {
                 <div className='w-full mb-5 font-medium text-black text-xl'>Guardian Information</div>
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Name</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianName }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Relationship</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.relationship }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Gender</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianGender }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Email Address</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianEmail }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Phone Number</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianPhone }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Home Address</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianHomeAddress }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">City</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianCity }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">State</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianState }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Country</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.guardianCountry }
                   </h4>
                 </div>
@@ -926,70 +926,70 @@ const handleAddPicture = async (e: FormEvent) => {
                 <div className='w-full mb-5 font-medium text-black text-xl'>Primary Doctor Information</div>
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Name</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorName }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                   <span className="text-xl">Gender</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorGender }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">Hospital</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.hospital }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">Specialty</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.specialty }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">Email Address</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorEmail }
                   </h4> 
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">Phone Number</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorPhone }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">Home Address</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorHomeAddress }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">City</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorCity }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">State</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorState }
                   </h4>
                 </div>
 
                 <div className='w-1/3 mb-5' >
                 <span className="text-xl">Country</span>
-                  <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
+                  <h4 className="text-xl mt-1 break-words font-medium text-black dark:text-white">
                     { user.doctorCountry }
                   </h4>
                 </div>

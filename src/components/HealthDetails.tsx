@@ -47,7 +47,7 @@ const HealthDetails = () => {
     setShowDetails((prevShowDetails) => !prevShowDetails);
   };
 
-  let patientDid = usersDetails.filter((patient) => patient.sender);
+  let patientDid = usersDetails.map((user) => user.sender)[0];
   console.log(patientDid);
 
   useEffect(() => {

@@ -238,7 +238,7 @@ const did = urlParams.get('did')
                 
 
               <div className="h-screen rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark xl:flex">
-                  <div className=" h-screen flex-col xl:flex xl:w-1/4">
+                  <div className="lg:h-screen flex-col xl:flex xl:w-1/4">
                       <div className="sticky border-b border-stroke px-6 py-7.5 dark:border-strokedark">
                         <h3 className="text-lg font-medium text-black dark:text-white 2xl:text-xl">Active Conversations<span className="rounded-md border-[.5px] border-stroke bg-gray-2 py-0.5 px-2 text-base font-medium text-black dark:border-strokedark dark:bg-boxdark-2 dark:text-white 2xl:ml-4"></span></h3>
                       </div>
