@@ -143,82 +143,85 @@ const ContextProvider = ({ children }) => {
         },
         allergyRecord: {
           $actions: [
-            { who: "recipient", of: "patientProfile", can: "write" },
-            { who: "author", of: "patientProfile", can: "read" },
-            { who: "author", of: "allergyRecord", can: "read"},
-            { who: "author", of: "allergyRecord", can: "update"}
+            // { who: "recipient", of: "patientProfile", can: "write" },
+            // { who: "author", of: "patientProfile", can: "read" },
+            // { who: "author", of: "allergyRecord", can: "read"},
+            // { who: "author", of: "allergyRecord", can: "update"},
+            // { who: "recipient", of: "allergyRecord", can: "read" },
+            { who: "anyone", can: "write" },
+            { who: "anyone", can: "read" },
           ]
         },
         surgeryRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "surgeryRecord", can: "read" },
+            { who: "author", of: "surgeryRecord", can: "read"},
+            { who: "author", of: "surgeryRecord", can: "update"}
           ]
         },
         diagnosisRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "diagnosisRecord", can: "read" },
+            { who: "author", of: "diagnosisRecord", can: "read"},
+            { who: "author", of: "diagnosisRecord", can: "update"}
           ]
         },
         immunizationRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "immunizationRecord", can: "read" },
+            { who: "author", of: "immunizationRecord", can: "read"},
+            { who: "author", of: "immunizationRecord", can: "update"}
           ]
         },
         medicalHistoryRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "medicalHistoryRecord", can: "read" },
+            { who: "author", of: "medicalHistoryRecord", can: "read"},
+            { who: "author", of: "medicalHistoryRecord", can: "update"}
           ]
         },
         vitalSignsRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "vitalSignsRecord", can: "read" },
+            { who: "author", of: "vitalSignsRecord", can: "read"},
+            { who: "author", of: "vitalSignsRecord", can: "update"}
           ]
         },
         insuranceRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "insuranceRecord", can: "read" },
+            { who: "author", of: "insuranceRecord", can: "read"},
+            { who: "author", of: "insuranceRecord", can: "update"}
           ]
         },
         cardiologyRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "cardiologyRecord", can: "read" },
+            { who: "author", of: "cardiologyRecord", can: "read"},
+            { who: "author", of: "cardiologyRecord", can: "update"}
           ]
         },
         physicalRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "physicalRecord", can: "read" },
+            { who: "author", of: "physicalRecord", can: "read"},
+            { who: "author", of: "physicalRecord", can: "update"}
           ]
         },
         labTestRecord: {
           $actions: [
             { who: "anyone", can: "write" },
-            { who: "recipient", of: "healthRecord", can: "read" },
-            { who: "author", of: "healthRecord", can: "read"},
-            { who: "author", of: "healthRecord", can: "update"}
+            { who: "recipient", of: "labTestRecord", can: "read" },
+            { who: "author", of: "labTestRecord", can: "read"},
+            { who: "author", of: "labTestRecord", can: "update"}
           ]
         }
       }, 
