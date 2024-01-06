@@ -121,9 +121,32 @@ const fetchPatientProfile = async (recipientDid) => {
       },
     });
     console.log(response);
+
+    if (response.status.code === 200) {
+      const patientDetails = await Promise.all(
+        response.records.map(async (record) => {
+          const data = await record.data.json();
+          // console.log(data);
+          return {
+            ...data,
+            recordId: record.id,
+          };
+        })
+      );
+      console.log(patientDetails);
+      
+      const recordId = patientDetails[0].recordId;
+        const res = await web5.dwn.records.query({
+          message: {
+            filter: {
+              recordId: recordId,
+            },
+          },
+        });
+        console.log(res);
     
-        if (response.records && response.records.length > 0) {
-          const record = response.records[0];
+        if (res.records && res.records.length > 0) {
+          const record = res.records[0];
           const { status } = await record.send(recipientDid);
           console.log('Send record status in shareProfile', status);
           toast.success('Successfully shared health record', {
@@ -137,7 +160,16 @@ const fetchPatientProfile = async (recipientDid) => {
             autoClose: 3000,
           });
         }
-      } catch (err) {
+      
+    } else {
+      console.error('No health details found');
+      toast.error('Failed to fetch health details', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+      });
+    }
+    setFetchDetailsLoading(false);
+  } catch (err) {
     console.error('Error in fetchPatientProfile:', err);
     toast.error('Error in fetchPatientProfile. Please try again later.', {
       position: toast.POSITION.TOP_RIGHT,

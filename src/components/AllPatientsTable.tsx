@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css'; 
 import { Web5Context } from "../utils/Web5Context.tsx";
-
+import PatientImage from '../images/user/4.png';
 
 
 const PatientsTable: React.FC = () => {
@@ -266,7 +266,7 @@ const PatientsTable: React.FC = () => {
                   <div className="flex gap-3">
                     <div className="flex-shrink-0 ">
                       <img
-                        src={patient.image}
+                        src={PatientImage}
                         alt={patient.name}
                         className="h-12 w-12 rounded-full" // Add a class to control the image size
                       />

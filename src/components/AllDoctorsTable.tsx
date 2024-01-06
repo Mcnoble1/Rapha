@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Web5Context } from "../utils/Web5Context.tsx";
 import { VerifiableCredential } from "@web5/credentials";
 import { DidKeyMethod } from '@web5/dids';
+import DoctorImage from '../images/user/3.png';
 
 const DoctorsTable: React.FC = () => {
 
@@ -398,7 +399,7 @@ const deleteHealthDetails = async (recordId) => {
                   <div className="flex gap-3">
                     <div className="flex-shrink-0 ">
                       <img
-                        src={doctor.image}
+                        src={DoctorImage}
                         alt={doctor.name}
                         className="h-12 w-12 rounded-full" // Add a class to control the image size
                       />
