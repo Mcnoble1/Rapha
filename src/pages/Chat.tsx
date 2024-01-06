@@ -7,6 +7,8 @@ import { Web5Context } from "../utils/Web5Context.tsx";
 import { useNavigate } from 'react-router-dom'; 
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
+import DoctorImage from '../../images/user/3.png';
+import PatientImage from '../../images/user/4.png';
 
 
 export default function Home() {
@@ -250,7 +252,12 @@ const did = urlParams.get('did')
                                     }`}
                                     onClick={() => handleSetActiveRecipient(recipient)}
                                   >
-                                    <h3>Dr.  {name}</h3>
+                                    {userType === 'patient' ? (
+                                 <h3>Dr.{name}</h3>
+                                ) : (
+                                  <h3>{name}</h3>
+                                )}
+                                    
                                   </div>
                                 ))}
                                 </div>
@@ -281,10 +288,18 @@ const did = urlParams.get('did')
                       <div className="sticky flex items-center justify-between border-b border-stroke px-6 py-4.5 dark:border-strokedark">
                         <div className="flex items-center">
                             <div className="mr-4.5 h-13 w-full max-w-13 overflow-hidden rounded-full">
-                              <img src="/assets/user-01-b007ff3f.png" alt="avatar" className="h-full w-full object-cover object-center"/></div>
+                              {userType === 'patient' ? (
+                                <img src={DoctorImage} alt="avatar" className="h-full w-full object-cover object-center"/>
+                              ) : (
+                                <img src={PatientImage} alt="avatar" className="h-full w-full object-cover object-center"/>
+                              )}
+                              </div>
                             <div>
-                              <h5 className="font-medium text-black dark:text-white">Dr. {name}</h5>
-                              <p className="text-sm">{userType}</p>
+                                {userType === 'patient' ? (
+                                  <h5 className="font-medium text-black dark:text-white">Dr. {name}</h5>
+                                ) : (
+                                  <h5 className="font-medium text-black dark:text-white">{name}</h5>
+                                )}
                             </div>
                         </div>     
                       </div>

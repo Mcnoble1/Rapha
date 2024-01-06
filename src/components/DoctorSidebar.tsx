@@ -148,19 +148,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <li>
                 <NavLink
-                  to="/doctor/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
-                    pathname.includes('calendar') &&
-                    'border-r-4 dark:bg-meta-4'
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faHospital} style={{color: "#fcfcfc",}} />
-                  Calendar/Schedule
-                </NavLink>
-              </li>
-
-              <li>
-                <NavLink
                   to="/chat"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:border-r-4 border-fuchsia-600 dark:hover:bg-meta-4 ${
                     pathname.includes("chat") &&
