@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../pages/signin.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faShare, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-
-const AllergyDetails = () => {
+import HealthDetails from './HealthDetails';
+const AllergyDetails = (props) => {
   
   const { web5, myDid, profileProtocolDefinition, userType } = useContext( Web5Context);
 
@@ -112,11 +112,10 @@ const AllergyDetails = () => {
       console.log(allergyData);
       record = await writeProfileToDwn(allergyData);
 
-      const patientDid = userDetails.filter((patient) => patient.sender);
-
+      const patientDid = props.patientDid;
+      console.log(patientDid);
       if (record) {    
         console.log(record);    
-        console.log(patientDid);
         const DIDs = [myDid, patientDid];
         await Promise.all(
         DIDs.map(async (did) => {
