@@ -1,22 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-
-// import UserOne from '../images/user/user-01.png';
+import { Web5Context } from "../utils/Web5Context.tsx";
+import { useNavigate } from 'react-router-dom'; 
 
 const DropdownUser = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
-  const [user, setUser] = useState('');
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Retrieve the email from local storage
-    const storedEmail = localStorage.getItem('user');
-    if (storedEmail) {
-      setUser(storedEmail);
-    }
-  }, []);
+  // const { logout } = useContext(Web5Context);
+
+  const logout = () => {
+    localStorage.removeItem('userType');
+    // setUserType('');
+    navigate('/')
+  }
 
   // close on click outside
   useEffect(() => {
@@ -46,18 +46,15 @@ const DropdownUser = () => {
 
   return (
     <div className="relative">
-      <Link
+      <button
 
         className="flex items-center gap-4"
-        to="/homepage"
+        onClick={() => logout()}
       >
         <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white">
-            {user}
-          </span>
           <span className="block text-xs">Logout</span>
         </span>
-      </Link>
+      </button>
     </div>
   );
 };

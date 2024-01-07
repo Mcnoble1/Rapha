@@ -164,6 +164,7 @@ console.log(doctorDid);
     data: {
         "specialty": vcData.specialty,
         "licenseStatus": vcData.licenseStatus,
+        "hospital": vcData.hospital,
     }
   });
 
@@ -528,7 +529,7 @@ const deleteHealthDetails = async (recordId) => {
                                       </div>
 
                                       <div className='w-1/3 mb-5' >
-                                        <span className="text-xl">Registration Number</span>
+                                        <span className="text-xl">License Number</span>
                                         <h4 className="text-xl mt-1 font-medium text-black dark:text-white">
                                           {doctor.registrationNumber }
                                         </h4>
@@ -689,7 +690,6 @@ const deleteHealthDetails = async (recordId) => {
                                                         required
                                                         value={vcData.hospital}
                                                         onChange={handleInputChange}
-                                                        placeholder="John Doe"
                                                         className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
                                                       </div>
                                                     </div>
@@ -699,14 +699,16 @@ const deleteHealthDetails = async (recordId) => {
                                                         License Status
                                                       </label>
                                                       <div className={`relative ${vcData.licenseStatus? 'bg-light-blue' : ''}`}>
-                                                      <input
-                                                        type="text"
-                                                        name="licenseStatus"
-                                                        required
-                                                        value={vcData.licenseStatus}
-                                                        onChange={handleInputChange}
-                                                        placeholder="John Hopkins"
-                                                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary"/>
+                                                      <select
+                                                          name="licenseStatus"
+                                                          value={vcData.licenseStatus}
+                                                          onChange={handleInputChange}
+                                                          required
+                                                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus-border-primary">
+                                                          <option value="">Select</option>                        
+                                                          <option value="Valid">Valid</option>
+                                                          <option value="Invalid">Invalid</option>                                                     
+                                                        </select>  
                                                       </div>
                                                     </div>
                                                    </div>    
@@ -714,7 +716,6 @@ const deleteHealthDetails = async (recordId) => {
                                                   </form>
                                                 <button
                                                   type="button"
-                                                  // onClick={() => updateHealthDetails(doctor.recordId, vcData)}
                                                   onClick={() => issueVC(doctor.recordId)}
                                                   disabled={updateLoading}
                                                   className={`mr-5 mb-5 inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 ${updateLoading ? 'opacity-50 cursor-not-allowed' : ''}`}

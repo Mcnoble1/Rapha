@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import DropdownUser from './DropdownUser';
 import { Web5Context } from "../utils/Web5Context.tsx";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNoteSticky } from '@fortawesome/free-solid-svg-icons';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 
 const Header = (props: {
@@ -98,7 +97,7 @@ const Header = (props: {
                     </div>
                   </button>
                 </div>
-          {/* <DropdownUser /> */}
+          <DropdownUser />
         </div>
       </div>
     </header>
