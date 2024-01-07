@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState, useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Patient from './pages/Patient/Dashboard';
@@ -16,6 +16,8 @@ import PatientProfile from './pages/Patient/Profile';
 import Homepage from './pages/Homepage';
 import Loader from './common/Loader';
 import routes from './routes';
+import { Web5Context } from "./utils/Web5Context";
+
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -25,6 +27,10 @@ function App() {
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
+
+  const { myDid, userType } = useContext(Web5Context);
+
+  const Homepage = userType === 'doctor' ? Doctor : Patient;
 
   return loading ? (
     <Loader />
