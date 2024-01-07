@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Web5Context } from "../utils/Web5Context.tsx";
+// import { Web5Context } from "../utils/Web5Context.tsx";
 import { useNavigate } from 'react-router-dom'; 
 
 const DropdownUser = () => {

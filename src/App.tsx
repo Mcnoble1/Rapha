@@ -30,7 +30,7 @@ function App() {
 
   const { myDid, userType } = useContext(Web5Context);
 
-  const Homepage = userType === 'doctor' ? Doctor : Patient;
+  const Home = userType === 'doctor' ? Doctor : userType === 'patient' ? Patient : Homepage;
 
   return loading ? (
     <Loader />
@@ -54,7 +54,7 @@ function App() {
         <Route path="/doctor/profile" element={<DoctorProfile />} />
         <Route path="/patient/profile" element={<PatientProfile />} />
         <Route element={<DefaultLayout />}>
-          {/* <Route element={<Dashboard />} /> */}
+          <Route element={<Home />} />
           {routes.map(({ path, component: Component }) => (
             <Route
               path={path}
