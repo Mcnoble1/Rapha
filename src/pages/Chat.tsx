@@ -227,7 +227,7 @@ const did = urlParams.get('did')
                   </button>
                   ) : (
                     <button 
-                    onClick={() => navigate('/doctor/patient/:id')}                      
+                    onClick={() => navigate('/doctor/patient')}                      
                     className="inline-flex mr-5 items-center justify-center rounded-full bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                       View Record
                   </button>

@@ -7,7 +7,7 @@ import Patients from './pages/Doctor/Patients';
 import Record from './pages/Doctor/Patient';
 import Chat from './pages/Chat';
 import Doctor from './pages/Doctor/Dashboard';
-import Calendar from './pages/Doctor/Calendar';
+import Credentials from './pages/Doctor/Credentials';
 import Doctors from './pages/Patient/Doctors';
 import Admin from './pages/Admin/Dashboard';
 import Docs from './pages/Admin/Doctors';
@@ -40,8 +40,8 @@ function App() {
         <Route path="/patient/records" element={<Records />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/doctor/patients" element={<Patients />} />
-        <Route path="/doctor/calendar" element={<Calendar />} />
-        <Route path="/doctor/patient/:id" element={<Record />} />
+        <Route path="/doctor/credentials" element={<Credentials />} />
+        <Route path="/doctor/patient" element={<Record />} />
         <Route path="/patient/doctors" element={<Doctors />} />
         <Route path="/admin/dashboard" element={<Admin />} />
         <Route path="/admin/doctors" element={<Docs />} />
