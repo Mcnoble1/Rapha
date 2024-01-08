@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { Web5Context } from "../utils/Web5Context.tsx";
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 
 const DropdownUser = () => {
@@ -14,8 +12,8 @@ const DropdownUser = () => {
 
   const logout = () => {
     localStorage.removeItem('userType');
-    // setUserType('');
-    navigate('/')
+    localStorage.setItem('userType', '');
+    navigate('/homepage')
   }
 
   // close on click outside

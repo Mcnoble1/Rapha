@@ -30,7 +30,7 @@ function App() {
 
   const { myDid, userType } = useContext(Web5Context);
 
-  const Homepage = userType === 'doctor' ? Doctor : Patient;
+  const Home = userType === 'doctor' ? Doctor : userType === 'patient' ? Patient : Homepage;
 
   return loading ? (
     <Loader />
@@ -39,7 +39,7 @@ function App() {
     <Toaster position='top-right' reverseOrder={false} containerClassName='overflow-auto'/>
   
       <Routes>
-        <Route path="/" index element={<Homepage />} />
+        <Route path="/" index element={<Home />} />
         <Route path="/homepage" index element={<Homepage />} />
         <Route path="/doctor/dashboard" element={<Doctor />} />
         <Route path="/patient/dashboard" element={<Patient />} />
@@ -54,7 +54,7 @@ function App() {
         <Route path="/doctor/profile" element={<DoctorProfile />} />
         <Route path="/patient/profile" element={<PatientProfile />} />
         <Route element={<DefaultLayout />}>
-          {/* <Route element={<Dashboard />} /> */}
+          {/* <Route element={<Home />} /> */}
           {routes.map(({ path, component: Component }) => (
             <Route
               path={path}

@@ -2,6 +2,12 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Web5Context } from "../utils/Web5Context";
 import heroImage from '../images/health.png';
+import one from '../images/onee.png';
+import two from '../images/two.png';
+import three from '../images/three.png';
+import four from '../images/four.png';
+import five from '../images/five.png';
+import six from '../images/six.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
@@ -11,16 +17,6 @@ const Homepage = () => {
   const { setUserTypeAndRedirect } = useContext(Web5Context);
 
   const navigate = useNavigate();
-
-  // const [selectedType, setSelectedType] = useState(null);
-
-  // const setDoctor = () => {
-  //   setSelectedType("doctor");
-  // };
-
-  // const setPatient = () => {
-  //   setSelectedType("patient");
-  // };
   
   const [isDeleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
 
@@ -87,27 +83,45 @@ const Homepage = () => {
         </div>
       </div>
 
-      <div className='flex w-full lg:w-[90%] pb-10 flex-col'>
+      <div className='flex w-full lg:w-[90%] lg:ml-15 pb-10 flex-col'>
         <div className="flex w-full justify-center mb-10 lg:mb-30 text-6xl font-bold text-white dark:text-white">
-            Our Features
+            What we offer
         </div>
-        <div className="flex w-[90%] mx-[5%] flex-col lg:flex-row ">   
+        <div className="flex w-[90%] mx-[5%] flex-col lg:flex-row  flex-wrap">   
           <div className="flex flex-col mb-10 lg:w-1/3">
-            <FontAwesomeIcon icon={faFileAlt} size="6x" className="text-white mb-10 dark:text-white"/>
+            <img src={one} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Create and save your (Personal, Education, Health, Social, and Professional) records in your personal Decentralized Web Node (DWN).
-            Share your records and files with other users.
+            Create and save your Health records in your personal Decentralized Web Node (DWN).
+            
             </p>            
           </div>
           <div className="flex flex-col mb-10 lg:w-1/3">
-            <FontAwesomeIcon icon={faVideo} size="6x" className="text-white mb-10 dark:text-white"/>
+          <img src={two} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
             Save your files (Documents, Images, Videos) in your personal Decentralized Web Node (DWN).
-            Share your records and files with other users.
+            
             </p>
           </div>
           <div className="flex flex-col lg:w-1/3">
-            <FontAwesomeIcon icon={faPencilAlt} size="6x" className="text-white mb-10 dark:text-white"/>
+          <img src={three} alt="one" className="text-white mb-10 dark:text-white"/>
+            <p className="text-center text-2xl  font-bold">
+            Write Letters into the Future to yourself and others.
+            </p>  
+          </div>
+          <div className="flex flex-col mb-10 lg:w-1/3">
+            <img src={four} alt="one" className="text-white mb-10 dark:text-white"/>
+            <p className="text-center text-2xl  font-bold">
+            Create and save your Health records in your personal Decentralized Web Node (DWN).
+            </p>            
+          </div>
+          <div className="flex flex-col mb-10 lg:w-1/3">
+          <img src={five} alt="one" className="text-white mb-10 dark:text-white"/>
+            <p className="text-center text-2xl  font-bold">
+            Save your files (Documents, Images, Videos) in your personal Decentralized Web Node (DWN).
+            </p>
+          </div>
+          <div className="flex flex-col lg:w-1/3">
+          <img src={six} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
             Write Letters into the Future to yourself and others.
             </p>  
