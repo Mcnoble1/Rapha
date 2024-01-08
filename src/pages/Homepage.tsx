@@ -91,39 +91,39 @@ const Homepage = () => {
           <div className="flex flex-col mb-10 lg:w-1/3">
             <img src={one} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Create and save your Health records in your personal Decentralized Web Node (DWN).
+            Patients and Doctors can create, edit, share and delete their profiles securely after being onboarded into the platform.
             
             </p>            
           </div>
           <div className="flex flex-col mb-10 lg:w-1/3">
           <img src={two} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Save your files (Documents, Images, Videos) in your personal Decentralized Web Node (DWN).
+            Patients can consult with doctors, share medical records, and get prescriptions and medical certificates.
             
             </p>
           </div>
           <div className="flex flex-col lg:w-1/3">
           <img src={three} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Write Letters into the Future to yourself and others.
+            Secure Electronic Health Record System using Protocols that gets updated on the go.
             </p>  
           </div>
           <div className="flex flex-col mb-10 lg:w-1/3">
             <img src={four} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Create and save your Health records in your personal Decentralized Web Node (DWN).
+            Verification of the the authenticity of medical practitioners and issue a Verifiable Credential that enables them to interact with patients.
             </p>            
           </div>
           <div className="flex flex-col mb-10 lg:w-1/3">
           <img src={five} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Save your files (Documents, Images, Videos) in your personal Decentralized Web Node (DWN).
+            Real-time chat system to facilitate communication between patients and medical practitioners.
             </p>
           </div>
           <div className="flex flex-col lg:w-1/3">
           <img src={six} alt="one" className="text-white mb-10 dark:text-white"/>
             <p className="text-center text-2xl  font-bold">
-            Write Letters into the Future to yourself and others.
+            Research Labs where patients can participate in research studies and get rewarded for their participation.
             </p>  
           </div>
         </div>
