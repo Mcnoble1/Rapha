@@ -1,7 +1,7 @@
 import { useState, useRef, ChangeEvent, useContext, FormEvent, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar.tsx';
 import Header from '../../components/Header.tsx';
-import CoverOne from '../../images/entertainment.png';
+import CoverOne from '../../images/entertain.png';
 import userSix from '../../images/user/1.png';
 import { toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css'; 
