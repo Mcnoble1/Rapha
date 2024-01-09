@@ -7,11 +7,11 @@ Our inspiration for the Decentralized Healthcare Platform stems from the need to
 ## What it does
 Rapha uses Decentralized Identifiers (DIDs) to enable users, including patients, doctors, and healthcare providers, to create and manage their unique digital identities. Each user possesses a personal Decentralized Web Node (DWN) as a secure data store, ensuring control over health records and selective data sharing with trusted parties. 
 
-Health Records Management: Users securely upload and manage comprehensive health records in their personal DWN, encrypted for privacy.
-Selective Data Sharing: Complete control over sharing health records with trusted parties, ensuring privacy and user-managed data across the healthcare system.
-Verifiable Credentials (VCs): The app supports the issuance and verification of VCs for healthcare-related information. For example, doctors can issue digitally signed VCs containing medical certifications, qualifications, or authorization to perform certain procedures. Patients can receive VCs as proof of their vaccination records or medical conditions, which can be securely shared with authorized third parties.
-Healthcare Protocol Integration: Seamless integration with FHIR and HL7 protocols for interoperability, enabling data exchange across diverse healthcare systems.
-Secure Communication: Encrypted messaging channels facilitate confidential communication between patients and healthcare providers.
+**Health Records Management:** Users securely upload and manage comprehensive health records in their personal DWN, encrypted for privacy.
+**Selective Data Sharing:** Complete control over sharing health records with trusted parties, ensuring privacy and user-managed data across the healthcare system.
+**Verifiable Credentials (VCs):** The app supports the issuance and verification of VCs for healthcare-related information. For example, doctors can issue digitally signed VCs containing medical certifications, qualifications, or authorization to perform certain procedures. Patients can receive VCs as proof of their vaccination records or medical conditions, which can be securely shared with authorized third parties.
+**Healthcare Protocol Integration:** Seamless integration with FHIR and HL7 protocols for interoperability, enabling data exchange across diverse healthcare systems.
+**Secure Communication:** Encrypted messaging channels facilitate confidential communication between patients and healthcare providers.
 
 ## How we built it
 - ReactJS for the User Interface
@@ -23,19 +23,19 @@ Secure Communication: Encrypted messaging channels facilitate confidential commu
 - Verifiable Credentials and Presentation Exchange for verification for immunization and vaccination records
 
 ## Accomplishments that we're proud of
-- Patients registration
+**- Patients registration**
 Users (Patients) have their dashboard where they can create, edit, share and delete their profiles securely after being onboarded into the platform.
 
-- Medical Practitioners registration
+**- Medical Practitioners registration**
 Users (Doctors) have their dashboard where they can create, edit, share and delete their profiles securely after being onboarded into the platform.
 
-- Secure Electronic Health Record System using Protocols
+**- Secure Electronic Health Record System using Protocols**
 We have Implemented a secure storage system for storing and managing medical records that keep tracks of previous records and keeps getting updated on the go.
 
-- Manual Verification of Medical License
+**- Manual Verification of Medical License**
 We have an admin portal to verify the the authenticity of medical practitioners and issue a Verifiable Credential that enables them to interact with patients. In the future, we will integrate with health organizations or government bodies that can verify and validate these credentials.
 
-- Chat System:
+**- Chat System:**
 Real-time chat system to facilitate communication between patients and medical practitioners.
 
 - Patients can consult with doctors, share medical records, and get prescriptions and medical certificates.
@@ -64,9 +64,13 @@ You'll need to install Node.js >=v14.16+ (Recommended Version) (NPM comes along 
 
 Now, in the browser go to <code>localhost:5173</code>
 
+
 **For Production Build**
 Run : <code>npm run build</code>
 
 Default build output directory: /dist
 
 This command will generate a dist as build folder in the root of your template that you can upload to your server.
+
+![download](https://github.com/Mcnoble1/Rapha/assets/40045755/db26d9a9-0622-4cd6-9bde-4552a1da96c0)
+![images](https://github.com/Mcnoble1/Rapha/assets/40045755/ef8b1d47-11d3-4ad2-a315-40dae0d6b3fb)
