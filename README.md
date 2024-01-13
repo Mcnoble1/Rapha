@@ -64,6 +64,8 @@ You'll need to install Node.js >=v14.16+ (Recommended Version) (NPM comes along 
 
 Now, in the browser go to <code>localhost:5173</code>
 
+Navigate to <code>localhost:5173/admin/dashboard</code> to enter the admin dashboard to view registered doctors and issue verifiable credentials
+
 
 **For Production Build**
 Run : <code>npm run build</code>
