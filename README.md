@@ -4,7 +4,9 @@ Decentralized Healthcare Platform
 Our inspiration for the Decentralized Healthcare Platform stems from the need to revolutionize the healthcare experience. The project focuses on creating a comprehensive patient portal, offering seamless access to medical records, appointment history, lab results, and prescriptions, along with features like appointment scheduling and secure messaging with healthcare providers. To ensure efficient data exchange, we use web5 protocols. A robust consent management system empowers patients to control access to their health data, allowing them to grant or revoke consent for sharing with healthcare providers or researchers.
 
 ## Demo Video
-[https://www.youtube.com/watch?v=DnDy6cebYhs]
+https://github.com/Mcnoble1/Rapha/assets/40045755/eacbe375-6739-4f99-9431-37b474e0491f
+
+
 
 ## What it does
 Rapha uses Decentralized Identifiers (DIDs) to enable users, including patients, doctors, and healthcare providers, to create and manage their unique digital identities. Each user possesses a personal Decentralized Web Node (DWN) as a secure data store, ensuring control over health records and selective data sharing with trusted parties. 
